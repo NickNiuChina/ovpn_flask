@@ -11,11 +11,14 @@ class ProductionConfig(Config):
     DEVELOPMENT = False
     DEBUG = False
     SECRET_KEY = "96f8bcfb789054901969a5f406ea6a97"
-    # MySQL configurations 
+    
+    # postgres configurations 
+    # 
     PG_DATABASE_USER="stmtflask"
     PG_DATABASE_PASSWORD = 'stmtflask'
     PG_DATABASE_DB = 'stmtflask'
     PG_DATABASE_HOST = '127.0.0.1'
     PG_DATABASE_PORT = 5432
+    
     SQL_FILE = 'schema.sql'
     VERSION = 'v1.0.0'

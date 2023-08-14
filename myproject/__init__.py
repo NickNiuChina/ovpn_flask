@@ -13,17 +13,6 @@ def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
     app.config['JSON_AS_ASCII'] = False
-    # app.config.from_mapping(
-    #     JSON_AS_ASCII = False,
-    #     # a default secret that should be overridden by instance config
-    #     SECRET_KEY="dev",
-    #     # MySQL configurations 
-    #     MYSQL_DATABASE_USER="stmtflask",
-    #     MYSQL_DATABASE_PASSWORD = 'stmtflask',
-    #     MYSQL_DATABASE_DB = 'stmtflask',
-    #     MYSQL_DATABASE_HOST = '127.0.0.1'
-    # )
-    
     app.config.from_object(config.ProductionConfig)
     print("------APP config---------------------------------")
     print(app.config)

@@ -1,5 +1,4 @@
-import pymysql
-import pymysql.cursors
+import psycopg2
 
 import click
 from flask import current_app
@@ -12,12 +11,13 @@ def get_db():
     again.
     """
     if "db" not in g:
-        g.db = pymysql.connect(
+        g.db = psycopg2.connect(
             host=current_app.config['PG_DATABASE_HOST'], 
             user=current_app.config['PG_DATABASE_USER'], 
             password=current_app.config['PG_DATABASE_PASSWORD'], 
             database=current_app.config['PG_DATABASE_DB'],
-            cursorclass=pymysql.cursors.DictCursor
+            port=current_app.config['PG_DATABASE_PORT'],            
+            cursorclass=psycopg2.cursors.DictCursor
         )
         # g.db.row_factory = MySQL.Row
     return g.db
