@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 import datetime, time
-from myproject import stmt
+from myproject import ovpn
 from flask import session
 import config
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
@@ -10,7 +10,9 @@ from werkzeug.wrappers import Response
 
 
 def create_app(test_config=None):
-    """Create and configure an instance of the Flask application."""
+    """
+    Create and configure an instance of the Flask application.
+    """
     app = Flask(__name__, instance_relative_config=True)
     app.config['JSON_AS_ASCII'] = False
     app.config.from_object(config.ProductionConfig)
@@ -82,7 +84,7 @@ def create_app(test_config=None):
                 if conn:
                     break
             except Exception as error:    
-                print("Error: Please check the database connections!!")
+                print("Error: Please check the database connections!!!!!!!!!!!!!!!!!")
                 print("\t", error)
                 print("\tSleep 20s\n")
                 time.sleep(20)
@@ -91,14 +93,14 @@ def create_app(test_config=None):
     from myproject import auth
 
 
-    app.register_blueprint(stmt.bp)
+    app.register_blueprint(ovpn.bp)
     app.register_blueprint(auth.bp)
 
 
-    # make url_for('index') == url_for('stmt.index')
+    # make url_for('index') == url_for('ovpn.index')
     # in another app, you might define a separate main index here with
-    # app.route, while giving the stmt blueprint a url_prefix, but for
-    # the app the stmt will be the main index
+    # app.route, while giving the ovpn blueprint a url_prefix, but for
+    # the app the ovpn will be the main index
     app.add_url_rule("/", endpoint="index")
 
     return app

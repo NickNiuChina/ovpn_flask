@@ -16,8 +16,7 @@ def get_db():
             user=current_app.config['PG_DATABASE_USER'], 
             password=current_app.config['PG_DATABASE_PASSWORD'], 
             database=current_app.config['PG_DATABASE_DB'],
-            port=current_app.config['PG_DATABASE_PORT'],            
-            cursorclass=psycopg2.cursors.DictCursor
+            port=int(current_app.config['PG_DATABASE_PORT']),
         )
         # g.db.row_factory = MySQL.Row
     return g.db

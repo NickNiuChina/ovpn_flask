@@ -18,7 +18,7 @@ from pymysql.err import IntegrityError
 from myproject.auth import login_required
 from myproject.db import get_db
 
-bp = Blueprint("stmt", __name__, url_prefix='/')
+bp = Blueprint("ovpn", __name__, url_prefix='/')
 
 #################################################
 # test pages
@@ -87,7 +87,7 @@ def index():
                 " order by sc.score desc limit 10" )
     topScores = cur.fetchall()
     
-    return render_template("stmt/main.html", topScores=topScores, onlineUsers=onlineUsers)
+    return render_template("ovpn/main.html", topScores=topScores, onlineUsers=onlineUsers)
 
 #################################################
 # introduction view
@@ -101,7 +101,7 @@ def introduction():
     Returns:
         template: introduction template
     """
-    return render_template("stmt/introduction.html")
+    return render_template("ovpn/introduction.html")
 
 #################################################
 # admin views
@@ -217,8 +217,8 @@ def adminStudent():
     # cur.execute("select * from tb_student")
     # students = cur.fetchall()
 
-     #return render_template("stmt/admin-students.html", students = students)
-    template = "stmt/admin-student.html"
+     #return render_template("ovpn/admin-students.html", students = students)
+    template = "ovpn/admin-student.html"
     return render_template(template)
 
 @bp.route("/admin/getStudent", methods=("GET", "POST"))
@@ -314,24 +314,24 @@ def addStudent():
     if not all(x for x in args):
         error = "Failed to add student info! Null value submitted: " + str(args)
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
     # if id_card invalidate 
     if not is_valid_id_card(id_card):
         error = "Invalidate id: " + id_card
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
     if not (int(gender) == 1 or int(gender) == 2):
         error = "Invalidate gender: " + str(gender)
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
     if not all([case.isdigit() for case in [age, year]]):
         error = "Invalidate year or age: " + str([age, year])
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))       
+        return redirect(url_for("ovpn.adminStudent"))       
     if int(age) < 10 or int(age) > 150 or int(year) > 2030 or int(year) < 1999:
         error = "Please check year or age: " + str([age, year])
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent")) 
+        return redirect(url_for("ovpn.adminStudent")) 
     
     # if duplicated info: id, name, no
           
@@ -346,7 +346,7 @@ def addStudent():
     if result > 0:
         error = "Duplicated studentno or studentname or ID: " + str([student_no, student_name, id_card])
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))        
+        return redirect(url_for("ovpn.adminStudent"))        
     
     
     result = cur.execute(
@@ -359,11 +359,11 @@ def addStudent():
     if result < 1:
         error = "Something wrong: " + str(args)
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
 
     success = "Add user successfully. Student_no: " + student_no
     flash(success, 'success')    
-    return redirect(url_for("stmt.adminStudent"))
+    return redirect(url_for("ovpn.adminStudent"))
 
 @bp.route("/admin/updateStudent", methods=("POST",))
 @login_required
@@ -389,7 +389,7 @@ def updateStudent():
     if any(x is None for x in [studentNo, studentName, idCard, gender, age, year]):
         error = "Null value submited, student " + studentNo + " info not changed!"
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudents"))
+        return redirect(url_for("ovpn.adminStudents"))
         
     cur = get_db().cursor()
     
@@ -408,7 +408,7 @@ def updateStudent():
 
     success = "Student " + studentNo + " info has just been changed!"
     flash(success, 'success')
-    return redirect(url_for("stmt.adminStudent"))
+    return redirect(url_for("ovpn.adminStudent"))
 
 @bp.route("/admin/delete/student", methods=("GET", "POST"))
 @login_required
@@ -438,17 +438,17 @@ def deleteStudent():
     if user is None:
         error = "您尝试删除的学生信息不存在: " + student_no
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
 
     result = cur.execute("delete from tb_student where student_no = %s", (student_no,))
     db.commit()
     if result < 1:
         error = "Failed during delete student info. Student_no: " + student_no
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
     success = "Delete user successfully. Student_no: " + student_no
     flash(success, 'success')    
-    return redirect(url_for("stmt.adminStudent"))
+    return redirect(url_for("ovpn.adminStudent"))
 
 #####################
 # admin teacher management views
@@ -461,7 +461,7 @@ def adminTeacher():
     Returns:
         template: introduction template
     """
-    return render_template("stmt/admin-teacher.html")
+    return render_template("ovpn/admin-teacher.html")
 
 @bp.route("/admin/getTeacher", methods=("GET", "POST"))
 @login_required
@@ -508,12 +508,12 @@ def addTeacher():
     if not all(x for x in args):
         error = "Failed to add teacher info! Null value submitted: " + str(args)
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
 
     if not (int(gender) == 1 or int(gender) == 2):
         error = "Invalidate gender: " + str(gender)
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
      
     db = get_db()
     cur = db.cursor()
@@ -523,7 +523,7 @@ def addTeacher():
     if result > 0:
         error = "Duplicated teacherno: " + str([teacher_no,])
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminTeacher"))    
+        return redirect(url_for("ovpn.adminTeacher"))    
     
 
     result = cur.execute(
@@ -537,11 +537,11 @@ def addTeacher():
     if result < 1:
         error = "Something wrong: " + str(args)
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminStudent"))
+        return redirect(url_for("ovpn.adminStudent"))
 
     success = "Add teacher info successfully. Teacher: " + str(args)
     flash(success, 'success')    
-    return redirect(url_for("stmt.adminTeacher"))
+    return redirect(url_for("ovpn.adminTeacher"))
 
 
 @bp.route("/admin/updateTeacher", methods=("POST",))
@@ -572,11 +572,11 @@ def updateTeacher():
     if result < 1:
         error = "TeacherNo does not exist, please check: " + teacher_no
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminTeacher")) 
+        return redirect(url_for("ovpn.adminTeacher")) 
     if any(x is None for x in [teacher_no, teacher_name, gender]):
         error = "Null value submited, student info not changed! " + str([teacher_no, teacher_name, gender])
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminTeacher"))
+        return redirect(url_for("ovpn.adminTeacher"))
     
     result = cur.execute(
                         "update tb_teacher set"
@@ -589,12 +589,12 @@ def updateTeacher():
     if result < 1:
         error = "Info not changed. Teacher: " + str([teacher_no, teacher_name, gender])
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminTeacher"))
+        return redirect(url_for("ovpn.adminTeacher"))
         
     success = "Teacher info has just been changed: " + str([teacher_no, teacher_name, gender])
     flash(success, 'success')
-    # return render_template("stmt/admin-teacher.html")
-    return redirect(url_for("stmt.adminTeacher"))
+    # return render_template("ovpn/admin-teacher.html")
+    return redirect(url_for("ovpn.adminTeacher"))
 
 @bp.route("/admin/delete/teacher", methods=("GET", "POST"))
 @login_required
@@ -622,7 +622,7 @@ def deleteTeacher():
     if user is None:
         error = "The teacher does not existed: " + teacher_no
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminTeacher"))
+        return redirect(url_for("ovpn.adminTeacher"))
 
     try:
         cur.execute("delete from tb_teacher where teacher_no = %s", (teacher_no,))
@@ -630,15 +630,15 @@ def deleteTeacher():
     except IntegrityError as e:
         error = "Failed during delete teacher info cause this teacher is referenced somewhere. Error: " + str(e)
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminTeacher"))
+        return redirect(url_for("ovpn.adminTeacher"))
     except Exception as e:
         error = "Failed during delete teacher info cause this teacher is referenced somewhere. Error: " + str(e)
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminTeacher"))
+        return redirect(url_for("ovpn.adminTeacher"))
    
     success = "Delete user successfully. Teacher_no: " + teacher_no
     flash(success, 'success')    
-    return redirect(url_for("stmt.adminTeacher"))
+    return redirect(url_for("ovpn.adminTeacher"))
 
 
 #####################
@@ -653,7 +653,7 @@ def adminCourse():
     Returns:
         template: introduction template
     """
-    return render_template("stmt/admin-course.html")
+    return render_template("ovpn/admin-course.html")
 
 @bp.route("/admin/list/course", methods=("GET", "POST"))
 @login_required
@@ -748,7 +748,7 @@ def adminScore():
     Returns:
         template: admin-score template
     """
-    return render_template("stmt/admin-score.html")
+    return render_template("ovpn/admin-score.html")
 
 #####################
 # admin user management views
@@ -762,7 +762,7 @@ def adminUser():
     Returns:
         template: introduction template
     """
-    return render_template("stmt/admin-user.html")
+    return render_template("ovpn/admin-user.html")
 
 @bp.route("/admin/updateUser", methods=("POST",))
 @login_required
@@ -785,7 +785,7 @@ def updateUser():
     if any(x is None for x in [username, password]):
         error = "Null value submited, Info: " + str([username, password])
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
     
     args = [user_id, username, password, display_name]    
     cur = get_db().cursor()
@@ -802,11 +802,11 @@ def updateUser():
     if result < 1:
         error = "Failed during update user. User: " + username
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
     
     success = "User info has just been changed! User: " + str(args)
     flash(success, 'success')
-    return redirect(url_for("stmt.adminUser"))
+    return redirect(url_for("ovpn.adminUser"))
 
 @bp.route("/admin/getUser", methods=("GET", "POST"))
 @login_required
@@ -852,7 +852,7 @@ def deleteUser():
     if username == "admin":
         error = "You can not delete admin!"
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
     
     db = get_db()
     cur = db.cursor()
@@ -863,17 +863,17 @@ def deleteUser():
     if user is None:
         error = "您尝试删除的用户不存在: " + username
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
 
     result = cur.execute("delete from tb_user where username = %s", (username,))
     db.commit()
     if result < 1:
         error = "Failed during delete user. User: " + username
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
     success = "Delete user successfully. User: " + username
     flash(success, 'success')    
-    return redirect(url_for("stmt.adminUser"))
+    return redirect(url_for("ovpn.adminUser"))
 
 @bp.route("/admin/user/addStudent", methods=("POST",))
 @login_required
@@ -904,7 +904,7 @@ def addStudentUser():
     if result > 0:
         danger = "Duplicated username or student account has been created before: " + str([username, student_no])
         flash(danger, 'danger')    
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
     
     result = cur.execute(
         "select * from tb_student where student_no=%s",(student_no,)
@@ -913,7 +913,7 @@ def addStudentUser():
     if result < 1:
         danger = "Student info has not been enrolled: " + str([student_no,username,password])
         flash(danger, 'danger')    
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
     
     result = cur.execute(
         "insert into tb_user"
@@ -924,11 +924,11 @@ def addStudentUser():
     if result < 1:
         danger = "Something wrong when add user. User: " + str([username, student_no])
         flash(danger, 'danger')    
-        return redirect(url_for("stmt.adminUser"))   
+        return redirect(url_for("ovpn.adminUser"))   
     
     success = "Add student user successfully. User: " + str([username, student_no, password, result])
     flash(success, 'success')
-    return redirect(url_for("stmt.adminUser"))   
+    return redirect(url_for("ovpn.adminUser"))   
 
 @bp.route("/admin/user/addTeacher", methods=("POST",))
 @login_required
@@ -956,7 +956,7 @@ def addTeacherUser():
     if result > 0:
         danger = "This username has been used: " + username
         flash(danger, 'danger')    
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
     
     result = cur.execute(
         "insert into tb_user"
@@ -967,11 +967,11 @@ def addTeacherUser():
     if result < 1:
         danger = "Something wrong when add user. User: " + str([username, password])
         flash(danger, 'danger')    
-        return redirect(url_for("stmt.adminUser"))      
+        return redirect(url_for("ovpn.adminUser"))      
                
     success = "Add teacher user successfully. User: " + str([username, password])
     flash(success, 'success')    
-    return redirect(url_for("stmt.adminUser"))    
+    return redirect(url_for("ovpn.adminUser"))    
 
 @bp.route("/admin/user/toggle", methods=("GET", "POST"))
 @login_required
@@ -996,7 +996,7 @@ def toggleUser():
     if not(user_status == "1" or user_status == "2"):
         error = "Error occurs, user_status: " + user_status
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
      
     db = get_db()
     cur = db.cursor()
@@ -1007,7 +1007,7 @@ def toggleUser():
     if result < 1:
         error = "The user does not exist: " + target_user
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
 
     if user_status == "1":
         user_status = 2
@@ -1021,11 +1021,11 @@ def toggleUser():
     if result < 1:
         error = "Failed during toggle user status. User: " + target_user
         flash(error, 'danger')
-        return redirect(url_for("stmt.adminUser"))
+        return redirect(url_for("ovpn.adminUser"))
     
     success = "Toggle user successfully. User: " + target_user
     flash(success, 'success')    
-    return redirect(url_for("stmt.adminUser"))    
+    return redirect(url_for("ovpn.adminUser"))    
          
 #################################################
 # User views
@@ -1039,7 +1039,7 @@ def userScore():
     Returns:
         template: introduction template
     """
-    return render_template("stmt/introduction.html")                    
+    return render_template("ovpn/introduction.html")                    
 
 @bp.route("/userInfo")
 @login_required
@@ -1049,7 +1049,7 @@ def userInfo():
     Returns:
         template: introduction template
     """
-    return render_template("stmt/introduction.html")   
+    return render_template("ovpn/introduction.html")   
 
 #################################################
 # Others, examples

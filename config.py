@@ -13,10 +13,9 @@ class ProductionConfig(Config):
     SECRET_KEY = "96f8bcfb789054901969a5f406ea6a97"
     
     # postgres configurations 
-    # 
-    PG_DATABASE_USER="stmtflask"
-    PG_DATABASE_PASSWORD = 'stmtflask'
-    PG_DATABASE_DB = 'stmtflask'
+    PG_DATABASE_USER="ovpnflask"
+    PG_DATABASE_PASSWORD = 'ovpnflask'
+    PG_DATABASE_DB = 'postgres'
     PG_DATABASE_HOST = '127.0.0.1'
     PG_DATABASE_PORT = 5432
     
