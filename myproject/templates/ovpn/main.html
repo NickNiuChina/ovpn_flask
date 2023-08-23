@@ -15,7 +15,7 @@
 			</div><!-- /.col -->
 			<div class="col-sm-6">
 			<ol class="breadcrumb float-sm-right">
-				<li class="breadcrumb-item"><a href="{{ url_for('stmt.index') }}">Home</a></li>
+				<li class="breadcrumb-item"><a href="{{ url_for('ovpn.index') }}">Home</a></li>
 				<li class="breadcrumb-item active">Main</li>
 			</ol>
 			</div>
@@ -32,45 +32,45 @@
 					<div class="imgBox">
 						<img src="{{ url_for('static', filename='img/nav1.jpg') }}">
 						<h1 class="imgText">
-							{% if session["stu_num"] %}
-								{{ session['stu_num'] }}
+							{% if session["online_num"] %}
+								{{ session['online_num'] }}
 							{% else %}
 								0
 							{% endif %}
 						</h1>
 					</div>
-					<h4>学生总数</h4>
-					<span class="text-muted">Student</span>
+					<h4>Online</h4>
+					<span class="text-muted">Online Boss</span>
 				</div>
 
 				<div class="col-xs-6 col-sm-3 placeholder small-box">
 					<div class="imgBox">
 						<img src="{{ url_for('static', filename='img/nav2.jpg') }}">
 						<h1 class="imgText">
-						{% if session['course_num'] %}
-							{{session['course_num']}}
+						{% if session['clients_num'] %}
+							{{session['clients_num']}}
 						{% else %}
 							0
 						{% endif %}
 						</h1>
 					</div>
-					<h4>课程总数</h4>
-					<span class="text-muted">Class</span>
+					<h4>clients</h4>
+					<span class="text-muted">Total clients</span>
 				</div>
 
 				<div class="col-xs-6 col-sm-3 placeholder small-box">
 					<div class="imgBox">
 						<img src="{{ url_for('static', filename='img/nav3.jpg') }}">
 						<h1 class="imgText">
-						{% if session["tea_num"] %}
-							{{ session['tea_num'] }}
+						{% if session["boss_num"] %}
+							{{ session['boss_num'] }}
 						{% else %}
 							0
 						{% endif %}
 						</h1>
 					</div>
-					<h4>老师总数</h4>
-					<span class="text-muted">Teacher</span>
+					<h4>Boss Clients</h4>
+					<span class="text-muted">Boss</span>
 				</div>
 
 				<div class="col-xs-6 col-sm-3 placeholder small-box">
@@ -84,7 +84,7 @@
 						{% endif %}
 						</h1>
 					</div>
-					<h4>运行天数</h4>
+					<h4>Running Days</h4>
 					<span class="text-muted">Days</span>
 				</div>
 			</div>
@@ -96,20 +96,20 @@
 					<thead>
 						<tr>
 							<th>TOP</th>
-							<th>学号</th>
-							<th>姓名</th>
-							<th>科目</th>
-							<th>分数</th>
+							<th>CN</th>
+							<th>IP</th>
+							<th>StoreName</th>
+							<th>OnlineTime</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for score in topScores %}
+						{% for boss in topOnline %}
 						<tr>
 							<td> {{ loop.index }} </td>
-							<td>{{ score.student_no }}</td>
-							<td>{{ score.student_name }}</td>
-							<td>{{ score.course_name }}</td>
-							<td>{{ score.score }}</td>
+							<td>{{ boss.cn }}</td>
+							<td>{{ boss.ip }}</td>
+							<td>{{ boss.storename }}</td>
+							<td>{{ boss.changedate }}</td>
 						</tr>
 						{% endfor %}
 					</tbody>

@@ -16,7 +16,7 @@ from werkzeug.security import generate_password_hash
 from pymysql.err import IntegrityError
 
 from myproject.auth import login_required
-from myproject.db import get_db
+from myproject.db import get_cur
 
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
@@ -31,7 +31,7 @@ def test():
     Returns:
         list: flask will take the list or dict and turns to jason automatically.
     """
-    cur = get_db().cursor()
+    cur = get_cur
     cur.execute(
         "SELECT * FROM tb_test"
     )
@@ -54,40 +54,46 @@ def test():
 @login_required
 def index():
     """ Show the main page """
-    cur = get_db().cursor()
+    cur = get_cur()
     
-    # total students
-    cur.execute("select count(*) from tb_student")
-    stu_num = cur.fetchone()
-    session["stu_num"] = stu_num['count(*)']
+    # online clients
+    cur.execute(" select count(*) from tunovpnclients where status=1")
+    online_num = cur.fetchone()
+    print(online_num)
+    
+    session["online_num"] = online_num['count']
+    
+    # total clients
+    cur.execute(" select count(*) from tunovpnclients")
+    clients_num = cur.fetchone()
+    session["clients_num"] = clients_num['count']
 
-    # total courses
-    cur.execute("select count(*) from tb_course")
-    stu_num = cur.fetchone()
-    session["course_num"] = stu_num['count(*)']
+    # boss clients
+    cur.execute("select count(*) from tunovpnclients where cn like 'boss-%'")
+    boss_num = cur.fetchone()
+    session["boss_num"] = boss_num['count']
     
-    # total students
-    cur.execute("select count(*) from tb_teacher")
-    stu_num = cur.fetchone()
-    session["tea_num"] = stu_num['count(*)']
+    # legacy clients
+    cur.execute("select count(*) from tunovpnclients where cn not like 'boss-%'")
+    legacy_num = cur.fetchone()
+    session["legacy_num"] = legacy_num['count']
     
-    # user priveledge
+    # user priviledge
     user_id = session["user_id"]
     cur.execute("select user_type from tb_user where user_id = %s", (user_id,))
     user_type = cur.fetchone()
     session["user_type"] = user_type["user_type"]
-    
-    # totally online users
-    onlineUsers = current_app.onlineUsers
+
     
     # top 5 scores
-    cur.execute( "select sc.id as id, sc.score as score, st.student_no as student_no,"
-                " st.student_name as student_name, co.course_no as course_no, co.course_name as course_name"
-                " from tb_score sc, tb_student st, tb_course co where sc.course_no = co.course_no and sc.student_no = st.student_no"
-                " order by sc.score desc limit 10" )
-    topScores = cur.fetchall()
+    # cur.execute( "select sc.id as id, sc.score as score, st.student_no as student_no,"
+    #             " st.student_name as student_name, co.course_no as course_no, co.course_name as course_name"
+    #             " from tb_score sc, tb_student st, tb_course co where sc.course_no = co.course_no and sc.student_no = st.student_no"
+    #             " order by sc.score desc limit 10" )
+    cur.execute('select * from tunovpnclients where status = 1 order by changedate desc limit 5')
+    topOnline = cur.fetchall()
     
-    return render_template("ovpn/main.html", topScores=topScores, onlineUsers=onlineUsers)
+    return render_template("ovpn/main.html", topOnline=topOnline)
 
 #################################################
 # introduction view
@@ -1148,7 +1154,7 @@ def delete(id):
     author of the post.
     """
     get_post(id)
-    db = get_db()
-    db.execute("DELETE FROM post WHERE id = ?", (id,))
-    db.commit()
+    cur = get_cur()
+    cur.execute("DELETE FROM post WHERE id = ?", (id,))
+    cur.commit()
     return redirect(url_for("blog.index"))

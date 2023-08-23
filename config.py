@@ -15,9 +15,13 @@ class ProductionConfig(Config):
     # postgres configurations 
     PG_DATABASE_USER="ovpnflask"
     PG_DATABASE_PASSWORD = 'ovpnflask'
-    PG_DATABASE_DB = 'postgres'
+    PG_DATABASE_DB = 'ovpnflask'
     PG_DATABASE_HOST = '127.0.0.1'
     PG_DATABASE_PORT = 5432
     
     SQL_FILE = 'schema.sql'
-    VERSION = 'v1.0.0'
+    VERSION = 'v2.0.0'
+    
+    # Log file locations
+    # LOGFILE = 'D:\stmt_flask.log'
+    LOGFILE = 'stmt_flask.log'

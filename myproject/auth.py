@@ -12,8 +12,9 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from flask_babel import _
 from flask_babel import gettext, ngettext
+import psycopg2.extras
 
-from myproject.db import get_db
+from myproject.db import get_db, get_cur
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -87,7 +88,9 @@ def register():
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
-    """Log in a registered user by adding the user id to the session."""
+    """
+        Log in a registered user by adding the user id to the session.
+    """
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -96,7 +99,7 @@ def login():
         if len(str.strip(username)) ==0 or len(str.strip(password)) == 0:
             return render_template("auth/login.html")           
         
-        cur = get_db().cursor()
+        cur = get_cur()
         error = None
         cur.execute(
             "SELECT * FROM tb_user WHERE username = %s", (username,)
@@ -109,7 +112,7 @@ def login():
             error = "Username or password is not correct, please check!"
 
         if error is None:
-            if int(user["status"]) == 2:
+            if int(user["status"]) == 0:
                 # user has been disabled
                 error = "You have been disabled for this site!!"
             else:
@@ -123,7 +126,7 @@ def login():
                 # current_app.onlineUsers += 1 # session scope not correct
                 return redirect(url_for("index"))
 
-        flash(gettext(u'Username or password is not correct, please check!'))
+        flash('Username or password is not correct, please check!')
     current_app.logger.debug("------sdfsfsfsf-sdfsdfsd")
     current_app.logger.info("------sdfsfsfsf-sdfsdfsd")
     current_app.logger.critical("------sdfsfsfsf-sdfsdfsd")

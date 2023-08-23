@@ -1,399 +1,509 @@
--- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: stmtflask
--- ------------------------------------------------------
--- Server version	8.0.32
+-- PostgreSQL database dump
+--
 
--- /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
--- /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
--- /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
--- /*!50503 SET NAMES utf8 */;
--- /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
--- /*!40103 SET TIME_ZONE='+00:00' */;
--- /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
--- /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
--- /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
--- /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Dumped from database version 10.23 (Ubuntu 10.23-0ubuntu0.18.04.2)
+-- Dumped by pg_dump version 10.23 (Ubuntu 10.23-0ubuntu0.18.04.2)
 
--- ----------------------------------------------------------------
--- The commnet only support by '-- '
--- ----------------------------------------------------------------
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
 
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+--
 
-
-SET NAMES utf8mb4;
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
-
--- ----------------------------
--- Table structure for tb_test
--- ----------------------------
-DROP TABLE IF EXISTS `tb_test`;
-CREATE TABLE `tb_test` (
-   `idtest` int NOT NULL AUTO_INCREMENT,
-   `name` varchar(45) NOT NULL DEFAULT 'unknown',
-   `address` varchar(100) NOT NULL DEFAULT 'unkonw',
-   `notes` varchar(200) NOT NULL DEFAULT 'unkonw',
-   PRIMARY KEY (`idtest`)
- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of tb_test
--- ----------------------------
-insert into `tb_test` values(1,'unkown', '未知', '未知');
-insert into `tb_test` values(2,'小泉彩', '东京', '著名AV女优');
-insert into `tb_test` values(3,'苍井空', '东京', '著名AV女优');
-insert into `tb_test` values(4,'周杰伦', '台湾', '著名歌手');
-insert into `tb_test` values(5,'Will Smith', 'USA', 'Actor');
-insert into `tb_test` values(6,'Kayden Kross', 'USA', 'Actress');
-
--- ----------------------------
--- Table structure for tb_student
--- ----------------------------
-DROP TABLE IF EXISTS `tb_student`;
-CREATE TABLE `tb_student` (
-   `student_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Student No',
-   `student_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Name',
-   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Self Label',
-   `id_card` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'ID',
-   `age` int DEFAULT NULL COMMENT 'Age',
-   `gender` tinyint DEFAULT NULL COMMENT 'Gender，1M，2F',
-   `year` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Enrollment Year',
-   `create_time` datetime DEFAULT (CURRENT_TIMESTAMP),
-   `update_time` datetime DEFAULT (CURRENT_TIMESTAMP),
-   PRIMARY KEY (`student_no`) USING BTREE,
-   UNIQUE KEY `id_card_UNIQUE` (`id_card`),
-   UNIQUE KEY `student_name_UNIQUE` (`student_name`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
--- ----------------------------
--- Records of tb_student
--- ----------------------------
-INSERT INTO `tb_student` VALUES ('S001', 'DayRain', '明天会更好！', '450481197804234431', 20, 1, '2020', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S002', '小明同学', NULL, '360830197604012922', 18, 1, '2020', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S003', '小红同学', NULL, '522601199210248092', 20, 2, '1997', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S004', '小李同学', NULL, '53042219880104926X', 20, 1, '2019', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S005', '测试同学', NULL, '140501198111035371', 18, 1, '2020', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S006', '小小', NULL, '220802198107141182', 18, 1, '2022', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S007', 'Kayden', NULL, '330183198504077335', 18, 1, '2022', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S008', '曾欣彤', NULL, '610701199012217629', 18, 1, '2022', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S009', '国姝好', NULL, '350823199102140928', 18, 1, '2022', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S010', '钱初露', NULL, '411525198805116966', 18, 1, '2022', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_student` VALUES ('S011', '六一帮', NULL, '220112197712157203', 18, 1, '2022', '2020-12-02 00:00:00', '2020-12-02 00:00:00');
--- test id
--- 陆堂诞 450481197804234431
--- 邱谷兰 360830197604012922
--- 郎康焕 522601199210248092
--- 裘诗翠 53042219880104926X
--- 杨儒熙 140501198111035371
--- 章以晴 220802198107141182
--- 房枝迟 330183198504077335
--- 唐静槐 610701199012217629
--- 马南珍 350823199102140928
--- 皮悦欣 411525198805116966
--- 咎梦玉 220112197712157203
-
--- available id
--- 薛梦菲 44090119760311922X
--- 高先伊 621022199002015237
--- 嵇开梦 360730199110167653
--- 阮琪霏 610582197504156576
--- 贺剑佛 410611198308045737
--- 姚文冲 410327198006137139
--- 元羿谆 451023199010043419
--- 宣芷珊 530926198611154467
--- 危志承 420104198912285551
--- 祁落兴 410927199112015570
--- 咎琅升 610625197909191976
--- 周吉钟 320100198912195637
--- 乐颢锵 211005197607069877
--- 吉灵上 445122198011048058
--- 邹凡睦 623021197501077471
--- 凌寒显 422827199112135538
--- 危觅双 320100197910062940
--- 尹夏瑶 511321198312224288
--- 钟乐儿 511181199105134124
--- 酆诗珊 450421198908219082
--- 顾淳雅 532628198308103753
--- 耿语梦 152530199401036428
--- 梁超南 620800199410081561
--- 芮蒙蒙 652301198112064829
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
--- ----------------------------
--- Table structure for tb_teacher
--- ----------------------------
-DROP TABLE IF EXISTS `tb_teacher`;
-CREATE TABLE `tb_teacher`  (
-  `teacher_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `teacher_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `gender` tinyint NULL DEFAULT NULL COMMENT 'Gender: 1M，2F',
-  `create_time` datetime(0) NULL DEFAULT (CURRENT_TIMESTAMP),
-  `update_time` datetime(0) NULL DEFAULT (CURRENT_TIMESTAMP),
-  PRIMARY KEY (`teacher_no`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
+--
 
--- ----------------------------
--- Records of tb_teacher
--- ----------------------------
-INSERT INTO `tb_teacher` VALUES ('T001', '李老师', 1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T002', '吴老师', 2, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T003', '王老师', 1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T004', '苍井空', 2, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T005', '外星人', 1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T006', '小泉彩', 2, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T007', 'kiwi', 1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T008', 'Code', 1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T009', 'Fxxk', 1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T010', '毛静枫', 1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_teacher` VALUES ('T011', '赵婧学', 1, '2023-12-02 00:00:00', '2020-12-02 00:00:00');
-
--- ----------------------------
--- Table structure for tb_course
--- ----------------------------
-DROP TABLE IF EXISTS `tb_course`;
-CREATE TABLE `tb_course`  (
-  `course_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Course id',
-  `course_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Course',
-  `teacher_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Teacher',
-  `student_num` int NULL DEFAULT NULL COMMENT 'Student num',
-  `create_time` datetime(0) NULL DEFAULT (CURRENT_TIMESTAMP),
-  `update_time` datetime(0) NULL DEFAULT (CURRENT_TIMESTAMP),
-  PRIMARY KEY (`course_no`) USING BTREE,
-  CONSTRAINT `fk_course_teacher` FOREIGN KEY (teacher_no) REFERENCES tb_teacher (teacher_no) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of tb_course
--- ----------------------------
-INSERT INTO `tb_course` VALUES ('C001', '高等数学（上）', 'T001', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C002', '高等数学（下）', 'T001', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C003', '大学物理', 'T002', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C004', '语文', 'T003', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C005', '数电', 'T004', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C006', '模电', 'T005', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C007', '机电', 'T006', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C008', '美术', 'T007', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C009', '光电', 'T008', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C010', '微积分', 'T009', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C011', '艺术', 'T010', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_course` VALUES ('C012', '音乐', 'T010', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
--- ----------------------------
--- Table structure for tb_score
--- ----------------------------
-DROP TABLE IF EXISTS `tb_score`;
-CREATE TABLE `tb_score`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID autoincrement',
-  `course_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Course no',
-  `student_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'student id',
-  `score` float NULL DEFAULT NULL COMMENT 'Score',
-  `create_time` datetime(0) NULL DEFAULT (CURRENT_TIMESTAMP),
-  `update_time` datetime(0) NULL DEFAULT (CURRENT_TIMESTAMP),
-  PRIMARY KEY (`id`) USING BTREE,
-  CONSTRAINT `fk_score_course` FOREIGN KEY (course_no) REFERENCES tb_course (course_no) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_score_student` FOREIGN KEY (student_no) REFERENCES tb_student (student_no) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of tb_score
--- ----------------------------
-INSERT INTO `tb_score` VALUES (1, 'C001', 'S001', 65, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (2, 'C001', 'S002', 84, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (3, 'C001', 'S003', 35, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (4, 'C001', 'S004', 100, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (5, 'C001', 'S005', 115, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (6, 'C001', 'S006', 125, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (7, 'C001', 'S007', 155, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (8, 'C001', 'S008', 15, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (9, 'C001', 'S009', 6, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (10, 'C001', 'S010', 78, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (11, 'C002', 'S001', 93, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (12, 'C002', 'S002', 76, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (13, 'C002', 'S003', 96, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (14, 'C002', 'S004', 86, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (15, 'C002', 'S005', 37, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (16, 'C002', 'S006', 15, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (17, 'C002', 'S007', 95, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (18, 'C002', 'S008', 85, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (19, 'C002', 'S009', 56, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (20, 'C002', 'S010', 45, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (21, 'C003', 'S001', 76, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (22, 'C003', 'S002', 78, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (23, 'C003', 'S003', 97, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (24, 'C003', 'S004', 74, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (25, 'C003', 'S005', 36, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (26, 'C003', 'S006', 83, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (27, 'C003', 'S007', 86, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (28, 'C003', 'S008', 40, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (29, 'C003', 'S009', 10, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (30, 'C003', 'S010', 39, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (31, 'C004', 'S001', 47, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (32, 'C004', 'S002', 58, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (33, 'C004', 'S003', 69, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (34, 'C004', 'S004', 81, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (35, 'C004', 'S005', 92, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (36, 'C004', 'S006', 103, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (37, 'C004', 'S007', 38, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (38, 'C004', 'S008', 25, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (39, 'C004', 'S009', 85, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (40, 'C004', 'S010', 93, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (41, 'C005', 'S001', 24, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (42, 'C005', 'S002', 92, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (43, 'C005', 'S003', 94, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (44, 'C005', 'S004', 74, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (45, 'C005', 'S005', 83, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (46, 'C005', 'S006', 45, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (47, 'C005', 'S007', 39, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (48, 'C005', 'S008', 48, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (49, 'C005', 'S009', 57, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (50, 'C005', 'S010', 95, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (51, 'C004', 'S001', 46, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (52, 'C004', 'S002', 72, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (53, 'C004', 'S003', 14, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (54, 'C004', 'S004', 91, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (55, 'C004', 'S005', 0, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (56, 'C005', 'S006', 59, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (57, 'C006', 'S007', 65, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (58, 'C007', 'S008', 111, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (59, 'C008', 'S009', 121, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (60, 'C009', 'S010', 124, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (61, 'C007', 'S001', 35, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (62, 'C007', 'S002', 64, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (63, 'C007', 'S003', 75, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (64, 'C007', 'S004', 34, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (65, 'C007', 'S005', 98, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (66, 'C007', 'S006', 97, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (67, 'C007', 'S007', 45, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (68, 'C007', 'S008', 85, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (69, 'C007', 'S009', 75, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (70, 'C007', 'S010', 85, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (71, 'C008', 'S001', 87, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (72, 'C008', 'S002', 67, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (73, 'C008', 'S003', 34, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (74, 'C008', 'S004', 58, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (75, 'C008', 'S005', 93, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (76, 'C008', 'S006', 26, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (77, 'C008', 'S007', 47, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (78, 'C008', 'S008', 69, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (79, 'C008', 'S009', 97, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (80, 'C008', 'S010', 72, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (81, 'C009', 'S001', 94, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (82, 'C009', 'S002', 89, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (83, 'C009', 'S003', 29, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (84, 'C009', 'S004', 68, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (85, 'C009', 'S005', 90, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (86, 'C009', 'S006', 1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (87, 'C009', 'S007', 70, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (88, 'C009', 'S008', 60, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (89, 'C009', 'S009', 50, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (90, 'C009', 'S010', 30, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (91, 'C010', 'S001', 96, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (92, 'C010', 'S002', 84, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (93, 'C010', 'S003', 86, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (94, 'C010', 'S004', 85, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (95, 'C010', 'S005', 95, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (96, 'C010', 'S006', 49, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (97, 'C010', 'S007', 67, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (98, 'C010', 'S008', 58, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (99, 'C010', 'S009', 49, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (100, 'C010', 'S010', 29, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (101, 'C011', 'S001', 19, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (102, 'C011', 'S002', 78, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (103, 'C011', 'S003', 83, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (104, 'C011', 'S004', 68, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (105, 'C011', 'S005', 94, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (106, 'C011', 'S006', -1, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (107, 'C011', 'S007', 98, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (108, 'C011', 'S008', 67, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (109, 'C011', 'S009', 45, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (110, 'C011', 'S010', 92, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
-INSERT INTO `tb_score` VALUES (111, 'C012', 'S001', 70, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (112, 'C012', 'S002', 80, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (113, 'C012', 'S003', 90, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (114, 'C012', 'S004', 75, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (115, 'C012', 'S005', 76, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (116, 'C012', 'S006', 94, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (117, 'C012', 'S007', 67, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (118, 'C012', 'S008', 34, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (119, 'C012', 'S009', 82, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-INSERT INTO `tb_score` VALUES (120, 'C012', 'S010', 17, '2020-12-02 00:00:00', '2020-12-02 00:00:00');
-
--- ----------------------------
--- Table structure for tb_user
--- ----------------------------
-DROP TABLE IF EXISTS `tb_user`;
-CREATE TABLE `tb_user` (
-   `user_id` int NOT NULL AUTO_INCREMENT,
-   `user_type` tinyint DEFAULT NULL COMMENT '1admin，0student',
-   `username` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Account name',
-   `password` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'password',
-   `student_no` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT 'student_No',
-   `display_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'display name',
-   `status` tinyint NOT NULL DEFAULT '1' COMMENT 'Status，1enabled，2disabled',
-   `create_time` datetime DEFAULT (CURRENT_TIMESTAMP),
-   `update_time` datetime DEFAULT (CURRENT_TIMESTAMP),
-   PRIMARY KEY (`user_id`) USING BTREE,
-   UNIQUE KEY `username_UNIQUE` (`username`)
- ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
--- ----------------------------
--- Records of tb_user
--- Default password: admin/admin
---                   user/user
--- ----------------------------
-INSERT INTO `tb_user` VALUES (1, 1, 'admin', 'pbkdf2:sha256:600000$niCdhX16oJGhTUUK$1b82e7ce0574ac99acba5ecd5f4e96c020091a38854fcf8233189a42296a445c', '0', '管理员', 1, '2023-06-17 10:48:24', '2023-06-17 10:48:26');
-INSERT INTO `tb_user` VALUES (2, 1, 'user', 'pbkdf2:sha256:600000$sZ6nWXm79fRegWWy$8fd2786398657c64aad2f29e8019525ef4eb926a299addc6adb20162ff153b04', 'user', '管理员user', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (3, 0, 'user1', 'pbkdf2:sha256:600000$BMWxPKxMJD2EUgT5$f8a088284e0d2ecfd52223ead5672db2cb01431cd9f879793cd26bfe9d2ee979', 'S001', 'S001', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (4, 0, 'user2', 'pbkdf2:sha256:600000$xUmzHPcbg37YswfI$c7bc0c5842733010aabe61528ecd6999af0c80f25933beb01644fbe71a48267f', 'S002', 'S002', 2, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (5, 0, 'user3', 'pbkdf2:sha256:600000$OxnAFDigvUEoGl8p$7e8c6249fefed3717372b1c4f938326b7f603121c7e21a5b235a14de19b419fe', 'S003', 'S003', 2, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (6, 0, 'user4', 'pbkdf2:sha256:600000$8k8mf8kAchySTSWa$f37e28be03bb99542632bc1c9c9d97c694a048eb708f9528b001bac03a932cd9', 'S004', 'S004', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (7, 0, 'user5', 'pbkdf2:sha256:600000$H50P7fJNkl5sFUOO$c9022f80b032877a792da18fc791f5dd3dee73e5a66202dcb5e543fc1393ea85', 'S005', 'S005', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (8, 0, 'user6', 'pbkdf2:sha256:600000$C6vSedX66mHjP1lH$33e89bddea9426765114bc5eeb7aef6c542899a422996f961cefa3b0465be9ba', 'S006', 'S006', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (9, 0, 'user7', 'pbkdf2:sha256:600000$W9vBwCyGzy0stJN4$79a1d0492402806e7a9d9a0eda97896392600b2b6f4cae414ab206679ee0737b', 'S007', 'S007', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (10, 0, 'user8', 'pbkdf2:sha256:600000$cKtvAu5CuEnxJO7l$07ee3413ea7ac69aa30e56e67cb922763d7bc19ec66319406f6cb1422bd72cad', 'S008', 'S008', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (11, 0, 'user9', 'pbkdf2:sha256:600000$BmH4aQNUnnudV4AJ$18502fee17b6c7fda67c1aa26c68ef9220b055db2bc4fb569f78ab5a04a4413e', 'S009', 'S009', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (12, 0, 'user10', 'pbkdf2:sha256:600000$A0IiQ0eEVK7oDelc$7a91bbfa9f05738a4d1bf172a45bf8c4855efc48cf096d8da70f834f990cfc68', 'S010', 'S010', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
-INSERT INTO `tb_user` VALUES (13, 0, 'user11', 'pbkdf2:sha256:600000$mOWJbmKOwhBBK2yh$5862454d98ae5a8b83023f2f5816fafb1f46908932a3f17591841b5957572fcd', 'S011', 'S011', 1, '2023-06-17 00:00:00', '2023-06-17 00:00:00');
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
--- ----------------------------
--- Table structure for tb_login_history
--- ----------------------------
-DROP TABLE IF EXISTS `tb_login_history`;
-CREATE TABLE `tb_login_history`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NULL DEFAULT NULL,
-  `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT (CURRENT_TIMESTAMP),
-  PRIMARY KEY (`id`) USING BTREE,
-  CONSTRAINT `fk_login-history_user` FOREIGN KEY (user_id) REFERENCES tb_user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+--
+-- Name: clientstatus; Type: TYPE; Schema: public; Owner: ovpnflask
+--
 
--- ----------------------------
--- Records of tb_login_history
--- ----------------------------
-INSERT INTO `tb_login_history` VALUES (3, 1, '0:0:0:0:0:0:0:1', '2020-12-02 00:00:00');
-INSERT INTO `tb_login_history` VALUES (4, 1, '0:0:0:0:0:0:0:1', '2020-12-02 00:00:00');
-INSERT INTO `tb_login_history` VALUES (5, 1, '0:0:0:0:0:0:0:1', '2020-12-02 00:00:00');
-INSERT INTO `tb_login_history` VALUES (6, 1, '0:0:0:0:0:0:0:1', '2020-12-02 00:00:00');
-INSERT INTO `tb_login_history` VALUES (7, 1, '0:0:0:0:0:0:0:1', '2020-12-02 00:00:00');
-INSERT INTO `tb_login_history` VALUES (8, 1, '0:0:0:0:0:0:0:1', '2020-12-02 00:00:00');
-INSERT INTO `tb_login_history` VALUES (9, 1, '0:0:0:0:0:0:0:1', '2020-12-02 00:00:00');
-INSERT INTO `tb_login_history` VALUES (10, 7, '0:0:0:0:0:0:0:1', '2020-12-02 00:00:00');
+CREATE TYPE public.clientstatus AS ENUM (
+    'offline',
+    'online'
+);
 
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+ALTER TYPE public.clientstatus OWNER TO ovpnflask;
 
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: cnexpiredate; Type: TABLE; Schema: public; Owner: ovpnflask
+--
+
+CREATE TABLE public.cnexpiredate (
+    cn character varying(41) NOT NULL,
+    releasedate timestamp without time zone,
+    expiredate timestamp without time zone
+);
+
+
+ALTER TABLE public.cnexpiredate OWNER TO ovpnflask;
+
+--
+-- Name: ovpnclients; Type: TABLE; Schema: public; Owner: ovpnflask
+--
+
+CREATE TABLE public.ovpnclients (
+    cn character varying(41) NOT NULL,
+    ip character varying(15),
+    changedate timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    status integer DEFAULT 0 NOT NULL,
+    storename character varying(100) DEFAULT 0 NOT NULL,
+    expiredate timestamp without time zone DEFAULT '1970-01-01 00:00:00+08'::timestamp with time zone,
+    releasedate timestamp without time zone DEFAULT '1970-01-01 00:00:00'::timestamp without time zone
+);
+
+
+ALTER TABLE public.ovpnclients OWNER TO ovpnflask;
+
+--
+-- Name: t1; Type: TABLE; Schema: public; Owner: ovpnflask
+--
+
+CREATE TABLE public.t1 (
+    id integer NOT NULL,
+    name text NOT NULL,
+    age integer NOT NULL,
+    address character(50),
+    salary real
+);
+
+
+ALTER TABLE public.t1 OWNER TO ovpnflask;
+
+--
+-- Name: tunovpnclients; Type: TABLE; Schema: public; Owner: ovpnflask
+--
+
+CREATE TABLE public.tunovpnclients (
+    cn character varying(41) NOT NULL,
+    ip character varying(15),
+    changedate timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    status integer DEFAULT 0 NOT NULL,
+    storename character varying(100) DEFAULT 0 NOT NULL,
+    expiredate timestamp without time zone DEFAULT '1970-01-01 00:00:00+08'::timestamp with time zone,
+    releasedate timestamp without time zone DEFAULT '1970-01-01 00:00:00'::timestamp without time zone
+);
+
+
+ALTER TABLE public.tunovpnclients OWNER TO ovpnflask;
+
+--
+-- Data for Name: cnexpiredate; Type: TABLE DATA; Schema: public; Owner: ovpnflask
+--
+
+COPY public.cnexpiredate (cn, releasedate, expiredate) FROM stdin;
+ALDI.boss.C400AD183F29  2022-01-25 08:26:08     2025-01-09 08:26:08
+ALDI.boss.C400AD67B2FF  2022-01-25 09:18:49     2025-01-09 09:18:49
+boss-1befaee4-be00-11ec-869b-c400adc12e7b       2022-04-17 03:44:46     2032-04-14 03:44:46
+boss-b87e7da8-8ee4-11ec-9061-c400ad444284       2022-04-12 02:28:56     2032-04-09 02:28:56
+boss-c6425aea-99fc-11ec-97a4-c400ad1a1ce3       2022-03-02 08:13:00     2025-02-14 08:13:00
+boss-e734b978-ab4f-11ec-8bfd-000babbaf4e5       2022-04-16 03:48:15     2032-04-13 03:48:15
+carel.boss1     2022-01-20 05:22:13     2025-01-04 05:22:13
+carel.boss2     2022-01-20 05:22:17     2025-01-04 05:22:17
+carel.cst1      2022-01-20 05:13:55     2025-01-04 05:13:55
+carel.cst2      2022-01-20 05:13:59     2025-01-04 05:13:59
+carel.remotepro1        2022-01-20 05:13:07     2025-01-04 05:13:07
+carel.remotepro2        2022-01-20 05:13:18     2025-01-04 05:13:18
+carel.test1     2022-01-20 05:22:25     2025-01-04 05:22:25
+carel.test2     2022-01-20 05:22:29     2025-01-04 05:22:29
+carel.vpnAgent  2022-04-12 06:44:13     2032-04-09 06:44:13
+server  2021-07-13 02:05:58     2024-06-27 02:05:58
+\.
+
+
+--
+-- Data for Name: ovpnclients; Type: TABLE DATA; Schema: public; Owner: ovpnflask
+--
+
+COPY public.ovpnclients (cn, ip, changedate, status, storename, expiredate, releasedate) FROM stdin;
+carel_ovpn_80_cst       192.168.80.85   2023-05-30 13:06:55     0       0       1970-01-01 00:00:00     1970-01-01 00:00:00
+carel.vpnAgent  192.168.80.8    2023-05-06 10:06:11     1       ECS-service.carel       2032-04-09 06:44:13     2022-04-12 06:44:13
+boss-3eef2378-f3a9-11ec-a257-000a5c825b68       192.168.80.10   2023-08-07 19:30:38     0       0       2032-06-21 10:01:35     1970-01-01 00:00:00
+boss-f3faeb3c-e60a-11ec-a425-000a5c81dcf9       192.168.80.9    2023-08-18 00:01:04     0       0       2032-06-04 01:30:37     1970-01-01 00:00:00
+carel.remotepro1        192.168.80.2    2023-06-15 10:46:35     1       RemotePRO Server        2025-01-04 05:13:07     2022-01-20 05:13:07
+boss-fa09b494-4902-11ed-9561-c400ad6b7bab       192.168.80.11   2023-08-23 08:18:41     1       奥乐齐中环百联店        2033-07-15 09:09:08     1970-01-01 00:00:00
+boss-c6425aea-99fc-11ec-97a4-c400ad1a1ce3       192.168.80.12   2023-05-06 10:05:50     1       奥乐齐静安店    2025-02-14 08:13:00     2022-03-02 08:13:00
+boss-8b74b2c4-b98f-11ed-ae24-c400ad579492       192.168.80.54   2023-08-23 08:18:17     0       0       2033-02-28 06:52:59     1970-01-01 00:00:00
+boss-0036ddf6-a8e9-11ed-9d88-c400addbd0cf       192.168.80.91   2023-06-26 13:22:51     0       0       2033-02-07 02:20:43     1970-01-01 00:00:00
+boss-bf56263a-85a6-11ed-8176-c400adca931a       192.168.80.28   2023-05-16 07:26:38     0       奥乐齐滨江光合新座店    2032-12-24 05:44:53     1970-01-01 00:00:00
+boss-862df8d6-c49b-11ed-9e84-c400addbcbc7       192.168.80.96   2023-04-22 09:40:44     0       0       2033-03-14 08:58:45     1970-01-01 00:00:00
+carel.cst1      192.168.80.4    2023-05-17 16:56:56     0       ECS-Danfoss-主机        2025-01-04 05:13:55     2022-01-20 05:13:55
+carel-ovpn-legacy-84041 192.168.84.41   2023-06-21 09:28:49     0       0       2033-03-06 06:24:08     1970-01-01 00:00:00
+boss-a0ac49c4-c491-11ed-b0c4-c400addfed6b       192.168.80.93   2023-05-15 11:48:18     0       0       2033-03-14 07:03:53     1970-01-01 00:00:00
+carel.cst2      192.168.80.5    2023-05-09 20:11:28     0       0       2025-01-04 05:13:59     1970-01-01 00:00:00
+boss-15d19782-c6c1-11ed-a95b-c400ad475ff3       192.168.80.100  2023-04-20 01:35:04     0       下沙华东医药    2033-03-17 01:47:51     1970-01-01 00:00:00
+boss-7f8cfa80-b998-11ed-94c6-c400ad579147       192.168.80.72   2023-08-23 04:45:45     1       0       2033-02-28 08:02:08     1970-01-01 00:00:00
+boss-ff984b64-b996-11ed-b576-c400ad64f391       192.168.80.70   2023-08-23 04:52:21     1       0       2033-02-28 07:43:32     1970-01-01 00:00:00
+carel.test2     192.168.80.7    2023-04-25 09:55:25     0       0       2025-01-04 05:22:29     1970-01-01 00:00:00
+boss-17812834-b98f-11ed-b320-c400ad64f51b       192.168.80.51   2023-08-07 04:38:13     0       0       2033-02-28 06:49:18     1970-01-01 00:00:00
+boss-9e34dc44-be0e-11ed-aa7a-c400ad64f0ea       192.168.80.87   2023-08-22 14:42:33     1       奥乐齐莲花店    2033-03-06 00:10:04     1970-01-01 00:00:00
+boss-830f8af0-c498-11ed-a230-c400addfed78       192.168.80.97   2023-05-11 06:55:13     0       奥乐齐北外滩莱福士店    2033-03-14 09:51:02     1970-01-01 00:00:00
+\.
+
+
+--
+-- Data for Name: t1; Type: TABLE DATA; Schema: public; Owner: ovpnflask
+--
+
+COPY public.t1 (id, name, age, address, salary) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tunovpnclients; Type: TABLE DATA; Schema: public; Owner: ovpnflask
+--
+
+COPY public.tunovpnclients (cn, ip, changedate, status, storename, expiredate, releasedate) FROM stdin;
+boss-5c0384f2-b994-11ed-b607-c400ad1d200d       192.168.120.22  2023-08-23 03:07:15     1       沃尔玛四川泸州店2778    2033-03-31 05:50:13     1970-01-01 00:00:00
+boss-bce43a86-cf61-11ed-9c3c-c400ad475b2d       192.168.120.8   2023-05-07 15:07:13     0       麦德龙西安雁塔哈斯曼    2033-03-28 01:17:24     1970-01-01 00:00:00
+boss-a7719160-b40b-11ed-868a-c400ad72f631       192.168.120.13  2023-08-23 03:39:31     1       麦德龙常州天宁店        2033-03-28 06:33:54     1970-01-01 00:00:00
+boss-9ef59a38-d28b-11ed-a488-c400adca929c       192.168.120.39  2023-08-23 08:08:36     1       容县中桂农冷库  2033-05-12 02:12:01     1970-01-01 00:00:00
+boss-df8a3a9e-cf62-11ed-b845-c400ad89505a       192.168.120.9   2023-08-22 04:23:24     0       麦德龙四季青店  2033-03-28 01:25:33     1970-01-01 00:00:00
+boss-c5fe6a32-b99b-11ed-beef-c400addbcbe1       192.168.123.4   2023-08-23 10:30:26     1       兰蒂奇  2033-04-09 05:38:53     1970-01-01 00:00:00
+boss-f3284dce-b997-11ed-9e03-c400ad5793b1       192.168.120.38  2023-05-30 09:54:46     0       麦德龙都青羊店  2033-04-01 01:18:23     1970-01-01 00:00:00
+boss-d739191c-d1e4-11ed-867a-c400adc95dfb       192.168.120.24  2023-08-23 02:27:05     1       沃尔玛6508重庆  2033-03-31 06:01:54     1970-01-01 00:00:00
+boss-1f6c1978-d2b7-11ed-88ca-c400ad72fadd       192.168.120.47  2023-08-23 09:52:29     1       京东北京和谐广场店      2033-04-01 07:06:03     1970-01-01 00:00:00
+boss-813d0d2e-b994-11ed-a5e3-c400ad72fa8a       192.168.120.37  2023-08-23 04:10:20     1       麦德龙燕郊神威大道店    2033-04-01 01:08:31     1970-01-01 00:00:00
+boss-61c8ac3c-b41c-11ed-8ddf-c400adc95d3b       192.168.120.19  2023-08-23 01:08:15     1       沃尔玛2149# 邵阳店      2033-03-31 03:19:26     1970-01-01 00:00:00
+boss-75739b82-b40a-11ed-9957-c400ad72f683       192.168.120.5   2023-08-22 11:41:17     1       麦德龙无锡锡山店        2033-03-27 06:41:43     1970-01-01 00:00:00
+boss-b9ab1cf4-c6b0-11ed-8680-c400adca92b3       192.168.120.15  2023-08-23 04:02:09     1       麦德龙江苏南京下关店    2033-03-28 01:39:40     1970-01-01 00:00:00
+boss-97b2b4d6-d1f5-11ed-8cbd-000babc77030       192.168.120.31  2023-06-11 12:31:40     0       麦德龙京立水桥店        2033-03-31 08:17:50     1970-01-01 00:00:00
+boss-1ab755c2-cf66-11ed-9410-c400ad7c1e02       192.168.120.10  2023-08-23 04:39:02     1       天虹超市佛山保利店      2033-03-28 01:48:41     1970-01-01 00:00:00
+boss-d47f4c28-cf82-11ed-a16c-c400ad444283       192.168.123.3   2023-06-17 16:40:53     0       4284    2033-05-01 00:57:49     1970-01-01 00:00:00
+boss-a2a5420e-d282-11ed-be59-c400addbccb2       192.168.120.36  2023-07-26 14:04:15     0       麦德龙长沙开福店        2033-04-01 00:50:20     1970-01-01 00:00:00
+boss-1d7830fe-b40b-11ed-9494-c400ad72fa77       192.168.120.14  2023-08-23 00:41:53     1       麦德龙常州武进店        2033-03-28 06:42:50     1970-01-01 00:00:00
+boss-83ea3fb2-a9d4-11ed-8f45-c400addbc9ae       192.168.120.29  2023-08-22 17:24:29     1       奥乐齐中冶祥腾店        2033-03-31 07:00:30     1970-01-01 00:00:00
+boss-98202d8c-b40d-11ed-ba50-c400ad72f70d       192.168.120.17  2023-08-23 02:34:14     1       麦德龙无锡惠山店        2033-03-31 01:49:27     1970-01-01 00:00:00
+boss-32d86db2-b995-11ed-976c-c400ad7c38c9       192.168.120.34  2023-08-22 17:36:03     1       天虹苏州张家港店        2033-03-31 08:54:04     1970-01-01 00:00:00
+ovpn-tun-443-carel-RemotePRO-win        192.168.120.2   2023-06-28 09:22:29     1       RemotePRO       2033-03-26 12:41:23     1970-01-01 00:00:00
+boss-cffaced8-5b2a-11ed-9f99-c400adca950a       192.168.120.25  2023-08-22 21:54:46     1       1038_奥乐齐漕宝路日月光店       2033-03-31 06:42:13     1970-01-01 00:00:00
+boss-ea004008-d2b0-11ed-b30b-c400ad35d4c6       192.168.120.42  2023-08-22 12:26:42     1       麦德龙贵阳店    2033-04-01 06:17:33     1970-01-01 00:00:00
+boss-bdd47da4-b411-11ed-aff1-c400adca919d       192.168.120.35  2023-08-23 05:03:36     1       沃尔玛长沙西北方SAM店   2033-03-31 05:18:24     1970-01-01 00:00:00
+boss-e734b978-ab4f-11ec-8bfd-000babbaf4e5       192.168.123.2   2023-05-05 15:47:34     0       0       2033-03-26 11:54:22     1970-01-01 00:00:00
+boss-a12b05c4-b40c-11ed-bef6-c400adca920b       192.168.120.40  2023-08-22 22:07:29     1       沃尔玛长沙雨花亭店      2033-04-01 02:06:22     1970-01-01 00:00:00
+boss-ddf19376-d1fb-11ed-8108-c400ad72f32b       192.168.120.33  2023-08-22 21:14:20     1       京东7FRESH天津乐宾店    2033-03-31 08:45:38     1970-01-01 00:00:00
+ovpn-tun-443-carel-service1-win 192.168.120.250 2023-08-21 13:51:31     1       ECS_Danfoss     2033-03-26 06:40:06     1970-01-01 00:00:00
+ovpn-tun-443-carel-router-122001        192.168.122.1   2023-08-23 04:36:11     1       沃尔玛长沙西北SAM-路由器        2033-04-01 05:21:02     1970-01-01 00:00:00
+boss-f331a96a-d1ec-11ed-a517-c400ad32d31c       192.168.120.28  2023-08-20 12:08:53     1       奥乐齐富都店    2033-03-31 06:54:15     1970-01-01 00:00:00
+boss-13b7c2ca-d2b8-11ed-9250-c400ad64f3a8       192.168.120.48  2023-08-23 04:21:16     1       京东广州JC广场店        2033-04-01 07:12:56     1970-01-01 00:00:00
+boss-a6ffcbb6-b406-11ed-9b8e-c400ad72f316       192.168.120.11  2023-08-23 01:20:11     1       麦德龙马鞍山花山店      2033-03-28 06:05:47     1970-01-01 00:00:00
+boss-aa19f0d0-d1f5-11ed-bf9c-c400ad00d4ab       192.168.120.30  2023-07-22 11:38:30     1       麦德龙长春宽城店        2033-03-31 07:56:15     1970-01-01 00:00:00
+boss-0c0ce4a4-d2b5-11ed-9397-c400ad53ff06       192.168.120.45  2023-08-14 05:04:56     1       沃尔玛深圳光明店        2033-04-01 06:51:24     1970-01-01 00:00:00
+boss-a5948a02-d1eb-11ed-b978-c400ad53ff19       192.168.120.27  2023-08-23 06:30:16     1       1019_奥乐齐红太阳店     2033-03-31 06:50:10     1970-01-01 00:00:00
+boss-568c3560-d2b6-11ed-8aec-c400ad53ff2f       192.168.120.46  2023-07-27 04:21:26     0       蓝远仓储会员超市        2033-04-01 07:00:41     1970-01-01 00:00:00
+ovpn-tun-443-carel-service_site 192.168.120.7   2023-05-05 10:11:08     1       ECS_service_carel       2033-03-28 00:50:01     1970-01-01 00:00:00
+boss-fa78ada2-d2b1-11ed-affd-c400ad72f695       192.168.120.44  2023-08-23 04:18:58     1       麦德龙长春净月店        2033-04-01 06:29:17     1970-01-01 00:00:00
+boss-f19a319a-e56f-11ec-a230-000a5c81dcf7       192.168.120.16  2023-07-10 09:15:45     0       李鹏测试        2033-03-31 01:19:43     1970-01-01 00:00:00
+boss-fb39890a-d1f8-11ed-8343-c400ad72fa13       192.168.120.32  2023-08-23 00:59:12     1       麦德龙成都高新店        2033-03-31 08:25:51     1970-01-01 00:00:00
+boss-614ed992-d1e1-11ed-acf0-c400ad89501e       192.168.120.23  2023-08-22 22:02:42     1       沃尔玛重庆九龙广场1075店        2033-03-31 05:36:53     1970-01-01 00:00:00
+ovpn-tun-443-carel-test-router-123005   192.168.123.5   2023-04-25 13:09:54     0       ovpn-tun-443-carel-test-router-123005   2033-03-28 05:33:09     1970-01-01 00:00:00
+boss-a63cd8fe-b645-11ed-bae3-c400ad998c75       192.168.120.20  2023-08-22 22:32:08     1       沃尔玛仙桃店    2033-03-31 03:27:39     1970-01-01 00:00:00
+boss-7023eb68-cec8-11ed-a79f-c400adc95cd8       192.168.120.6   2023-08-22 20:20:49     1       麦德龙北京大成店        2033-03-27 06:57:01     1970-01-01 00:00:00
+ovpn-tun-443-carel-test-router-123001   192.168.123.1   2023-04-10 02:07:18     0       test-router-192.168.123.1       2033-03-28 01:13:13     1970-01-01 00:00:00
+boss-3b3a833a-ced7-11ed-b365-c400adc95eb9       192.168.120.21  2023-08-23 02:31:22     1        沃尔玛深圳福田山姆店   2033-03-31 04:50:20     1970-01-01 00:00:00
+boss-58c992ec-d995-11ed-a4e2-c400ad1949d5       192.168.120.90  2023-07-05 12:32:35     0       永辉青浦万达茂HEOS+HECU 2033-04-10 00:53:12     1970-01-01 00:00:00
+boss-0aefaafa-b408-11ed-8c5a-c400adc95840       192.168.120.12  2023-08-22 22:19:27     1       麦德龙宝山店    2033-03-28 06:22:54     1970-01-01 00:00:00
+boss-e6a46cda-d900-11ed-8110-c400adca94dc       192.168.120.88  2023-08-22 20:22:33     1       盒马糖兜科技昆山项目    2033-04-09 07:09:57     1970-01-01 00:00:00
+boss-829c09ee-b995-11ed-b4da-c400ad53fed5       192.168.120.81  2023-08-22 23:22:47     1       京东天津K11店   2033-04-03 00:21:27     1970-01-01 00:00:00
+boss-d7509f74-b73b-11ed-a9ec-c400ad99861c       192.168.120.53  2023-08-23 08:30:43     1       宝鸡陇县盛源冷库        2033-04-01 07:28:32     1970-01-01 00:00:00
+boss-614121ae-b647-11ed-9d58-c400ad72f714       192.168.120.55  2023-08-22 19:06:06     1       永辉广东广东河源中骏世纪城      2033-04-01 07:38:20     1970-01-01 00:00:00
+boss-a6a7d5b0-d2d7-11ed-b6f1-c400ad53fe78       192.168.120.65  2023-05-01 05:39:32     0       永辉四川攀枝花银泰城店  2033-04-18 00:09:40     1970-01-01 00:00:00
+boss-35cfea4a-c6d3-11ed-8155-c400ad53feac       192.168.120.52  2023-08-23 10:00:24     1       永辉福建泉州安溪财富广场店      2033-04-01 07:27:00     1970-01-01 00:00:00
+boss-f3123676-b990-11ed-ad61-c400ad72fbc8       192.168.120.64  2023-08-23 07:00:56     1       永辉广东肇庆四会吾悦广场        2033-04-01 07:49:35     1970-01-01 00:00:00
+ovpn-tun-443-carel-cst-win      192.168.120.73  2023-07-26 09:59:17     0       未知    2033-03-27 06:01:10     1970-01-01 00:00:00
+boss-65e8eab2-c497-11ed-ba42-c400addbc9e7       192.168.120.84  2023-08-22 19:50:14     1       奥乐齐青浦蟠龙店        2033-04-08 06:19:56     1970-01-01 00:00:00
+boss-d7c6a8ce-d2b9-11ed-ac23-c400ad3ab0ab       192.168.120.51  2023-05-05 10:22:43     0       盒马鲜生沈阳金地名京店  2033-04-01 07:23:47     1970-01-01 00:00:00
+boss-3aaa9756-d79d-11ed-b0d8-c400addbc9d8       192.168.120.82  2023-08-22 17:53:15     1       沃尔玛武汉SAM   2033-04-07 12:41:43     1970-01-01 00:00:00
+carel-ovpn-tun-lay-client       192.168.123.7   2023-08-06 09:27:24     0       LAY     2033-04-07 01:40:15     1970-01-01 00:00:00
+boss-4578306c-c168-11ed-89d6-c400ad53ffe7       192.168.120.77  2023-08-22 15:07:21     1       麦德龙上海浦东店哈斯曼  2033-04-04 02:10:20     1970-01-01 00:00:00
+boss-80b7caa2-b998-11ed-b796-c400ad53ffa4       192.168.120.86  2023-05-09 10:25:19     0       麦德龙重庆南岸店        2033-04-08 08:39:13     1970-01-01 00:00:00
+boss-6d8d632c-b7fb-11ed-93ec-c400ad72fa1e       192.168.120.57  2023-08-23 03:12:08     1       广西南宁市江南区龙光玖誉府      2033-04-01 05:59:21     1970-01-01 00:00:00
+boss-08bd4fac-d1eb-11ed-b785-c400ad72fb19       192.168.120.26  2023-08-22 20:16:03     1       奥乐齐成山店    2033-03-31 06:45:16     1970-01-01 00:00:00
+boss-3e5b4b7c-b991-11ed-8fa1-c400ad23a3f7       192.168.120.59  2023-08-23 07:34:06     1       沈阳万科物流冷库1号库   2033-04-01 06:33:02     1970-01-01 00:00:00
+boss-f8eaad0a-d99b-11ed-815c-c400ad638110       192.168.120.93  2023-08-23 00:50:43     1       天虹常平店      2033-04-10 01:39:32     1970-01-01 00:00:00
+boss-73120a8e-b420-11ed-8bea-c400ad7c230f       192.168.120.72  2023-08-23 00:49:45     1       盒马mini上海万泰广场店  2033-04-03 04:07:57     1970-01-01 00:00:00
+boss-7198ff2a-d99e-11ed-9eb0-c400addfec4a       192.168.120.94  2023-08-23 03:51:26     1       盒马mini上海陆悦坊店    2033-04-10 01:57:14     1970-01-01 00:00:00
+boss-26a72fda-d2ca-11ed-873e-c400adca930c       192.168.120.58  2023-06-29 03:47:03     1       盒马鲜生成都来福士店    2033-04-01 09:23:16     1970-01-01 00:00:00
+boss-81ee57c4-d4f0-11ed-913f-c400ad2103bd       192.168.120.78  2023-08-23 10:29:37     1       麦德龙上海金山店        2033-04-04 02:57:05     1970-01-01 00:00:00
+boss-0c36ac52-b993-11ed-9859-c400ad998c51       192.168.120.62  2023-08-23 08:52:30     1       江西南昌青山龙湖天街    2033-04-01 10:42:13     1970-01-01 00:00:00
+boss-956f8b7c-b995-11ed-85e3-c400ad53fba0       192.168.120.83  2023-08-23 04:25:21     1       浙江大厦湖州加工配送中心项目    2033-04-08 06:00:01     1970-01-01 00:00:00
+boss-5c4050fc-d2bd-11ed-a2a9-c400ad998b57       192.168.120.66  2023-08-21 17:02:15     1       未知    2033-04-01 07:51:21     1970-01-01 00:00:00
+boss-caf77724-d2b7-11ed-a6e3-c400ad64efd7       192.168.120.60  2023-08-23 08:43:12     1       四川内江威远万达广场店  2033-04-01 07:11:15     1970-01-01 00:00:00
+boss-e4295434-d2ac-11ed-a3e0-c400ad53fefa       192.168.120.41  2023-08-23 10:11:44     1       内蒙古包头有方广场店    2033-04-01 05:53:19     1970-01-01 00:00:00
+boss-52c44a0e-d990-11ed-a204-c400ad72f747       192.168.120.91  2023-08-22 18:30:33     1       京东Fresh广州流花店     2033-04-10 00:57:35     1970-01-01 00:00:00
+test-client-2   192.168.120.70  2023-07-06 08:19:19     0       test-client-2   2033-03-24 13:09:29     1970-01-01 00:00:00
+boss-67b44bdc-d2d6-11ed-93bd-c400ad72f600       192.168.120.63  2023-08-23 04:31:28     1       永辉河北廊坊大拇指店    2033-04-01 10:49:58     1970-01-01 00:00:00
+boss-059a8d66-d2b9-11ed-af77-c400ad7c2fcb       192.168.120.50  2023-08-23 04:50:53     1       华东医药金华冷库        2033-04-01 07:20:12     1970-01-01 00:00:00
+boss-34ccf086-d2bb-11ed-ad49-c400ad6b7ba2       192.168.120.67  2023-08-23 06:31:58     1       永辉四川内江万晟城店现场        2033-04-01 07:42:35     1970-01-01 00:00:00
+boss-3b6ac6de-d9a0-11ed-b89b-c400ad579009       192.168.120.95  2023-07-06 04:46:45     0       永辉重庆渝北约克郡店    2033-04-10 02:07:22     1970-01-01 00:00:00
+boss-e2a04b24-c6bb-11ed-8d24-c400ad67b2a7       192.168.120.61  2023-08-23 05:00:02     1       南京麒麟店      2033-04-01 07:15:59     1970-01-01 00:00:00
+boss-b9e399b6-b405-11ed-b00c-c400adca9222       192.168.120.89  2023-08-23 10:04:53     1       盒马鲜生重庆新光天地店  2033-04-09 07:19:22     1970-01-01 00:00:00
+boss-004c53b4-b999-11ed-9768-c400ad53ff46       192.168.120.80  2023-08-23 04:45:57     1       永辉四川成都流明城店    2033-04-03 00:11:58     1970-01-01 00:00:00
+boss-e40e1afa-b634-11ed-afb8-c400ad9fd974       192.168.120.92  2023-08-22 23:58:58     1       广州皇上皇冷链食品有限公司      2033-04-10 01:19:41     1970-01-01 00:00:00
+boss-29f58dd0-d833-11ed-accf-c400adc958cc       192.168.120.85  2023-08-23 00:53:25     1       天虹超市龙新店  2033-04-08 06:36:57     1970-01-01 00:00:00
+ovpn-tun-443-carel-test-router-123006   192.168.123.6   2023-04-25 10:48:36     0       ovpn-tun-443-carel-test-router-123006   2033-03-28 05:33:14     1970-01-01 00:00:00
+boss-3ff3911a-1167-11ed-b371-c400ad206997       192.168.120.74  2023-08-04 14:27:33     0       奥乐齐宛平店-old        2033-04-03 09:14:42     1970-01-01 00:00:00
+boss-044964bc-d2bb-11ed-9293-c400adc12ff5       192.168.120.54  2023-08-01 12:33:13     1       重庆盒马鲜生汽博中心店  2033-04-01 07:31:28     1970-01-01 00:00:00
+boss-e5d78cf6-b40c-11ed-9e2d-c400ad3aae2a       192.168.120.87  2023-08-22 11:51:05     1       天虹揭阳店      2033-04-09 06:47:57     1970-01-01 00:00:00
+boss-b5c4f5f6-b99a-11ed-8442-c400ad64f1ef       192.168.120.49  2023-07-27 07:34:34     0       辉四川自贡富顺宏帆广场店        2033-04-01 07:17:14     1970-01-01 00:00:00
+boss-386c0d30-c6ae-11ed-b5c8-c400adca9187       192.168.120.56  2023-08-15 03:23:12     1       盒马鲜生南昌王府井店    2033-04-01 07:41:02     1970-01-01 00:00:00
+boss-869c138a-d2af-11ed-a0b8-c400ad475f87       192.168.120.79  2023-08-23 08:23:05     1       麦德龙上海普陀店        2033-04-04 07:58:37     1970-01-01 00:00:00
+boss-ddf026de-d1ca-11ed-95cd-c400ad579429       192.168.120.18  2023-08-22 21:16:26     1       麦德龙成都二环路店      2033-03-31 02:54:52     1970-01-01 00:00:00
+boss-0fd60836-de54-11ed-b06c-c400ad4194b1       192.168.120.133 2023-08-01 12:23:15     1       天虹龙购店      2033-04-16 01:34:18     1970-01-01 00:00:00
+boss-f7352c56-d2ac-11ed-bdb7-c400ad951dcd       192.168.120.116 2023-08-23 01:09:29     1       天虹汕尾店      2033-04-01 05:53:42     1970-01-01 00:00:00
+ovpn-tun-443-carel-router-122003        192.168.122.3   2023-06-05 07:42:13     0       办公室8B19      2033-04-15 01:07:35     1970-01-01 00:00:00
+boss-e80edbc6-b990-11ed-9433-c400ad194ac2       192.168.120.71  2023-08-23 07:53:13     1       潮香村食品      2033-04-01 12:54:36     1970-01-01 00:00:00
+test-client-1   192.168.120.112 2023-05-07 10:19:30     0       test-client-1   2033-03-24 10:39:34     1970-01-01 00:00:00
+boss-a4e08824-b99d-11ed-8581-c400ad53fe00       192.168.120.100 2023-07-26 15:58:20     0       永辉湖北孝感吾悦广场店  2033-04-10 06:09:33     1970-01-01 00:00:00
+boss-52a98584-b992-11ed-b2e8-c400ad5792a7       192.168.120.119 2023-08-01 04:47:01     0       盒马大连西岗店  2033-04-15 06:56:06     1970-01-01 00:00:00
+boss-79f122dc-d9bd-11ed-978a-c400adca91e2       192.168.120.99  2023-08-23 00:57:38     1       盒马鲜生广东佛山顺联国际店      2033-04-10 05:39:30     1970-01-01 00:00:00
+boss-88a7d3ea-ddc1-11ed-9b69-c400ad475c49       192.168.120.122 2023-05-05 10:11:06     0       永辉安徽滁州吾悦店      2033-04-15 08:16:21     1970-01-01 00:00:00
+boss-87d3f8cc-d99d-11ed-ab18-c400ad72f16e       192.168.120.96  2023-08-23 04:29:11     1       天虹惠州仲恺店  2033-04-10 01:50:53     1970-01-01 00:00:00
+boss-1d66acd4-b998-11ed-8428-c400ad64f422       192.168.120.139 2023-08-23 04:14:13     1       永辉北京平谷店  2033-04-16 02:53:50     1970-01-01 00:00:00
+boss-212e1b9c-b34c-11ed-990a-c400ad579134       192.168.120.114 2023-08-23 03:56:14     1       施尔丰国际生物科技有限公司      2033-04-14 06:31:12     1970-01-01 00:00:00
+boss-706347be-b99b-11ed-8fdd-c400ad444380       192.168.120.108 2023-08-23 06:47:16     1       天虹东莞塘厦    2033-04-11 00:16:14     1970-01-01 00:00:00
+boss-7ba91608-df1b-11ed-be6a-c400adca9310       192.168.120.141 2023-08-23 03:28:28     1       OLE深圳超深活中心店     2033-04-17 01:35:03     1970-01-01 00:00:00
+boss-701650a0-b994-11ed-97d1-c400ad814cf5       192.168.120.98  2023-08-22 22:49:10     1       京东7fresh北京绿地缤纷城店      2033-04-10 05:14:37     1970-01-01 00:00:00
+boss-bc56b124-d039-11ed-bac9-c400ad4951ee       192.168.120.104 2023-08-16 02:42:31     1       永辉安康万达广场店      2033-04-10 08:06:14     1970-01-01 00:00:00
+boss-fc30c294-b996-11ed-a6b0-c400ad53f470       192.168.120.117 2023-08-01 13:01:56     1       麦德龙北京草桥店        2033-04-15 06:06:14     1970-01-01 00:00:00
+boss-f225f340-b992-11ed-a96e-c400ad475d68       192.168.120.76  2023-05-15 22:52:52     0       润兴万家昆明安宁吾悦广店        2033-04-03 01:34:08     1970-01-01 00:00:00
+boss-8fc5bfd0-ddc5-11ed-bbcd-c400ad444098       192.168.120.147 2023-05-05 10:11:07     0       永辉河南驻马店爱克广场店        2033-04-15 08:47:18     1970-01-01 00:00:00
+boss-faf8ebe8-c4b0-11ed-9b66-c400addbcb65       192.168.120.109 2023-08-22 21:13:30     1       奥乐齐长宁龙之梦店      2033-04-11 06:09:19     1970-01-01 00:00:00
+boss-dc4ca45a-ddc9-11ed-ae61-c400adc9591c       192.168.120.125 2023-06-21 05:07:11     0       卡乐中国防爆实验室      2033-04-15 09:13:13     1970-01-01 00:00:00
+boss-75e0773e-d4d5-11ed-a505-c400ad53f5cf       192.168.120.75  2023-08-23 10:23:14     1       瑞金医院代谢实验室环境管理系统  2033-04-03 23:49:05     1970-01-01 00:00:00
+boss-e0016ce8-de50-11ed-98ca-c400ad63887b       192.168.120.131 2023-05-09 08:06:07     0       天虹沙井店      2033-04-16 01:24:35     1970-01-01 00:00:00
+boss-8173e25c-c94f-11ed-9990-74fe4845517c       192.168.120.130 2023-06-08 18:02:43     0       GDC数据服务     2033-04-15 10:49:54     1970-01-01 00:00:00
+boss-3852514c-ddab-11ed-8443-74fe484e7f6a       192.168.120.135 2023-08-17 01:34:09     1       明康德  2033-04-15 05:38:55     1970-01-01 00:00:00
+boss-b15830ac-c794-11ed-9f4e-c400ad64ef5b       192.168.120.127 2023-04-20 04:22:58     0       奥乐齐光启城店  2033-04-17 02:39:39     1970-01-01 00:00:00
+boss-978191b8-de56-11ed-9140-c400ad72facf       192.168.120.137 2023-08-23 04:39:32     1       广州天誉花园店  2033-04-16 02:05:25     1970-01-01 00:00:00
+boss-1ea65336-b99a-11ed-b930-c400ad7c2305       192.168.120.128 2023-08-22 02:04:31     0       永辉超市四川遂宁万汇中心        2033-04-15 10:27:44     1970-01-01 00:00:00
+boss-d2278b26-d99f-11ed-8a07-c400ad7c1e07       192.168.120.97  2023-08-22 18:04:44     1       京东7frensh深圳德弘店   2033-04-10 02:07:11     1970-01-01 00:00:00
+boss-9c67b19a-b993-11ed-b1e5-c400ad64f461       192.168.120.129 2023-08-22 23:30:49     1       永辉四川内江吾悦广场店  2033-04-15 10:37:03     1970-01-01 00:00:00
+boss-03785770-de53-11ed-8ef6-74fe484e7f32       192.168.120.136 2023-07-26 23:22:20     0       河南省红十字血液中心    2033-04-16 02:00:57     1970-01-01 00:00:00
+boss-1edc6d10-b989-11ed-a604-c400ad64f351       192.168.120.68  2023-07-25 19:44:35     0       永辉成都新都区龙湖锦宸天街店    2033-04-01 07:31:21     1970-01-01 00:00:00
+boss-ad8aea66-c6e3-11ed-9e7a-c400ad540004       192.168.120.102 2023-08-23 09:21:59     0       永辉武汉龙湖天街店      2033-04-10 06:48:46     1970-01-01 00:00:00
+boss-86af04b2-b997-11ed-b4f0-c400ad3ab087       192.168.120.120 2023-08-22 21:46:37     1       冷库项目        2033-04-15 07:07:30     1970-01-01 00:00:00
+boss-da258a72-de58-11ed-9911-c400ad419217       192.168.120.138 2023-08-21 10:23:18     1       澳柯玛长城岭U槽 2033-04-16 02:21:32     1970-01-01 00:00:00
+carel-ovpn-tun-glisten-client   192.168.120.110 2023-08-22 11:07:28     0       0       2033-04-11 07:47:17     1970-01-01 00:00:00
+boss-05ef7c7a-ddc4-11ed-bfdb-c400ad49516a       192.168.120.123 2023-08-03 02:29:40     1       永辉江苏南通海门中南店  2033-04-15 08:27:48     1970-01-01 00:00:00
+boss-7ab34d2e-b98f-11ed-9d79-c400ad951f4d       192.168.120.107 2023-08-22 15:29:16     1       惠多港北京恒大御景湾店  2033-04-11 00:44:31     1970-01-01 00:00:00
+boss-63f95704-d9d3-11ed-9e81-c400ad72f3a8       192.168.120.105 2023-08-23 06:01:40     1       永四川江油圣名国际广场现场      2033-04-10 08:16:04     1970-01-01 00:00:00
+boss-818c6fea-bbb5-11ed-80fd-c400ad72faa3       192.168.120.118 2023-08-22 11:03:05     1       麦德龙大连西岗店        2033-04-15 06:19:02     1970-01-01 00:00:00
+boss-85ddca3e-d9cf-11ed-871d-c400ad6b7b42       192.168.120.103 2023-08-23 03:26:52     1       永辉广安加德金融城店    2033-04-10 07:48:30     1970-01-01 00:00:00
+ovpn-tun-443-carel-router-122002        192.168.122.2   2023-08-23 10:42:29     1       0       2033-04-13 01:05:39     1970-01-01 00:00:00
+boss-07681e08-de51-11ed-a5d3-74fe485e2adc       192.168.120.132 2023-08-23 03:15:25     1       三江盒马宁波星悦城      2033-04-16 01:30:00     1970-01-01 00:00:00
+boss-4903543a-0d4c-11ed-965e-000babd3a27d       192.168.120.111 2023-08-21 13:31:26     1       Carel office    2033-04-11 08:46:03     1970-01-01 00:00:00
+boss-b08674dc-de5e-11ed-a60b-c400ad81bf53       192.168.120.140 2023-08-23 04:58:57     1       永辉重庆渝北吾悦中央公园仓储店  2033-04-16 03:03:24     1970-01-01 00:00:00
+boss-3fdcf560-dce4-11ed-b185-c400ad6b7b10       192.168.120.113 2023-08-22 17:55:00     1       永贵州铜仁九宜城店      2033-04-14 05:54:29     1970-01-01 00:00:00
+boss-98cdeaea-d9c3-11ed-aa77-c400ad64f505       192.168.120.101 2023-08-23 04:32:24     1       永辉永辉广东肇庆鼎湖万达        2033-04-10 06:23:09     1970-01-01 00:00:00
+boss-15d19782-c6c1-11ed-a95b-c400ad475ff3       192.168.120.143 2023-08-23 00:22:53     1       下沙华东医药    2033-04-17 01:58:37     1970-01-01 00:00:00
+router-Shenzhen-walmart-SAM-0426        192.168.120.144 2023-08-23 10:37:06     1       0       2033-04-23 00:56:58     1970-01-01 00:00:00
+boss-85ca2d74-f2b8-11ed-866b-c400addbca34       192.168.120.181 2023-08-23 04:26:01     1       永辉西安店      2033-05-12 00:38:01     1970-01-01 00:00:00
+boss-ef7cc21e-b996-11ed-ae68-c400ad72f469       192.168.120.4   2023-08-23 00:54:08     1       麦德龙成都锦江店        2033-03-27 06:07:39     1970-01-01 00:00:00
+boss-bd6e1906-f2e6-11ed-82f8-c400ad57919b       192.168.120.183 2023-08-23 08:10:21     1       天虹惠州水口店  2033-05-12 06:09:14     1970-01-01 00:00:00
+boss-8abc2dae-e0c1-11ed-8722-c400addbc9f3       192.168.120.127 2023-08-23 10:39:08     0       奥乐齐整机柜测试项目    2033-04-19 04:03:37     1970-01-01 00:00:00
+router-Changsha-Maidelong-Kaifu-0514    192.168.120.180 2023-07-26 14:04:13     0       长沙麦德龙开福店        2033-05-11 02:50:59     1970-01-01 00:00:00
+boss-d74ebf5c-df53-11ed-8019-c400addbd1d5       192.168.120.179 2023-06-08 22:00:42     0       盒马北京西三旗店        2033-04-17 08:19:15     1970-01-01 00:00:00
+boss-89c269da-b999-11ed-9ae4-c400ad6b7bec       192.168.120.126 2023-08-23 03:16:25     1       永辉河南郑州荥阳荥泽大道店      2033-04-18 06:26:53     1970-01-01 00:00:00
+boss-e7e483f4-e4d7-11ed-b021-000babe73669       192.168.120.164 2023-08-23 04:09:58     1       阳江店  2033-04-24 08:47:11     1970-01-01 00:00:00
+boss-a0ac49c4-c491-11ed-b0c4-c400addfed6b       192.168.120.182 2023-08-22 13:20:09     1       0       2033-05-12 04:04:29     1970-01-01 00:00:00
+boss-bf691f96-e196-11ed-b634-c400ad475e4b       192.168.120.159 2023-08-21 09:02:07     0       沃尔玛湖北洪湖店2579    2033-04-20 05:28:54     1970-01-01 00:00:00
+boss-df610732-d2b9-11ed-a129-c400ad72f3ba       192.168.120.161 2023-08-23 10:31:15     1       四川永辉隆昌金沙时代店  2033-04-22 02:36:34     1970-01-01 00:00:00
+boss-e9f180e6-ebaf-11ed-bda6-c400ad67b126       192.168.120.168 2023-08-03 19:16:19     0       永辉杭州丁桥龙湖店      2033-05-03 01:47:36     1970-01-01 00:00:00
+boss-50584c8e-e007-11ed-b13e-c400ad1a1d6d       192.168.120.115 2023-08-23 07:19:05     1       奥乐齐苏河湾店  2033-04-18 05:44:36     1970-01-01 00:00:00
+boss-c9a2b1e6-d2b1-11ed-a830-c400ad54012a       192.168.120.43  2023-06-01 13:20:26     0       上海俱漾--杭州领顺      2033-04-01 06:28:26     1970-01-01 00:00:00
+boss-6eb91682-0f2c-11ee-b624-c400addbca4a       192.168.120.202 2023-08-23 10:42:52     1       0       2033-06-17 05:38:01     1970-01-01 00:00:00
+router-Zhengzhou-yichengcangchu-yh-0427 192.168.120.157 2023-08-23 04:45:28     1       路由器-郑州新郑新壹城仓储民生店 2033-04-24 02:52:04     1970-01-01 00:00:00
+boss-89860d64-e194-11ed-86d0-c400ad894f07       192.168.120.156 2023-08-22 23:15:07     1       京东深圳福田趣坊水围生活广场店  2033-04-20 05:06:28     1970-01-01 00:00:00
+router-Chongqing-zeke-yonghui-0504      192.168.120.166 2023-08-23 04:21:28     1       0       2033-05-01 14:08:30     1970-01-01 00:00:00
+boss-bca262f8-be6a-11ed-80ef-74fe484b492d       192.168.120.121 2023-07-03 09:05:34     1       宜康（杭州）生物技术有限公司冷库项目    2033-04-15 07:44:10     1970-01-01 00:00:00
+router-Hangzhou-yonghui-dqlh-0506       192.168.120.169 2023-08-03 20:54:08     0       0       2033-05-03 01:55:11     1970-01-01 00:00:00
+boss-95c2bc60-b40f-11ed-932d-c400adc95ecf       192.168.120.149 2023-08-23 04:41:18     1       永辉东莞大朗店  2033-04-18 06:05:55     1970-01-01 00:00:00
+boss-2fdfdff2-de50-11ed-ba9c-74fe48442f46       192.168.120.134 2023-07-13 13:15:53     1       富士京东北京好世界      2033-04-16 01:39:28     1970-01-01 00:00:00
+boss-1befaee4-be00-11ec-869b-c400adc12e7b       192.168.120.145 2023-08-23 10:42:47     1       盒马龙阳大道店  2033-04-15 10:07:58     1970-01-01 00:00:00
+boss-3570794a-ebe8-11ed-a8c6-c400ad81db19       192.168.120.171 2023-08-23 04:31:02     1       永辉重庆合川锦悦城店    2033-05-03 08:30:38     1970-01-01 00:00:00
+boss-cafb79ca-e584-11ed-ab31-c400addfee12       192.168.120.165 2023-07-26 06:55:46     1       0       2033-04-25 05:24:54     1970-01-01 00:00:00
+boss-25f08aa0-e4a9-11ed-80a4-c400ad814c28       192.168.120.160 2023-08-23 05:00:58     1       永辉郑州新郑新壹城仓储民生店    2033-04-24 03:11:31     1970-01-01 00:00:00
+boss-0348452c-d2b8-11ed-9b7d-c400ad67b2b2       192.168.120.69  2023-08-23 05:01:04     1       永辉山西太原望府广场    2033-04-15 10:12:29     1970-01-01 00:00:00
+boss-722136ec-de53-11ed-aad6-c400ad72fbf9       192.168.120.155 2023-08-22 16:19:18     1       深圳坪山店      2033-04-16 01:43:01     1970-01-01 00:00:00
+boss-625f0fca-e01c-11ed-8192-c400ad7c36b4       192.168.120.151 2023-06-08 14:37:24     0       永辉河南周口项城太平洋购物中心  2033-04-18 08:11:29     1970-01-01 00:00:00
+boss-87304ba4-b400-11ed-a00e-c400ad9523b6       192.168.120.162 2023-08-23 01:04:19     1       新郑机场北货运冷链中心  2033-04-20 05:53:04     1970-01-01 00:00:00
+boss-a98bd3ba-cfc3-11ed-94a8-c400ad64f34a       192.168.120.3   2023-08-23 09:03:54     1       卡乐中国实验室  2033-03-28 05:01:38     1970-01-01 00:00:00
+router-Wuhan-yonghui-Fanyuecheng-0506   192.168.120.172 2023-08-23 04:06:37     1       0       2033-05-03 08:44:18     1970-01-01 00:00:00
+boss-fa5a3c8c-ec1a-11ed-9779-c400addbce0c       192.168.120.173 2023-08-23 04:45:50     1       永辉西藏拉萨北城新天地  2033-05-03 14:33:55     1970-01-01 00:00:00
+boss-bf56263a-85a6-11ed-8176-c400adca931a       192.168.120.184 2023-08-23 04:11:13     1       奥乐齐滨江光合新座店    2033-05-13 00:29:10     1970-01-01 00:00:00
+boss-a05e96f6-e008-11ed-87bc-c400ad9fdc5c       192.168.120.148 2023-08-23 02:43:30     1       永辉重庆渝北桃源天地店  2033-04-18 05:50:26     1970-01-01 00:00:00
+boss-a14e96f6-e4d6-11ed-923a-c400ad53fc64       192.168.120.163 2023-08-17 11:16:59     1       永辉河南周口沈丘快乐小镇店      2033-04-24 08:37:01     1970-01-01 00:00:00
+boss-400bc6f2-e256-11ed-9a8c-000a5c825b2a       192.168.120.158 2023-08-23 09:12:37     1       Mini-20230424   2033-04-21 02:21:26     1970-01-01 00:00:00
+boss-5ad87b2e-edff-11ed-ada7-c400addbd078       192.168.120.177 2023-06-28 14:26:11     0       盒马郑州国贸360店       2033-05-06 00:22:42     1970-01-01 00:00:00
+boss-56dc5522-de55-11ed-a0d5-c400ad45f40f       192.168.120.142 2023-08-22 09:37:02     1       天虹惠州盛汇广场店      2033-04-16 01:59:52     1970-01-01 00:00:00
+boss-862df8d6-c49b-11ed-9e84-c400addbcbc7       192.168.120.154 2023-08-23 09:21:20     1       奥乐齐凯德晶萃店        2033-04-20 01:23:02     1970-01-01 00:00:00
+boss-414edcec-da5a-11ed-8c58-c400ad814d4d       192.168.120.106 2023-08-22 20:56:21     1       北京顺义锦荟港店        2033-04-11 00:21:49     1970-01-01 00:00:00
+boss-89b9dc0c-e022-11ed-b39d-c400adc95772       192.168.120.153 2023-08-22 13:42:20     1       北京大兴环宇永辉        2033-04-18 08:57:48     1970-01-01 00:00:00
+boss-244245f8-e23e-11ed-b14d-c400addfebfe       192.168.120.157 2023-04-24 10:54:24     0       0       2033-04-21 02:41:23     1970-01-01 00:00:00
+boss-9e1b4506-b998-11ed-abcf-c400ad67a6a5       192.168.120.152 2023-08-02 23:04:45     0       永辉浙江杭州大江东龙湖店        2033-04-18 08:51:53     1970-01-01 00:00:00
+boss-fcb7adbe-e005-11ed-9ae2-c400ad67b30c       192.168.120.146 2023-08-23 05:01:25     1       苏州印象城仓储店        2033-04-18 05:34:10     1970-01-01 00:00:00
+boss-6fb37874-df3a-11ed-bfc5-c400ad579423       192.168.120.124 2023-08-15 11:20:15     0       贵州兴义财富中心店      2033-04-17 05:16:23     1970-01-01 00:00:00
+boss-830f8af0-c498-11ed-a230-c400addfed78       192.168.120.178 2023-08-23 01:38:43     1       奥乐齐北外滩莱福士店    2033-05-08 00:09:22     1970-01-01 00:00:00
+ovpn-tun-443-carel-router-122004        192.168.122.4   2023-05-16 13:31:55     0       0       2033-04-22 01:39:28     1970-01-01 00:00:00
+test-client-3   192.168.120.170 2023-08-23 10:17:30     1       Tesco_HKM-路由器-临时   2033-05-02 08:49:41     1970-01-01 00:00:00
+router-Rongxian-Zhongguinong-0505       192.168.120.167 2023-08-23 08:08:39     1       容县中桂农冷库-路由器   2033-05-02 02:24:59     1970-01-01 00:00:00
+boss-be78d5a2-ec7e-11ed-8064-74fe4850d339       192.168.120.176 2023-08-22 14:47:39     1       ole深圳超深活动中心冷却塔       2033-05-04 02:16:03     1970-01-01 00:00:00
+router-Sichuan-luzhou-walmart-0426      192.168.120.150 2023-08-23 03:06:51     1       路由器-四川泸州沃尔玛   2033-04-23 06:51:52     1970-01-01 00:00:00
+boss-d6a4df9e-1579-11ee-ac69-c400ad6b7bc7       192.168.120.226 2023-08-22 15:32:01     1       0       2033-06-25 06:08:26     1970-01-01 00:00:00
+boss-33fade5c-0c2c-11ee-9e60-c400addbca8e       192.168.120.201 2023-08-23 08:57:44     1       奥乐齐杨浦滨江百联      2033-06-13 04:03:02     1970-01-01 00:00:00
+boss-01fac96e-5b13-11ed-ae8a-c400adca943c       192.168.120.206 2023-08-22 22:05:15     1       0       2033-06-18 02:36:44     1970-01-01 00:00:00
+router-Foshan-bufengyanbu-0516  192.168.120.185 2023-08-23 10:37:06     1       卜蜂莲花南海盐步店-路由器       2033-05-13 05:54:53     1970-01-01 00:00:00
+boss-79d11cf0-ff4a-11ed-b975-c400addbcb7b       192.168.120.194 2023-08-01 16:14:38     0       盒马鲜生西安大茂城店    2033-05-28 00:35:14     1970-01-01 00:00:00
+boss-42049694-1bc4-11ee-b23d-cc827f2e66f4       192.168.120.239 2023-07-06 14:15:52     0       盒马杭州城北万象城店    2033-07-03 06:14:34     1970-01-01 00:00:00
+boss-f6716c80-1654-11ee-8e98-c400addbcc0d       192.168.120.233 2023-08-22 22:35:22     1       盒马济南中铁中心店      2033-08-05 02:28:06     1970-01-01 00:00:00
+test-client-4   192.168.120.204 2023-08-23 07:47:31     1       0       2033-06-18 01:29:45     1970-01-01 00:00:00
+boss-df76d932-e01e-11ed-b78f-c400ad7c1df7       192.168.120.242 2023-08-01 12:31:43     0       0       2033-04-18 08:27:23     1970-01-01 00:00:00
+boss-2b17cc9c-22a7-11ed-839c-c400adc95f1b       192.168.120.230 2023-08-23 04:03:36     1       0       2033-06-25 06:24:54     1970-01-01 00:00:00
+boss-0ca7f47c-157b-11ee-9d94-c400ad64f4bc       192.168.120.228 2023-08-23 06:37:10     1       0       2033-06-25 06:14:53     1970-01-01 00:00:00
+boss-c6fc613e-1bc8-11ee-88b6-cc827f2e4998       192.168.120.240 2023-08-23 06:45:58     1       盒马上海夏都小镇店      2033-07-03 06:46:48     1970-01-01 00:00:00
+boss-63f8dd7e-13e9-11ee-b457-c400ad67b14f       192.168.120.216 2023-08-22 20:08:14     1       0       2033-06-23 06:24:19     1970-01-01 00:00:00
+boss-4cace51c-0fdd-11ee-a43e-c400ad3aacdf       192.168.120.208 2023-08-22 19:25:38     0       0       2033-06-18 02:42:41     1970-01-01 00:00:00
+boss-63511f02-f900-11ed-9c60-c400addbd42e       192.168.120.189 2023-07-03 12:07:08     0       盒马广州黄埔大悦汇店    2033-05-20 02:32:12     1970-01-01 00:00:00
+boss-9058cac6-155d-11ee-afd7-c400ad6b7a58       192.168.120.225 2023-08-22 23:22:05     1       0       2033-06-25 02:43:50     1970-01-01 00:00:00
+router-Kunming-Jianshui-Walmart-0605    192.168.120.198 2023-08-22 20:17:04     1       0       2033-06-02 01:03:21     1970-01-01 00:00:00
+boss-569eb5fa-615a-11ed-9f66-c400adc3da0f       192.168.120.209 2023-08-23 01:24:21     1       0       2033-06-18 02:45:47     1970-01-01 00:00:00
+boss-cb4254f4-fe88-11ed-ad08-c400addbc9fa       192.168.120.192 2023-08-22 17:44:31     1       沃尔玛东莞3400店        2033-05-27 01:41:13     1970-01-01 00:00:00
+boss-ba8d6be0-13ea-11ee-9e1f-c400ad72f693       192.168.120.217 2023-08-23 06:55:03     1       0       2033-06-23 06:31:48     1970-01-01 00:00:00
+boss-2cd1c58a-f5ea-11ed-9e3c-c400addbd081       192.168.120.187 2023-08-15 15:41:09     1       盒马北京鲁谷店  2033-05-16 02:09:44     1970-01-01 00:00:00
+boss-5921a7a0-0412-11ee-9dc9-c400addbcdc7       192.168.120.195 2023-06-19 22:42:21     0       深圳前海山姆店-故障     2033-06-03 02:34:17     1970-01-01 00:00:00
+boss-d4d83740-5b1d-11ed-a75e-c400adca922c       192.168.120.205 2023-08-22 16:30:45     1       奥乐齐嘉定宝龙店        2033-06-18 02:30:16     1970-01-01 00:00:00
+boss-a9323440-155a-11ee-bca5-c400ad53faf9       192.168.120.222 2023-08-19 09:27:31     1       0       2033-06-25 02:16:50     1970-01-01 00:00:00
+router-Dongguan-walmart-3400-0628       192.168.120.232 2023-08-22 17:45:00     1       0       2033-06-25 08:39:04     1970-01-01 00:00:00
+boss-8f3e7a30-14b0-11ee-837c-c400ad53fb13       192.168.120.221 2023-08-22 20:55:21     1       0       2033-06-24 06:05:30     1970-01-01 00:00:00
+boss-97a6c04e-13eb-11ee-a3be-c400ad210abe       192.168.120.218 2023-08-23 04:41:01     1       0       2033-06-23 06:34:54     1970-01-01 00:00:00
+boss-eaab6596-f943-11ed-89cf-c400addbcb5e       192.168.120.191 2023-07-06 16:18:40     0       盒马深圳绿景新洲店      2033-06-24 01:54:53     1970-01-01 00:00:00
+carel-ovpn-tun-call-system-pc2  192.168.120.197 2023-08-23 07:12:34     1       calling-system-pc2      2033-06-04 05:18:33     1970-01-01 00:00:00
+boss-06c03596-13ec-11ee-bdd4-c400ad4443db       192.168.120.219 2023-08-01 12:36:15     1       0       2033-06-23 06:38:34     1970-01-01 00:00:00
+boss-0036ddf6-a8e9-11ed-9d88-c400addbd0cf       192.168.120.211 2023-08-22 13:53:10     1       奥乐齐宝山城市花园店    2033-06-23 05:24:41     1970-01-01 00:00:00
+boss-764c01ec-13ec-11ee-908c-c400ad53ff55       192.168.120.220 2023-08-23 05:15:28     1       0       2033-06-23 06:41:37     1970-01-01 00:00:00
+boss-e3f64226-f5e1-11ed-9f16-c400adc3dc43       192.168.120.188 2023-07-26 09:20:38     1       ALDI天安千树店  2033-05-16 01:11:35     1970-01-01 00:00:00
+boss-69c3f414-08bd-11ee-ad7a-c400ad19483b       192.168.120.199 2023-08-23 09:22:34     1       0       2033-06-09 01:08:11     1970-01-01 00:00:00
+boss-55b7a9e8-155b-11ee-a1f7-c400ad6b7bd5       192.168.120.224 2023-08-22 22:43:20     1       0       2033-06-25 02:27:58     1970-01-01 00:00:00
+boss-e938076c-1bbe-11ee-8ff6-cc827f2e53cb       192.168.120.238 2023-07-06 13:38:27     0       盒马鲜生无锡滨湖万象汇  2033-07-03 05:36:08     1970-01-01 00:00:00
+router-Hangzhou-Lingshun-0706   192.168.120.236 2023-07-07 15:20:30     0       领顺下沙        2033-07-03 00:53:48     1970-01-01 00:00:00
+boss-ebbffacc-155a-11ee-ae58-c400ad183f29       192.168.120.223 2023-06-28 10:25:36     1       0       2033-06-25 02:24:55     1970-01-01 00:00:00
+boss-02427f64-387e-11ed-bde5-c400adca9300       192.168.120.207 2023-08-22 14:25:39     1       0       2033-06-18 02:39:20     1970-01-01 00:00:00
+boss-f836d404-16ec-11ee-a198-c400addfecd7       192.168.120.234 2023-08-19 09:46:22     1       盒马鲜生杭州云州国际店  2033-06-27 02:23:55     1970-01-01 00:00:00
+boss-78de5740-0f3f-11ee-940c-c400ad53f509       192.168.120.203 2023-08-22 11:41:20     1       深圳前海山姆店  2033-06-17 07:53:26     1970-01-01 00:00:00
+boss-60280eaa-157d-11ee-9929-c400ad6b7b87       192.168.120.231 2023-08-04 16:15:50     1       奥乐齐宛平店    2033-06-25 06:31:31     1970-01-01 00:00:00
+boss-8bdde54a-df3d-11ed-9ac8-c400addfed72       192.168.120.190 2023-08-23 05:09:03     1       奥乐齐开元地中海店      2033-04-17 05:39:02     1970-01-01 00:00:00
+boss-e3fea93e-1c79-11ee-9c5b-cc827f2e5f4b       192.168.120.241 2023-07-07 11:55:30     0       盒马X会员北京朝阳CBD万达店      2033-07-04 03:54:32     1970-01-01 00:00:00
+boss-2e6a15be-13e5-11ee-9659-c400ad64f0ce       192.168.120.215 2023-08-23 07:59:45     1       0       2033-06-23 05:49:45     1970-01-01 00:00:00
+boss-51c62f28-13e2-11ee-95e1-c400ad475e9e       192.168.120.212 2023-08-01 12:36:07     1       0       2033-06-23 05:29:12     1970-01-01 00:00:00
+boss-262a4120-157b-11ee-8c5a-c400ad53fff7       192.168.120.227 2023-08-23 03:42:07     1       0       2033-06-25 06:11:15     1970-01-01 00:00:00
+boss-70d9d980-13e4-11ee-b7e6-c400ad53fe81       192.168.120.214 2023-08-23 02:48:39     1       0       2033-06-23 05:39:34     1970-01-01 00:00:00
+router-Nanchang-Wangfujing-Hema-0517    192.168.120.186 2023-08-22 17:51:40     1       0       2033-05-14 08:22:49     1970-01-01 00:00:00
+boss-adc1f280-13e2-11ee-8511-c400ad67b1ed       192.168.120.213 2023-08-23 05:45:16     1       0       2033-06-23 05:31:44     1970-01-01 00:00:00
+boss-8055a728-1bb8-11ee-91b2-cc827f2e66fa       192.168.120.237 2023-07-06 12:54:12     0       盒马鲜生上海闵行凯德商业中心    2033-07-03 04:52:47     1970-01-01 00:00:00
+boss-84a0b884-099f-11ee-a914-c400addbca81       192.168.120.200 2023-08-22 19:11:22     1       盒马鲜生郑州探十里路店  2033-06-10 04:06:39     1970-01-01 00:00:00
+boss-d12056e0-157c-11ee-8417-c400ad3aaff6       192.168.120.229 2023-08-01 12:36:33     1       0       2033-06-25 06:22:22     1970-01-01 00:00:00
+ovpn-tun-443-carel-ECS-CST      192.168.120.193 2023-08-21 11:26:24     1       0       2033-05-27 08:26:38     1970-01-01 00:00:00
+boss-cf7a86fe-04f0-11ee-90f8-000babbaf4e6       192.168.120.235 2023-08-02 15:12:42     0       F4E6    2033-06-27 06:09:14     1970-01-01 00:00:00
+carel-ovpn-tun-call-system-pc1  192.168.120.196 2023-08-21 13:31:10     1       calling-system-pc1      2033-06-04 05:18:30     1970-01-01 00:00:00
+boss-d106afce-fb5f-11ed-91ce-c400addbca48       192.168.120.210 2023-08-23 01:08:11     1       盒马mini上海马利来店    2033-06-27 00:22:07     1970-01-01 00:00:00
+boss-0d220c48-3b10-11ee-83fb-c400addbcbac       192.168.121.19  2023-08-15 10:05:00     0       盒马重庆月光之城MINI店  2033-08-12 02:03:28     1970-01-01 00:00:00
+router-Dongguan-dalang-yonghui-0809     192.168.121.5   2023-08-23 04:41:25     1       0       2033-08-06 01:55:54     1970-01-01 00:00:00
+boss-50feddc4-3fc0-11ee-b862-cc827f3d39c1       192.168.121.27  2023-08-21 09:18:08     0       盒马成都麓镇mini店      2033-08-18 01:16:50     1970-01-01 00:00:00
+boss-fb7496d0-2522-11ee-8a50-c400addfece4       192.168.120.244 2023-08-23 09:58:00     1       盒马mini重庆解放碑协信星光店    2033-07-15 04:28:10     1970-01-01 00:00:00
+boss-bb6e9516-275e-11ee-999a-cc827f2e4d22       192.168.120.252 2023-08-23 03:14:51     1       盒马南昌中悦广场店      2033-07-18 00:38:09     1970-01-01 00:00:00
+boss-25ac651a-364c-11ee-8e7b-74fe483aa1f7       192.168.121.4   2023-08-09 08:39:24     0       Test    2033-08-06 00:33:45     1970-01-01 00:00:00
+boss-cbf551a0-3b03-11ee-8b2f-cc827f3d36fc       192.168.121.17  2023-08-15 08:38:36     0       盒马济南欧亚大观乐活城店        2033-08-12 00:36:58     1970-01-01 00:00:00
+boss-313f8652-ec7b-11ed-8402-c400ad475fcc       192.168.120.175 2023-08-18 07:42:21     0       永辉郑州高新区万达店    2033-05-04 02:02:38     1970-01-01 00:00:00
+boss-60532552-2542-11ee-8622-cc827f2e57d7       192.168.120.248 2023-08-22 15:17:56     1       奥乐齐上海浦东东证大大拇指店    2033-07-15 08:09:07     1970-01-01 00:00:00
+test-client-6   192.168.121.11  2023-08-15 08:07:30     0       0       2033-08-06 02:45:32     1970-01-01 00:00:00
+boss-23ad9a72-368d-11ee-a589-cc827f3d3862       192.168.121.14  2023-08-09 16:17:49     0       盒马鲜生广州南沙环宇城店        2033-08-06 08:16:47     1970-01-01 00:00:00
+boss-81a645e4-3687-11ee-8fec-cc827f3d35de       192.168.121.13  2023-08-09 15:38:22     0       盒马上海中山公园龙之梦店        2033-08-06 07:37:27     1970-01-01 00:00:00
+boss-3e5f429c-2c3f-11ee-8e4d-c400ad19455b       192.168.120.254 2023-08-23 04:44:46     1       Carel-China New Plant   2033-07-24 05:39:09     1970-01-01 00:00:00
+boss-8c056170-3b08-11ee-8483-cc827f3d39c9       192.168.121.18  2023-08-15 09:12:32     0       盒马成都新都苏宁广场店  2033-08-12 01:11:18     1970-01-01 00:00:00
+boss-76d6a6de-326a-11ee-85b3-c400ad1831bb       192.168.120.255 2023-08-20 16:40:30     1       永辉四川眉山彭山迎宾大道店      2033-08-01 02:06:24     1970-01-01 00:00:00
+boss-b8341960-252a-11ee-8559-cc827f2e5cdf       192.168.120.245 2023-08-18 17:19:00     1       盒马mini杭州西溪欢乐城店        2033-07-15 05:20:46     1970-01-01 00:00:00
+boss-aeda8478-253c-11ee-81f1-cc827f2e64aa       192.168.120.247 2023-08-23 04:10:51     1       盒马昆明世纪金源店      2033-07-15 07:30:57     1970-01-01 00:00:00
+carel-ovpn-tun-USR-client-0815  192.168.121.20  2023-08-15 17:04:18     0       0       2033-08-12 05:42:04     1970-01-01 00:00:00
+boss-5ccf9374-ec1d-11ed-9409-c400ad814d84       192.168.120.174 2023-08-23 04:30:46     1       永辉重庆渝北区泽科新泽汇店      2033-05-03 14:50:51     1970-01-01 00:00:00
+boss-4d9bb9e2-3d6b-11ee-9ca1-cc827f3d3907       192.168.121.24  2023-08-18 10:04:21     0       盒马南京花漫店  2033-08-15 02:03:06     1970-01-01 00:00:00
+boss-c6f139ae-3d5f-11ee-b88c-cc827f3a1ba2       192.168.121.22  2023-08-18 08:42:02     0       盒马上海长风大悦城店    2033-08-15 00:40:55     1970-01-01 00:00:00
+boss-5f9508b2-3bca-11ee-9a6d-cc827f3d3891       192.168.121.21  2023-08-16 08:23:25     0       盒马中庚漫游城店        2033-08-13 00:19:57     1970-01-01 00:00:00
+boss-e643a15c-326f-11ee-b2f7-c400ad64f3c5       192.168.121.0   2023-08-22 19:02:09     0       永辉北京门头沟店        2033-08-01 02:38:05     1970-01-01 00:00:00
+boss-33d41e74-1489-11ee-89f5-c400addbd049       192.168.121.2   2023-08-23 10:38:23     1       奥乐齐长泰广场店        2033-06-24 01:25:08     1970-01-01 00:00:00
+boss-b24726bc-3d64-11ee-a002-cc827f377754       192.168.121.23  2023-08-18 09:17:10     0       盒马北京望京华彩店      2033-08-15 01:15:53     1970-01-01 00:00:00
+boss-2cb57dda-3677-11ee-bdb8-cc827f3d39ab       192.168.121.10  2023-08-09 13:41:52     0       盒马鲜生上海中信泰富嘉定万达店  2033-08-06 05:40:29     1970-01-01 00:00:00
+boss-88730914-3fb7-11ee-81cb-cc827f3d381c       192.168.121.26  2023-08-21 08:16:22     0       盒马上海亿丰时代广场mini        2033-08-18 00:15:03     1970-01-01 00:00:00
+boss-93161622-3a49-11ee-b98c-c400ad6b7a5f       192.168.121.16  2023-08-22 15:38:09     1       奥乐齐上海黄金城道店    2033-08-11 02:24:28     1970-01-01 00:00:00
+router-Nanchang-qingshanlh-yonghui-0809 192.168.121.6   2023-08-23 04:37:12     1       0       2033-08-06 02:13:18     1970-01-01 00:00:00
+boss-e22d423e-26a9-11ee-b9a2-c400addbca27       192.168.120.251 2023-08-22 14:54:53     1       奥乐齐杨浦悠方店        2033-07-17 03:03:29     1970-01-01 00:00:00
+client-test-5   192.168.120.243 2023-07-18 11:10:02     0       0       2033-07-14 01:07:48     1970-01-01 00:00:00
+boss-be6a52ce-366c-11ee-9461-cc827f377752       192.168.121.9   2023-08-23 04:55:32     1       盒马长沙运达中央广场店  2033-08-06 04:25:32     1970-01-01 00:00:00
+boss-9e571e6a-32af-11ee-b943-74fe484d70e8       192.168.121.1   2023-08-05 08:35:14     0       0       2033-08-02 00:12:10     1970-01-01 00:00:00
+boss-ed818e02-365c-11ee-91e0-cc827f3d375e       192.168.121.7   2023-08-09 10:41:16     0       盒马杭州西湖文化广场店  2033-08-06 02:30:38     1970-01-01 00:00:00
+test-client-5   192.168.120.249 2023-08-23 10:39:08     0       F4E6-router     2033-07-15 08:00:55     1970-01-01 00:00:00
+boss-0ff398ae-2532-11ee-8bcf-cc827f2e57aa       192.168.120.246 2023-08-23 01:18:02     1       盒马上海明中广场店      2033-07-15 06:13:48     1970-01-01 00:00:00
+router-Guangdong-yonghui-heyuan 192.168.121.3   2023-08-23 04:38:37     1       0       2033-08-04 07:37:22     1970-01-01 00:00:00
+boss-5be610fc-3e46-11ee-a254-cc827f3d3864       192.168.121.25  2023-08-19 12:12:40     0       盒马南通星湖101Mini店   2033-08-16 04:11:45     1970-01-01 00:00:00
+boss-d2364ac6-276a-11ee-a803-cc827f2e67d0       192.168.120.253 2023-08-22 20:11:28     1       盒马西安咸阳财富国际中心店      2033-07-18 02:04:28     1970-01-01 00:00:00
+boss-b1d5e5ec-367f-11ee-a1cc-cc827f3d36be       192.168.121.12  2023-08-09 14:43:15     0       盒马鲜生上海中信泰富嘉定万达店  2033-08-06 06:41:40     1970-01-01 00:00:00
+boss-342e5acc-3718-11ee-b264-cc827f2e4a75       192.168.121.15  2023-08-10 08:58:14     0       盒马鲜生南通启东吾悦广场店      2033-08-07 00:56:38     1970-01-01 00:00:00
+\.
+
+
+--
+-- Name: cnexpiredate cnexpiredate_pk; Type: CONSTRAINT; Schema: public; Owner: ovpnflask
+--
+
+ALTER TABLE ONLY public.cnexpiredate
+    ADD CONSTRAINT cnexpiredate_pk PRIMARY KEY (cn);
+
+
+--
+-- Name: ovpnclients ovpnclients_un; Type: CONSTRAINT; Schema: public; Owner: ovpnflask
+--
+
+ALTER TABLE ONLY public.ovpnclients
+    ADD CONSTRAINT ovpnclients_un UNIQUE (cn);
+
+
+--
+-- Name: t1 t1_pkey; Type: CONSTRAINT; Schema: public; Owner: ovpnflask
+--
+
+ALTER TABLE ONLY public.t1
+    ADD CONSTRAINT t1_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tunovpnclients tunovpnclients_cn_key; Type: CONSTRAINT; Schema: public; Owner: ovpnflask
+--
+
+ALTER TABLE ONLY public.tunovpnclients
+    ADD CONSTRAINT tunovpnclients_cn_key UNIQUE (cn);
+
+
+--
+-- PostgreSQL database dump complete
+--

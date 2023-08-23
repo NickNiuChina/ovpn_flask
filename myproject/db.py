@@ -21,6 +21,13 @@ def get_db():
         # g.db.row_factory = MySQL.Row
     return g.db
 
+def get_cur():
+    """
+        return the cursor 
+    """
+    db = get_db()
+    cur = db.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+    return cur
 
 def close_db(e=None):
     """If this request connected to the database, close the

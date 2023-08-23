@@ -75,3 +75,18 @@ ALTER TABLE ONLY public.ovpnclients
 --
 -- PostgreSQL database dump complete
 --
+
+--
+-- Create table tb_user
+--
+CREATE TABLE tb_user (
+   user_id SERIAL PRIMARY KEY,
+   user_type int DEFAULT NULL,
+   username varchar(40)  NOT NULL,
+   password varchar(120) NOT NULL,
+   display_name varchar(40) DEFAULT NULL,
+   status int NOT NULL DEFAULT '1',
+   create_time TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+   update_time TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+   UNIQUE (username)
+ );

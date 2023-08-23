@@ -1,20 +1,32 @@
+'''
+Flask 的工厂模式
+Created on 2023年8月10日
+@author: nick_niu
+'''
 import os
 
 from flask import Flask
 import datetime, time
 from myproject import ovpn
 from flask import session
+from flask import g, request
 import config
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.wrappers import Response
 
+import logging
+from flask_babel import Babel
 
 def create_app(test_config=None):
     """
-    Create and configure an instance of the Flask application.
+        创建 Flask APP
+        @param test_config:
+        @return: flask.app.Flask
+        @throws Exception
     """
+
     app = Flask(__name__, instance_relative_config=True)
-    app.config['JSON_AS_ASCII'] = False
+    app.config['JSON_AS_ASCII'] = False 
     app.config.from_object(config.ProductionConfig)
     print("------APP config---------------------------------")
     print(app.config)
@@ -25,6 +37,38 @@ def create_app(test_config=None):
     else:
         # load the test config if passed in
         app.config.update(test_config)
+
+    # i18n config   
+    def get_locale():
+    # if a user is logged in, use the locale from the user settings
+        user = getattr(g, 'user', None)
+        if user is not None:
+            if user.get('locale'):
+                return user.locale
+        # get language from session
+        # if the user has set up the language manually it will be stored in the session,
+        # so we use the locale from the user settings
+        try:
+            language = session['language']
+        except KeyError:
+            language = None
+        if language is not None:
+            return language
+        
+        # otherwise try to guess the language from the user accept
+        # header the browser transmits.  We support de/fr/en in this
+        # example.  The best match wins.
+        # print("---------------------: " + request.accept_languages.best_match(['zh', 'en']))
+        return request.accept_languages.best_match(['zh', 'en'])
+
+    def get_timezone():
+        user = getattr(g, 'user', None)
+        if user is not None:
+            return user.timezone
+
+
+    # babel = Babel(app, locale_selector=get_locale, timezone_selector=get_timezone)
+    babel = Babel(app, locale_selector=get_locale)
 
     # ensure the instance folder exists or create it
     # try:
@@ -43,11 +87,35 @@ def create_app(test_config=None):
     def hello():
         return "Hello, 中文!"
     
+    # logging settings to file
+    log_level = logging.INFO
+    for handler in app.logger.handlers:
+        app.logger.removeHandler(handler)
+    root = os.path.dirname(os.path.abspath(__file__))
+    print("root dir: " + app.root_path)
+    logdir = os.path.join(root, 'logs')
+    if not os.path.exists(logdir):
+        os.mkdir(logdir)
+    # log_file = os.path.join(logdir, 'app.log')
+    log_file = app.config['LOGFILE']
+    handler = logging.FileHandler(log_file)
+    handler.setLevel(log_level)
+    # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # logging.Formatter(
+    #     fmt='%(asctime)s.%(msecs)03d',
+    #     datefmt='%Y-%m-%d,%H:%M:%S'
+    # )
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
+    app.logger.setLevel(log_level)
+        
     # session expiration time
     @app.before_request
     def make_session_permanent():
         session.permanent = True
         app.permanent_session_lifetime = datetime.timedelta(minutes=60)
+        app.logger.info("Before request logger!!")
     
     # server starttime
     start_datetime = datetime.datetime.now()
@@ -64,6 +132,8 @@ def create_app(test_config=None):
             runningDays = days,
             now = datetime.datetime.now()
             )
+
+
 
     # onlineUsers, not in prod now
     app.onlineUsers = 0
@@ -84,7 +154,7 @@ def create_app(test_config=None):
                 if conn:
                     break
             except Exception as error:    
-                print("Error: Please check the database connections!!!!!!!!!!!!!!!!!")
+                print("Error: Please check the database connections!!")
                 print("\t", error)
                 print("\tSleep 20s\n")
                 time.sleep(20)

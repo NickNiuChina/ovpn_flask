@@ -14,7 +14,7 @@
           {# Add icons to the links using the .nav-icon class with font-awesome or any other icon font library #}
 
           <li class="nav-item">
-            <a href="{{ url_for('stmt.index') }}" class="nav-link">
+            <a href="{{ url_for('ovpn.index') }}" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>Welcome</p>
             </a>
@@ -24,35 +24,35 @@
         {% if session['user_type'] == 1 %}
 
           <li class="nav-item">
-            <a href="{{ url_for('stmt.adminStudent') }}" class="nav-link">
+            <a href="{{ url_for('ovpn.adminStudent') }}" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>Student Management</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="{{ url_for('stmt.adminTeacher') }}" class="nav-link">
+            <a href="{{ url_for('ovpn.adminTeacher') }}" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>Teacher Management</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="{{ url_for('stmt.adminCourse') }}" class="nav-link">
+            <a href="{{ url_for('ovpn.adminCourse') }}" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>Course Management</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="{{ url_for('stmt.adminScore') }}" class="nav-link">
+            <a href="{{ url_for('ovpn.adminScore') }}" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>Score Management</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="{{ url_for('stmt.adminUser') }}" class="nav-link">
+            <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>Account Management</p>
             </a>
@@ -63,13 +63,13 @@
         {# if userType == 0 #}
         {% if session['user_type'] == 0 %}
           <li class="nav-item">
-            <a href="{{ url_for('stmt.userScore') }}" class="nav-link">
+            <a href="{{ url_for('ovpn.userScore') }}" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>成绩查询</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{ url_for('stmt.userInfo') }}" class="nav-link">
+            <a href="{{ url_for('ovpn.userInfo') }}" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>档案查询</p>
             </a>
