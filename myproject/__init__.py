@@ -30,9 +30,11 @@ def create_app(test_config=None):
     
     # TEMPLATES DIR
     TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
-    print('TEMPLATES_DIR: ' + TEMPLATES_DIR)
     
-    app = Flask(__name__, instance_relative_config=True, template_folder=TEMPLATES_DIR)
+    # STATIC_DIR
+    STATIC_DIR = os.path.join(BASE_DIR, 'static')
+    
+    app = Flask(__name__, instance_relative_config=True, template_folder=TEMPLATES_DIR, static_folder = STATIC_DIR)
     app.config['JSON_AS_ASCII'] = False 
     app.config.from_object(config.ProductionConfig)
     print("------APP config---------------------------------")
