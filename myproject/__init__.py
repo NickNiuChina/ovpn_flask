@@ -25,7 +25,14 @@ def create_app(test_config=None):
         @throws Exception
     """
 
-    app = Flask(__name__, instance_relative_config=True)
+    # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    # TEMPLATES DIR
+    TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+    print('TEMPLATES_DIR: ' + TEMPLATES_DIR)
+    
+    app = Flask(__name__, instance_relative_config=True, template_folder=TEMPLATES_DIR)
     app.config['JSON_AS_ASCII'] = False 
     app.config.from_object(config.ProductionConfig)
     print("------APP config---------------------------------")
@@ -91,9 +98,8 @@ def create_app(test_config=None):
     log_level = logging.INFO
     for handler in app.logger.handlers:
         app.logger.removeHandler(handler)
-    root = os.path.dirname(os.path.abspath(__file__))
-    print("root dir: " + app.root_path)
-    logdir = os.path.join(root, 'logs')
+
+    logdir = os.path.join(BASE_DIR, 'logs')
     if not os.path.exists(logdir):
         os.mkdir(logdir)
     # log_file = os.path.join(logdir, 'app.log')

@@ -15,7 +15,7 @@
 			</div><!-- /.col -->
 			<div class="col-sm-6">
 			<ol class="breadcrumb float-sm-right">
-				<li class="breadcrumb-item"><a href="{{ url_for('stmt.index') }}">Home</a></li>
+				<li class="breadcrumb-item"><a href="{{ url_for('ovpn.index') }}">Home</a></li>
 				<li class="breadcrumb-item active">Main</li>
 			</ol>
 			</div>
@@ -53,7 +53,7 @@
 									<th>#</th>
 									<th>Username</th>
 									<th>Priv</th>
-									<th>StudentNo</th>
+									<th>DisplayName</th>
 									<th>Status</th>
 									<th>Operation</th>
 								</tr>
@@ -64,7 +64,7 @@
 									<th>#</th>
 									<th>Username</th>
 									<th>Priv</th>
-									<th>StudentNo</th>
+									<th>DisplayName</th>
 									<th>Status</th>
 									<th>Operation</th>
 								</tr>
@@ -81,7 +81,7 @@
 		<div class="modal fade" id="addStudentUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form action="{{ url_for('stmt.addStudentUser') }}" method="post">
+					<form action="{{ url_for('ovpn.addStudentUser') }}" method="post">
 						<div class="modal-header">
 							<h4 class="modal-title" id="myModalLabel">Add student account</h4>
 							<button type="button" class="close" data-dismiss="modal"
@@ -128,7 +128,7 @@
 		<div class="modal fade" id="addTeacherUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form action="{{ url_for('stmt.addTeacherUser') }}" method="post">
+					<form action="{{ url_for('ovpn.addTeacherUser') }}" method="post">
 						<div class="modal-header">
 							<h4 class="modal-title" id="myModalLabel">Add teacher account</h4>
 							<button type="button" class="close" data-dismiss="modal"
@@ -165,7 +165,7 @@
 			aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form action="{{ url_for('stmt.updateUser') }}" method="post">
+					<form action="{{ url_for('ovpn.updateUser') }}" method="post">
 						<div class="modal-header">
 							<h4 class="modal-title" id="udpate-myModalLabel">更新用户信息</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -209,7 +209,7 @@
 			aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form action="{{ url_for('stmt.deleteUser') }}" method="post">
+					<form action="{{ url_for('ovpn.deleteUser') }}" method="post">
 						<div class="modal-header">
 							<h4 class="modal-title" id="udpate-myModalLabel">Delete account info</h4>
 							<button type="button" class="close" data-dismiss="modal"

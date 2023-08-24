@@ -181,16 +181,18 @@ def list_objects(list_object):
     print(__name__ + ": --------sql----------------------")
     print(query)
     print(__name__ + ": --------sql----------------------")
-    cur = get_db().cursor()
+    cur = get_cur()
     
     # total students
-    total = cur.execute(total_sql)
+    cur.execute(total_sql)
+    total = cur.rowcount
     
     # table list
     # query = "SELECT * FROM {}".format(table)
     ftotal = 0
     if searchValue:
-        ftotal = cur.execute(query, [f"%{searchValue}%"] * len(columns))
+        cur.execute(query, [f"%{searchValue}%"] * len(columns))
+        ftotal =  cur.rowcount
     else:
         ftotal = cur.execute(query)
         ftotal = total
@@ -203,6 +205,7 @@ def list_objects(list_object):
         'data': results
     }
     
+    print (data)
     return data
 
 #####################
@@ -763,7 +766,7 @@ def adminScore():
 @bp.route("/adminUser")
 @login_required
 def adminUser():
-    """introduction page
+    """user admin page
 
     Returns:
         template: introduction template
@@ -794,7 +797,7 @@ def updateUser():
         return redirect(url_for("ovpn.adminUser"))
     
     args = [user_id, username, password, display_name]    
-    cur = get_db().cursor()
+    cur = get_cur()
     
     # students list
     update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

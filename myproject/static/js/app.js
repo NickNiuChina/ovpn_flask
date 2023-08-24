@@ -619,7 +619,7 @@ $(document).ready(function() {
                 "targets": 3,
                 "data": null,
                 "render": function(data, type, row) {
-                    return data["student_no"];
+                    return data["display_name"];
                 }
             },
             {
