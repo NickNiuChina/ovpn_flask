@@ -15,13 +15,12 @@
 
           <li class="nav-item">
             <a href="{{ url_for('ovpn.index') }}" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
+              <i class="nav-icon far fa-file"></i>
               <p>Welcome</p>
             </a>
           </li>
 
-        {# if userType == 1 #}
-        {% if session['user_type'] == 1 %}
+
        <li class="nav-item menu-open">
         <a href="javascript:void(0);" class="nav-link">
           <i class="nav-icon fas fa-server"></i>
@@ -33,60 +32,60 @@
         <ul class="nav nav-treeview">
 					
           <li class="nav-item">
-            <a href="{{ url_for('ovpn.adminStudent') }}" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
+            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+              <i class="nav-icon far fa-file"></i>
               <p>Student Management</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="{{ url_for('ovpn.adminTeacher') }}" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
+            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+              <i class="nav-icon far fa-file"></i>
               <p>Teacher Management</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="{{ url_for('ovpn.adminCourse') }}" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
+            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+              <i class="nav-icon far fa-file"></i>
               <p>Course Management</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="{{ url_for('ovpn.adminScore') }}" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
+            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+              <i class="nav-icon far fa-file"></i>
               <p>Score Management</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link active">
-              <i class="nav-icon fas fa-table"></i>
-              <p>Account Management</p>
             </a>
           </li>
 
         </ul>
       </li>
 
-        {% endif %}
+      <li class="nav-item">
+        <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link active">
+          <i class="nav-icon fas fa-table"></i>
+          <p>Account Management</p>
+        </a>
+      </li>
+
 
         {# if userType == 0 #}
         {% if session['user_type'] == 0 %}
           <li class="nav-item">
             <a href="{{ url_for('ovpn.userScore') }}" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
+              <i class="nav-icon far fa-file"></i>
               <p>成绩查询</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ url_for('ovpn.userInfo') }}" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
+              <i class="nav-icon far fa-file"></i>
               <p>档案查询</p>
             </a>
           </li>                                     
         {% endif %}
+        
         </ul>
       </nav>
       {# /.sidebar-menu #}
