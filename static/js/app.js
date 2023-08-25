@@ -124,9 +124,9 @@ $(document).ready(function() {
                 "data": null,
                 "render": function(data, type, row) {
                     // console.log(data[5]);
-                    if (data[5]) {
+                    if (data["status"]) {
                         var reg = RegExp(/boss/);
-                        if (data[1].length == 41 || reg.test(data[1])) {
+                        if (data["cn"].length == 41 || reg.test(data["cn"])) {
                             var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Mgmt</a>"
                             // html += "<a href='javascript:void(0);' class='connect8443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Oper</a>"
                             html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> SSH</a>"
