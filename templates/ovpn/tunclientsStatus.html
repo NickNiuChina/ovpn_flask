@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}用户管理{% endblock %}
+{% block title %}OVPN clients status{% endblock %}
 {% block content %}
 
 {# Content Wrapper. Contains page content #}
@@ -11,7 +11,7 @@
 		<div class="container-fluid">
 		<div class="row mb-2">
 			<div class="col-sm-6">
-			<h1 class="m-0">User management page</h1>
+			<h1 class="m-0">Tun Clients Status List</h1>
 			</div><!-- /.col -->
 			<div class="col-sm-6">
 			<ol class="breadcrumb float-sm-right">
@@ -28,12 +28,12 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-					<div class="row">
+					{# <div class="row">
 						<div class="col-sm-5">
 							<button type="button" class="btn btn-primary" data-toggle="modal"
 								data-target="#addStudentUser">Add user</button>
 						</div>
-					</div>
+					</div> #}
 					{% with messages = get_flashed_messages(with_categories=true) %}
 					{% if messages %}
 						<ul class=flashes>
@@ -43,43 +43,53 @@
 						</ul>
 					{% endif %}
 					{% endwith %}
-
-					<div class="table-responsive">
-						<table id="tb_users_list" class="table table-striped table-bordered table-hover">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Username</th>
-									<th>Priv</th>
-									<th>DisplayName</th>
-									<th>Status</th>
-									<th>Operation</th>
-								</tr>
-							</thead>
-							<tbody>
-							<tfoot>
-								<tr>
-									<th>#</th>
-									<th>Username</th>
-									<th>Priv</th>
-									<th>DisplayName</th>
-									<th>Status</th>
-									<th>Operation</th>
-								</tr>
-							</tfoot>
-							</tbody>
-						</table>
-					</div>
-
 				</div>
 			</div>
+ 			<div class="card">
+              <div class="card-header">
+              </div>
+              {# /.card-header #}
+              <div class="card-body">
+
+
+					<table id="tuntbclientstatus" class="table table-bordered table-striped table-hover">
+	                  <thead>
+	                  <tr>
+	                    <th>Store</th>
+	                    <th>CN</th>
+	                    <th>vIP</th>
+	                    <th>ToggleDate</th>
+	                    <th>Expire</th>
+	                    <th>Status</th>
+	                    <th>远程连接</th>
+	                  </tr>
+	                  </thead>
+	     
+	                  <tfoot>
+	                    <th>Store</th>
+	                    <th>CN</th>
+	                    <th>vIP</th>
+	                    <th>ToggleDate</th>
+	                    <th>Expire</th>
+	                    <th>Status</th>
+	                    <th>远程连接</th>
+	                  </tfoot>
+	                </table>
+
+	              </div>
+	              {# /.card-body #}
+	            </div>
+
+
+				</div>
+
 		</div>
 
-		{# add student user #}
+		{# add user #}
 		<div class="modal fade" id="addStudentUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form action="{{ url_for('ovpn.addStudentUser') }}" method="post">
+					<form action="{{ url_for('ovpn.addUser') }}" method="post">
 						<div class="modal-header">
 							<h4 class="modal-title" id="myModalLabel">Add student account</h4>
 							<button type="button" class="close" data-dismiss="modal"
@@ -110,42 +120,6 @@
 								<input type="password" class="form-control" name="password" id="user-student-password" required
 								oninvalid="this.setCustomValidity('Please Enter valid password')"
                        			oninput="setCustomValidity('')">
-							</div>
-
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-							<button type="submit" class="btn btn-primary">提交</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-
-		{# add teacher user #}
-		<div class="modal fade" id="addTeacherUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<form action="{{ url_for('ovpn.addTeacherUser') }}" method="post">
-						<div class="modal-header">
-							<h4 class="modal-title" id="myModalLabel">Add teacher account</h4>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-
-							<div class="form-group"></div>
-
-							<div class="form-group">
-								<label for="teacher-no" class="control-label">用户名:</label> 
-								<input type="text" class="form-control" name="username" id="user-teacher-password" required>
-							</div>
-
-							<div class="form-group">
-								<label for="user-teacher-password" class="control-label">密码:</label> 
-								<input type="password" class="form-control" name="password" id="user-teacher-password" required>
 							</div>
 
 						</div>
@@ -238,4 +212,3 @@
 </div>
 
 {% endblock %}
-

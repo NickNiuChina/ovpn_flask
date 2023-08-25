@@ -35,12 +35,17 @@ def test():
     return "Hello 世界！", 200
 
 #################################################
-# Login page
+# Main page
 #################################################
 @bp.route("/")
 @login_required
 def index():
-    """ Show the main page """
+    """ 
+    Main page
+
+    Returns:
+        Main page templates and recently 5 launched clients
+    """
     cur = get_cur()
     
     # online clients
@@ -112,27 +117,30 @@ def tips():
 
 
 #################################################
-# admin views
+# OVPN status views
 #################################################
-# global dict for all table columns
-tables = {
-            'student': ['student_no', 'student_name', 'gender', 'age', 'year'],
-            'teacher': ['teacher_no', 'teacher_name', 'gender'],
-            'user': ['user_id', 'username', 'user_type', 'student_no', 'status'],
-            'course': ['course_no', 'course_name', 'student_num'],
-            }
  
-@bp.route("/admin/list/<any(login_history, student, teacher, test, user):list_object>", methods=("GET", "POST"))
+@bp.route("/tunclientsStatus")
 @login_required
-def list_objects(list_object):
-    """common API to return all table lines
-        response to: http://127.0.0.1:5000/admin/list/students?draw=1&columns%5B0%5D%5Bdata%5D=&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=false&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&order%5B0%5D%5Bcolumn%5D=1&order%5B0%5D%5Bdir%5D=desc&start=0&length=20&search%5Bvalue%5D=&search%5Bregex%5D=false&_=1687966300099
+def tunclientsStatus():
+    """
+    tunclientsStatus page
 
     Returns:
-        objects: all list from a table
+        template: tunclientsStatus template
     """
-    table = 'tb_' + list_object
-    
+    return render_template("ovpn/tunclientsStatus.html")
+ 
+@bp.route("/list/tunClientsStatus", methods=("GET", "POST"))
+@login_required
+def listTunClientsStatus():
+    """
+    List tunclientsStatus
+        
+    Returns:
+        objects: all list from 'tunovpnclients' table
+    """
+    table = 'tunovpnclients'
     # arguments
     # post
     if request.method == "POST":
@@ -165,7 +173,7 @@ def list_objects(list_object):
     # prepare sql for tb_student
     # cursor.execute("SELECT * FROM test WHERE text LIKE %s", f"%{param}%") # sql prepare
 
-    columns = tables[list_object]
+    columns = ['storename', 'cn', 'ip', 'changedate', 'status']
     query = "SELECT * FROM {}".format(table)
     total_sql = "SELECT * FROM {}".format(table)
     if searchValue:
@@ -211,471 +219,19 @@ def list_objects(list_object):
     return data
 
 #####################
-# admin student management views
-#####################
-@bp.route("/adminStudent")
-@login_required
-def adminStudent():
-    """admin-stutents page
-
-    Returns:
-        template: students template
-    """
-    
-    # cur = get_db().cursor()
-    
-    # students list
-    # cur.execute("select * from tb_student")
-    # students = cur.fetchall()
-
-     #return render_template("ovpn/admin-students.html", students = students)
-    template = "ovpn/admin-student.html"
-    return render_template(template)
-
-@bp.route("/admin/getStudent", methods=("GET", "POST"))
-@login_required
-def getStudent():
-    """admin-stutents page
-
-    Returns:
-        students: students object
-    """
-    stuNo = None
-    # post
-    if request.method == "POST":
-        stuNo = request.values.get('studentNo')
-    # get
-    if request.method == "GET":
-        stuNo = request.args.get('studentNo')    
-    
-    cur = get_db().cursor()
-    
-    # students list
-    cur.execute("select * from tb_student where student_no = %s", (stuNo,))
-    students = cur.fetchall()
-    return jsonify(students)
-
-@bp.route("/admin/getStudents", methods=("GET", "POST"))
-@login_required
-def getStudents():
-    """admin-stutents API
-
-    Returns:
-        students: all students object or unregistered student
-    """
-    
-    if request.method == "POST":
-        unregistered = request.values.get('unregistered')
-    
-    cur = get_db().cursor()
-    students = None
-    if unregistered == '1':
-        # return only unregistered students
-        cur.execute("SELECT * FROM tb_student AS ts"
-                    " WHERE NOT EXISTS ("
-                    " SELECT *"
-                    " FROM tb_user AS tu" 
-                    " WHERE ts.student_no=tu.student_no)"
-                    )
-        students = cur.fetchall()
-    else: 
-        cur.execute("select * from tb_student")
-        students = cur.fetchall()
-    return jsonify(students)
-
-def is_valid_id_card(id_card):
-    ''' 校验是否为正确的身份证号码 '''
-    pattern = '[1-9][0-9]{14}([0-9]{2}[0-9X])?'
-    if isinstance(id_card, int):
-        id_card = str(id_card)
-
-    if not re.match(pattern, id_card):
-        return False
-    items = [int(item) for item in id_card[:-1]]
-    # 加权因子表
-    factors = (7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2)
-    # 计算17位数字各位数字与对应的加权因子的乘积
-    copulas = sum([a * b for a, b in zip(factors, items)])
-    # 校验码表
-    ck_codes = ('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2')
-    a = ck_codes[copulas % 11].upper()
-    b = id_card[-1].upper()
-    return a == b
-
-@bp.route("/admin/add/student", methods=("POST",))
-@login_required
-def addStudent():
-    """ add a student
-        
-    Returns:
-        result: redirect to student admin page with failure/sucess
-    """
-    # arguments
-    # post
-    if request.method == "POST":
-        student_no = request.values.get('student_no')
-        student_name = request.values.get('student_name')
-        id_card = request.values.get('id_card')
-        gender = request.values.get('gender')
-        age = request.values.get('age')
-        year = request.values.get('year')
-    args = [student_no, student_name, id_card, gender, age, year]
-    print (args)
-    # if null value submitted
-    if not all(x for x in args):
-        error = "Failed to add student info! Null value submitted: " + str(args)
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-    # if id_card invalidate 
-    if not is_valid_id_card(id_card):
-        error = "Invalidate id: " + id_card
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-    if not (int(gender) == 1 or int(gender) == 2):
-        error = "Invalidate gender: " + str(gender)
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-    if not all([case.isdigit() for case in [age, year]]):
-        error = "Invalidate year or age: " + str([age, year])
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))       
-    if int(age) < 10 or int(age) > 150 or int(year) > 2030 or int(year) < 1999:
-        error = "Please check year or age: " + str([age, year])
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent")) 
-    
-    # if duplicated info: id, name, no
-          
-    db = get_db()
-    cur = db.cursor()
-    
-    result = cur.execute( 
-                         "select * from tb_student where student_no = %s "
-                         " or student_name=%s "
-                         " or id_card = %s", [student_no, student_name, id_card]
-                         )
-    if result > 0:
-        error = "Duplicated studentno or studentname or ID: " + str([student_no, student_name, id_card])
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))        
-    
-    
-    result = cur.execute(
-        "insert into tb_student"
-        " (student_no, student_name, id_card, gender, age, year)"
-        " VALUES (%s, %s, %s, %s, %s, %s)",
-        (student_no, student_name, id_card, gender, age, year)
-    )
-    db.commit()
-    if result < 1:
-        error = "Something wrong: " + str(args)
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-
-    success = "Add user successfully. Student_no: " + student_no
-    flash(success, 'success')    
-    return redirect(url_for("ovpn.adminStudent"))
-
-@bp.route("/admin/updateStudent", methods=("POST",))
-@login_required
-def updateStudent():
-    """update-stutents url
-
-    Returns:
-        redirect: to students list and give result message
-    """
-    studentNo = None
-    studentName = None
-    idCard = None
-    gender = None
-    age = None
-    year = None
-    if request.method == "POST":
-        studentNo = request.values.get('studentNo')
-        studentName = request.values.get('studentName')
-        idCard = request.values.get('idCard')
-        gender = request.values.get('gender')
-        age = request.values.get('age')
-        year = request.values.get('year')
-    if any(x is None for x in [studentNo, studentName, idCard, gender, age, year]):
-        error = "Null value submited, student " + studentNo + " info not changed!"
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudents"))
-        
-    cur = get_db().cursor()
-    
-    # students list
-    update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    cur.execute("update tb_student set" 
-                " student_no=%s,"
-                " student_name=%s,"
-                " id_card=%s,"
-                " age=%s,"
-                " gender=%s,"
-                " year=%s,"
-                " update_time=%s"
-                " where student_no=%s", [studentNo, studentName, idCard, int(age), int(gender), int(year), update_time, studentNo])
-    get_db().commit()
-
-    success = "Student " + studentNo + " info has just been changed!"
-    flash(success, 'success')
-    return redirect(url_for("ovpn.adminStudent"))
-
-@bp.route("/admin/delete/student", methods=("GET", "POST"))
-@login_required
-def deleteStudent():
-    """ delete a student by student_no
-        
-    Returns:
-        result: redirect to student admin page with failure/sucess
-    """
-    # arguments
-    # post
-    if request.method == "POST":
-        student_no = request.values.get('student_no')
-        # op = request.values.get('op')
-
-    # get
-    if request.method == "GET":
-        student_no = request.args.get('student_no') 
-        # op = request.args.get('op') 
-   
-    db = get_db()
-    cur = db.cursor()
-    cur.execute(
-        "SELECT student_no FROM tb_student where student_no=%s", (student_no,)
-    )
-    user = cur.fetchone()
-    if user is None:
-        error = "您尝试删除的学生信息不存在: " + student_no
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-
-    result = cur.execute("delete from tb_student where student_no = %s", (student_no,))
-    db.commit()
-    if result < 1:
-        error = "Failed during delete student info. Student_no: " + student_no
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-    success = "Delete user successfully. Student_no: " + student_no
-    flash(success, 'success')    
-    return redirect(url_for("ovpn.adminStudent"))
-
-#####################
-# admin teacher management views
-#####################
-@bp.route("/adminTeacher")
-@login_required
-def adminTeacher():
-    """introduction page
-
-    Returns:
-        template: introduction template
-    """
-    return render_template("ovpn/admin-teacher.html")
-
-@bp.route("/admin/getTeacher", methods=("GET", "POST"))
-@login_required
-def getTeacher():
-    """admin-stutents page
-
-    Returns:
-        students: students object
-    """
-    teacherNo = None
-    # post
-    if request.method == "POST":
-        teacherNo = request.values.get('teacherNo')
-    # get
-    if request.method == "GET":
-        teacherNo = request.args.get('teacherNo')    
-    
-    cur = get_db().cursor()
-    
-    # students list
-    cur.execute("select * from tb_teacher where teacher_no = %s", (teacherNo,))
-    teachers = cur.fetchall()
-    return jsonify(teachers)
-
-@bp.route("/admin/add/teacher", methods=("POST",))
-@login_required
-def addTeacher():
-    """ add a teacher
-        
-    Returns:
-        result: redirect to teacher admin page with failure/sucess
-    """
-    # arguments
-    # post
-    result = None
-    if request.method == "POST":
-        teacher_no = request.values.get('teacher_no')
-        teacher_name = request.values.get('teacher_name')
-        gender = request.values.get('gender')
-
-    args = [teacher_no, teacher_name, gender]
-
-    # if null value submitted
-    if not all(x for x in args):
-        error = "Failed to add teacher info! Null value submitted: " + str(args)
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-
-    if not (int(gender) == 1 or int(gender) == 2):
-        error = "Invalidate gender: " + str(gender)
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-     
-    db = get_db()
-    cur = db.cursor()
-    result = cur.execute( 
-                         "select * from tb_teacher where teacher_no = %s ", [teacher_no,]
-                         )
-    if result > 0:
-        error = "Duplicated teacherno: " + str([teacher_no,])
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminTeacher"))    
-    
-
-    result = cur.execute(
-        "insert into tb_teacher"
-        " (teacher_no, teacher_name, gender)"
-        " VALUES (%s, %s, %s)",
-        (teacher_no, teacher_name, gender)
-    )
-    db.commit()
-
-    if result < 1:
-        error = "Something wrong: " + str(args)
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminStudent"))
-
-    success = "Add teacher info successfully. Teacher: " + str(args)
-    flash(success, 'success')    
-    return redirect(url_for("ovpn.adminTeacher"))
-
-
-@bp.route("/admin/updateTeacher", methods=("POST",))
-@login_required
-def updateTeacher():
-    """admin-teacher update teacher
-
-    Returns:
-        teachers: to teacher admin page with update result failure/success
-    """
-    # post
-    if request.method == "POST":
-        teacher_no = request.values.get('teacherNo')
-        teacher_name = request.values.get('teacherName')
-        gender = request.values.get('gender')
-        
-    # get
-    if request.method == "GET":
-        teacher_no = request.args.get('teacherNo')    
-        teacher_name = request.args.get('teacherName')    
-        gender = request.args.get('gender')    
-    
-    db = get_db()
-    cur = db.cursor()
-    
-    # students list
-    result = cur.execute("select * from tb_teacher where teacher_no = %s", (teacher_no,))
-    if result < 1:
-        error = "TeacherNo does not exist, please check: " + teacher_no
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminTeacher")) 
-    if any(x is None for x in [teacher_no, teacher_name, gender]):
-        error = "Null value submited, student info not changed! " + str([teacher_no, teacher_name, gender])
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminTeacher"))
-    
-    result = cur.execute(
-                        "update tb_teacher set"
-                        " teacher_name = %s,"
-                        " gender = %s"
-                        " where teacher_no=%s", [teacher_name, gender, teacher_no]
-                         )
-    db.commit()
-    # 未修改时 返回0，后面用 try except 捕获错误
-    if result < 1:
-        error = "Info not changed. Teacher: " + str([teacher_no, teacher_name, gender])
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminTeacher"))
-        
-    success = "Teacher info has just been changed: " + str([teacher_no, teacher_name, gender])
-    flash(success, 'success')
-    # return render_template("ovpn/admin-teacher.html")
-    return redirect(url_for("ovpn.adminTeacher"))
-
-@bp.route("/admin/delete/teacher", methods=("GET", "POST"))
-@login_required
-def deleteTeacher():
-    """ delete a teacher by teacher_no
-        
-    Returns:
-        result: redirect to teacher admin page with failure/sucess
-    """
-    # arguments
-    # post
-    if request.method == "POST":
-        teacher_no = request.values.get('teacher_no')
-
-    # get
-    if request.method == "GET":
-        teacher_no = request.args.get('teacher_no') 
-   
-    db = get_db()
-    cur = db.cursor()
-    cur.execute(
-        "SELECT teacher_no FROM tb_teacher where teacher_no=%s", (teacher_no,)
-    )
-    user = cur.fetchone()
-    if user is None:
-        error = "The teacher does not existed: " + teacher_no
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminTeacher"))
-
-    try:
-        cur.execute("delete from tb_teacher where teacher_no = %s", (teacher_no,))
-        db.commit()
-    except IntegrityError as e:
-        error = "Failed during delete teacher info cause this teacher is referenced somewhere. Error: " + str(e)
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminTeacher"))
-    except Exception as e:
-        error = "Failed during delete teacher info cause this teacher is referenced somewhere. Error: " + str(e)
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminTeacher"))
-   
-    success = "Delete user successfully. Teacher_no: " + teacher_no
-    flash(success, 'success')    
-    return redirect(url_for("ovpn.adminTeacher"))
-
-
-#####################
-# admin course management views
+# user management views
 #####################
 
-@bp.route("/adminCourse")
+@bp.route("/list/users", methods=("GET", "POST"))
 @login_required
-def adminCourse():
-    """introduction page
-
-    Returns:
-        template: introduction template
+def listUsers():
     """
-    return render_template("ovpn/admin-course.html")
-
-@bp.route("/admin/list/course", methods=("GET", "POST"))
-@login_required
-def listCourse():
-    """ API to return all course lines 
-        response to: http://127.0.0.1:5000/admin/list/course
+    List users
         
     Returns:
-        objects: list from course table
+        objects: all list from user table
     """
-
+    
     # arguments
     # post
     if request.method == "POST":
@@ -707,31 +263,38 @@ def listCourse():
 
     # prepare sql for tb_student
     # cursor.execute("SELECT * FROM test WHERE text LIKE %s", f"%{param}%") # sql prepare
-    columns = ["course_no", "course_name", "teacher_name", "student_num"]
-    query = "select c.course_no, c.course_name, \
-(select teacher_name from  tb_teacher as t where c.teacher_no=t.teacher_no ) as teacher_name, \
-(select count(s.id) from  tb_score as s where c.course_no=s.course_no ) as student_num \
-from  tb_course as c"
-    total_sql = query
-    if searchValue:
-        query += " WHERE course_no like %s OR course_name LIKE %s OR teacher_name like %s "
 
+    columns = ['user_type', 'username', 'display_name', 'expiredate', 'status']
+    query = "SELECT * FROM tb_user"
+    
+    total_sql = "SELECT * FROM tb_user"
+    if searchValue:
+        query += " WHERE "
+        flag = 0 # notify wether OR if needed
+        for col in columns:
+            if flag:
+                query += "OR " + col + " LIKE %s "
+            else:
+                query += col + " LIKE %s "
+                flag += 1
     query += " ORDER BY {0} {1}".format(columns[ int(order_col) - 1 ], order_direction)
     if length:
         query += " LIMIT {0} OFFSET {1}".format(length, start)
     print(__name__ + ": --------sql----------------------")
     print(query)
     print(__name__ + ": --------sql----------------------")
-    cur = get_db().cursor()
+    cur = get_cur()
     
-    # toal num
-    total = cur.execute(total_sql)
+    # total students
+    cur.execute(total_sql)
+    total = cur.rowcount
     
     # table list
     # query = "SELECT * FROM {}".format(table)
-    result = 0
+    ftotal = 0
     if searchValue:
-        ftotal = cur.execute(query, [f"%{searchValue}%"] * (len(columns) - 1))
+        cur.execute(query, [f"%{searchValue}%"] * len(columns))
+        ftotal =  cur.rowcount
     else:
         ftotal = cur.execute(query)
         ftotal = total
@@ -744,28 +307,11 @@ from  tb_course as c"
         'data': results
     }
     
+    print (data)
     return data
 
 
-#####################
-# admin score management views
-#####################
-
-@bp.route("/adminScore")
-@login_required
-def adminScore():
-    """admin-score page
-
-    Returns:
-        template: admin-score template
-    """
-    return render_template("ovpn/admin-score.html")
-
-#####################
-# admin user management views
-#####################
-
-@bp.route("/adminUser")
+@bp.route("/users")
 @login_required
 def adminUser():
     """user admin page
@@ -773,7 +319,7 @@ def adminUser():
     Returns:
         template: introduction template
     """
-    return render_template("ovpn/admin-user.html")
+    return render_template("ovpn/users.html")
 
 @bp.route("/admin/updateUser", methods=("POST",))
 @login_required
@@ -888,7 +434,7 @@ def deleteUser():
 
 @bp.route("/admin/user/addStudent", methods=("POST",))
 @login_required
-def addStudentUser():
+def addUser():
     """ add a student user account
         
     Returns:
@@ -939,50 +485,7 @@ def addStudentUser():
     
     success = "Add student user successfully. User: " + str([username, student_no, password, result])
     flash(success, 'success')
-    return redirect(url_for("ovpn.adminUser"))   
-
-@bp.route("/admin/user/addTeacher", methods=("POST",))
-@login_required
-def addTeacherUser():
-    """ add a teacher user account
-        
-    Returns:
-        result: redirect to user admin page with failure/sucess
-    """
-    # arguments
-    if request.method == "POST":
-        username = request.values.get('username')
-        password = request.values.get('password')
-
-    # get
-    if request.method == "GET":
-        username = request.args.get('username') 
-        password = request.args.get('password') 
-    
-    db = get_db()
-    cur = db.cursor()
-    result = cur.execute(
-        "select * from tb_user where username=%s",(username,)
-    )
-    if result > 0:
-        danger = "This username has been used: " + username
-        flash(danger, 'danger')    
-        return redirect(url_for("ovpn.adminUser"))
-    
-    result = cur.execute(
-        "insert into tb_user"
-        " (user_type, username, password, student_no, status)"
-        " VALUES (%s, %s, %s, %s, %s)", (1, username, generate_password_hash(password), 0, 1)
-    )
-    db.commit()
-    if result < 1:
-        danger = "Something wrong when add user. User: " + str([username, password])
-        flash(danger, 'danger')    
-        return redirect(url_for("ovpn.adminUser"))      
-               
-    success = "Add teacher user successfully. User: " + str([username, password])
-    flash(success, 'success')    
-    return redirect(url_for("ovpn.adminUser"))    
+    return redirect(url_for("ovpn.adminUser"))
 
 @bp.route("/admin/user/toggle", methods=("GET", "POST"))
 @login_required

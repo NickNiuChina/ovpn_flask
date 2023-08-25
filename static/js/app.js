@@ -1,6 +1,20 @@
 // not working currently
 $(document).ready(function() {
 
+    // if set these to local variable, will cause modal submit too many times
+    var cn;
+    var storename;
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        return [year, month, day].join('-');
+    }
+
     /*
        nav highlight when a.href == location.pathname
    */
@@ -28,501 +42,80 @@ $(document).ready(function() {
             $(a).removeClass("active");
         }
     });
-
-    /* **********************************************
-       admin-student page functions
-    ********************************************** */
-
-    // ajax request test
-    // $.ajax({
-    //         'url': "admin/list/student",
-    //         'type': 'get',
-    //         'data': {},
-    //         'dataType': 'json',
-    //         success: function(data) {
-    //             console.log(data[0])
-    //         }
-    //     })
-    // {
-    //     age: 20,
-    //     create_time: "Wed, 02 Dec 2020 00:00:00 GMT",
-    // }
-
-    // table students list tb_students_list
-    $("#tb_students_list").DataTable({
-        // "dom": 'Bfrtip',
+    
+	/* **********************************************
+        admin user page functions
+	********************************************** */   
+    
+    $("#tuntbclientstatus").DataTable({
+        //"dom": 'Blfrtip',
         "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
-        // "dom": '<"container-fluid"<"row"<"col"B><"col"f>>>rt<"row"<"col"i><"col"p>>', //working but container no need
-        // "dom": 'Blfrtip',
-        "responsive": true,
-        // "lengthChange": true,
-        "autoWidth": false,
-        // "responsive": true, "lengthChange": true, "autoWidth": true,
-        "buttons": [{
-                extend: 'excel',
-                text: 'Excel',
-                exportOptions: {
-                    modifier: {
-                        page: 'all',
-                        selected: null,
-                        search: 'none',
-                    },
-                    columns: [0, 1, 2, 3, 4, 5]
-                },
-            },
-            // { extend: 'excel', text: '<i class="fas fa-file-excel" aria-hidden="true"> Excel </i>' },
-            "colvis",
-            "pageLength"
-        ],
-        "lengthMenu": [10, 50, 100, "1000"],
-        "processing": true,
-        "serverSide": true,
-        "destroy": true,
-        "paging": true,
-        "ordering": true,
-        "order": [1, "asc"],
-        "ajax": {
-            'url': "admin/list/student",
-            'type': 'post',
-            'data': {},
-            'dataType': 'json',
-        },
-        "columnDefs": [{
-                "targets": 0,
-                "data": null,
-                "orderable": false,
-                render: function(data, type, row, meta) {
-                    return meta.row + 1;
-                }
-            },
-            {
-                "targets": 1,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["student_no"];
-                }
-            },
-            {
-                "targets": 2,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["student_name"];
-                }
-            },
-            {
-                "targets": 3,
-                "data": null,
-                "render": function(data, type, row) {
-                    if (data["gender"] == 1) {
-                        gender = "M";
-                    } else {
-                        gender = "F";
-                    }
-                    return gender;
-                }
-            },
-            {
-                "targets": 4,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["age"];
-                }
-            },
-            {
-                "targets": 5,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["year"];
-                }
-            },
-            {
-                "targets": 6,
-                "orderable": false,
-                "data": null,
-                "render": function(data, type, row) {
-                    // console.log(data[5]);
-                    if (data["student_no"]) {
-
-                        var html = "<button class='btn btn-primary' data-student-no=";
-                        html += data["student_no"];
-                        html += " data-toggle='modal' data-target='#updateStudent'>Edit</button>"
-                        html += "<button class='btn btn-danger' data-student-no=";
-                        html += data["student_no"];
-                        html += " data-toggle='modal' data-target='#deleteStudent'>Delete</button>"
-                        return html;
-                    }
-
-                }
-            },
-        ],
-    }).buttons().container().appendTo('#tb_students_list .col-md-6:eq(0)');
-
-    $('#updateStudent').on('shown.bs.modal', function(event) {
-        var button = $(event.relatedTarget);
-        var studentNo = button.data('student-no');
-        var modal = $(this);
-        var params = {
-            "studentNo": studentNo
-        };
-        $.ajax({
-            url: 'admin/getStudent',
-            type: "post",
-            data: params,
-            success: function(result) {
-                student = result[0];
-                console.log(result);
-                modal.find('#update-student-no').val(student.student_no);
-                modal.find('#update-student-name').val(student.student_name);
-                modal.find('#update-id-card').val(student.id_card);
-                modal.find('#update-gender').val(student.gender);
-                modal.find('#update-age').val(student.age);
-                modal.find('#update-year').val(student.year);
-            }
-        })
-    });
-
-    $(document).on('show.bs.modal', '#deleteStudent', function(event) {
-        var button = $(event.relatedTarget);
-        var studentNo = button.data('student-no');
-        var modal = $(this);
-        modal.find('#delete-student-no').val(studentNo);
-    });
-
-    /* **********************************************
-       admin-teacher page functions
-    ********************************************** */
-
-    $('#updateTeacher').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget)
-        var teacherNo = button.data('teacher-no')
-        var modal = $(this)
-        var params = {
-            "teacherNo": teacherNo
-        }
-        $.ajax({
-            url: 'admin/getTeacher',
-            type: "post",
-            data: params,
-            success: function(result) {
-                student = result[0];
-                console.log(result);
-                modal.find('#update-teacher-no').val(student.teacher_no)
-                modal.find('#update-teacher-name').val(student.teacher_name)
-                modal.find('#update-gender').val(student.gender)
-            }
-        })
-    });
-
-    $('#deleteTeacher').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget)
-        var teacherNo = button.data('teacher-no')
-        var modal = $(this)
-        modal.find('#delete-teacher-no').val(teacherNo)
-    });
-
-    // table teacher list tb_teachers_list
-    $("#tb_teachers_list").DataTable({
-        "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
-        "responsive": true,
-        "lengthChange": true,
-        "autoWidth": false,
-        // "responsive": true, "lengthChange": true, "autoWidth": true,
-        "buttons": [{
-                extend: 'excel',
-                text: 'Excel',
-                exportOptions: {
-                    modifier: {
-                        page: 'all',
-                        selected: null,
-                        search: 'none',
-                    },
-                    columns: [0, 1, 2, 3]
-                },
-            },
-            // { extend: 'excel', text: '<i class="fas fa-file-excel" aria-hidden="true"> Excel </i>' },
-            "colvis",
-            "pageLength"
-        ],
-        "lengthMenu": [10, 50, 100, "1000"],
-        "processing": true,
-        "serverSide": true,
-        "destroy": true,
-        "paging": true,
-        "ordering": true,
-        "order": [1, "asc"],
-        "ajax": {
-            'url': "admin/list/teacher",
-            'type': 'post',
-            'data': {},
-            'dataType': 'json',
-        },
-        "columnDefs": [{
-                "targets": 0,
-                "data": null,
-                "orderable": false,
-                render: function(data, type, row, meta) {
-                    return meta.row + 1;
-                }
-            },
-            {
-                "targets": 1,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["teacher_no"];
-                }
-            },
-            {
-                "targets": 2,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["teacher_name"];
-                }
-            },
-            {
-                "targets": 3,
-                "data": null,
-                "render": function(data, type, row) {
-                    if (data["gender"] == 1) {
-                        gender = "M";
-                    } else {
-                        gender = "F";
-                    }
-                    return gender;
-                }
-            },
-
-            {
-                "targets": 4,
-                "orderable": false,
-                "data": null,
-                "render": function(data, type, row) {
-                    // console.log(data[5]);
-                    if (data["teacher_no"]) {
-
-                        var html = "<button class='btn btn-primary' data-teacher-no=";
-                        html += data["teacher_no"];
-                        html += " data-toggle='modal' data-target='#updateTeacher'>Edit</button>"
-                        html += "<button class='btn btn-danger' data-teacher-no=";
-                        html += data["teacher_no"];
-                        html += " data-toggle='modal' data-target='#deleteTeacher'>Delete</button>"
-                        return html;
-                    }
-
-                }
-            },
-        ],
-    });
-
-    /* **********************************************
-       admin course page functions
-    ********************************************** */
-
-    // table courses list tb_teachers_list
-    $("#tb_courses_list").DataTable({
-        "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
-        "responsive": true,
-        "lengthChange": true,
-        "autoWidth": false,
-        // "responsive": true, "lengthChange": true, "autoWidth": true,
-        "buttons": [{
-                extend: 'excel',
-                text: 'Excel',
-                exportOptions: {
-                    modifier: {
-                        page: 'all',
-                        selected: null,
-                        search: 'none',
-                    },
-                    columns: [0, 1, 2, 3, 4]
-                },
-            },
-            // { extend: 'excel', text: '<i class="fas fa-file-excel" aria-hidden="true"> Excel </i>' },
-            "colvis",
-            "pageLength"
-        ],
-        "lengthMenu": [10, 50, 100, "1000"],
-        "processing": true,
-        "serverSide": true,
-        "destroy": true,
-        "paging": true,
-        "ordering": true,
-        "order": [1, "asc"],
-        "ajax": {
-            'url': "admin/list/course",
-            'type': 'post',
-            'data': {},
-            'dataType': 'json',
-        },
-        "columnDefs": [{
-                "targets": 0,
-                "data": null,
-                "orderable": false,
-                render: function(data, type, row, meta) {
-                    return meta.row + 1;
-                }
-            },
-            {
-                "targets": 1,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["course_no"];
-                }
-            },
-            {
-                "targets": 2,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["course_name"];
-                }
-            },
-            {
-                "targets": 3,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["teacher_name"];
-                }
-            },
-
-            {
-                "targets": 4,
-                "data": null,
-                "render": function(data, type, row) {
-                    return data["student_num"];
-                }
-            },
-
-            {
-                "targets": 5,
-                "orderable": false,
-                "data": null,
-                "render": function(data, type, row) {
-                    // console.log(data[5]);
-                    if (data["course_no"]) {
-
-                        var html = "<button class='btn btn-primary' data-course-no=";
-                        html += data["course_no"];
-                        html += " data-toggle='modal' data-target='#updateCourse'>Edit</button>"
-                        html += "<button class='btn btn-danger' data-course-no=";
-                        html += data["course_no"];
-                        html += " data-toggle='modal' data-target='#deleteCourse'>Delete</button>"
-                        return html;
-                    }
-
-                }
-            },
-        ],
-    });
-
-    $('#updateCourse').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget)
-        var courseNo = button.data('course-no')
-        var modal = $(this)
-        var params = {
-            "courseNo": courseNo
-        }
-        $.ajax({
-            url: '${pageContext.request.contextPath}/getCourse',
-            type: "get",
-            data: params,
-            success: function(result) {
-                modal.find('#update-course-no').val(result.courseNo)
-                modal.find('#update-course-name').val(result.courseName)
-                modal.find('#update-course-teacher').val(result.teacherNo)
-            }
-        })
-    })
-
-    $('#deleteCourse').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget)
-        var courseNo = button.data('course-no')
-        var modal = $(this)
-        modal.find('#delete-course-no').val(courseNo)
-    })
-
-    /* **********************************************
-       admin score page functions
-    ********************************************** */
-    $('#updateScore').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget)
-        var scoreId = button.data('score-id')
-        var modal = $(this)
-        modal.find('#update-id').val(scoreId)
-    });
-
-
-    $('#deleteScore').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget)
-        var scoreId = button.data('score-id')
-        var modal = $(this)
-        modal.find('#delete-score-id').val(scoreId)
-    });
-
-    $("#tb_scores_list").DataTable({
-        "dom": 'Blfrtip',
         "responsive": true,
         "lengthChange": true,
         "autoWidth": false,
         // "responsive": true, "lengthChange": true, "autoWidth": true,
         "buttons": ["excel", "colvis"],
-        "lengthMenu": [10, 50, 100, "1000"],
+        "lengthMenu": [100, 50, 20, "1000"],
         "processing": true,
         "serverSide": true,
         "destroy": true,
         "paging": true,
         "ordering": true,
-        "order": [1, "asc"],
+        "order": [5, "desc"],
         "ajax": {
-            'url': "admin/list/score",
-            'type': 'post',
+            'url': "list/tunClientsStatus",
+            'type': 'POST',
             'data': {},
             'dataType': 'json',
         },
         "columnDefs": [{
                 "targets": 0,
                 "data": null,
-                "orderable": false,
-                render: function(data, type, row, meta) {
-                    return meta.row + 1;
+                "render": function(data, type, row) {
+                    var temp = data["storename"] ? data["storename"] : "Unnamed";
+                    var html = "<a href='javascript:void(0);'  class='clientstatus' data-toggle='modal' data-target='#tunclientStatusModal'>" + temp + "</a>"
+                    return html;
                 }
             },
             {
                 "targets": 1,
                 "data": null,
                 "render": function(data, type, row) {
-                    return data["student_no"];
+                    return data["cn"];
                 }
             },
             {
                 "targets": 2,
                 "data": null,
                 "render": function(data, type, row) {
-                    return data["student_name"];
+                    return data["ip"];
                 }
             },
             {
                 "targets": 3,
                 "data": null,
                 "render": function(data, type, row) {
-                    if (data["gender"] == 1) {
-                        gender = "M";
-                    } else {
-                        gender = "F";
-                    }
-                    return gender;
+                    var rdate = new Date(data["changedate"])
+                        // console.log(formatDate(rdate));
+                    return formatDate(rdate);
                 }
             },
             {
                 "targets": 4,
                 "data": null,
                 "render": function(data, type, row) {
-                    return data["age"];
+                    var rdate = new Date(data["expiredate"])
+                        // console.log(formatDate(rdate));
+                    return formatDate(rdate);
                 }
             },
             {
                 "targets": 5,
                 "data": null,
                 "render": function(data, type, row) {
-                    return data["year"];
+                    // console.log(data[5]);
+                    var html = data["status"] ? "<i class='fa fa-circle text-green'></i>" : "<i class='fa fa-circle text-red'></i>";
+                    return html;
                 }
             },
             {
@@ -531,22 +124,25 @@ $(document).ready(function() {
                 "data": null,
                 "render": function(data, type, row) {
                     // console.log(data[5]);
-                    if (data["student_no"]) {
-
-                        var html = "<button class='btn btn-default' data-student-no=";
-                        html += data["student_no"];
-                        html += " data-toggle='modal' data-target='#updateStudent'>Edit</button>"
-                        html += "<button class='btn btn-danger' data-student-no=";
-                        html += data["student_no"];
-                        html += " data-toggle='modal' data-target='#deleteStudent'>Delete</button>"
+                    if (data[5]) {
+                        var reg = RegExp(/boss/);
+                        if (data[1].length == 41 || reg.test(data[1])) {
+                            var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Mgmt</a>"
+                            // html += "<a href='javascript:void(0);' class='connect8443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Oper</a>"
+                            html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> SSH</a>"
+                            return html;
+                        } else {
+                            var html = 'NotApplied';
+                            return html;
+                        }
+                    } else {
+                        var html = 'Unreachable';
                         return html;
                     }
-
                 }
             },
         ],
     });
-
 
     /* **********************************************
         admin user page functions
@@ -583,7 +179,7 @@ $(document).ready(function() {
         "ordering": true,
         "order": [1, "asc"],
         "ajax": {
-            'url': "admin/list/user",
+            'url': "list/users",
             'type': 'post',
             'data': {},
             'dataType': 'json',
