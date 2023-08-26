@@ -163,7 +163,8 @@ def create_app(test_config=None):
     TAP_FILES_DIR = os.path.join(PARENT_DIR, 'tap-ovpn-files')
     app.config.update(
         TUN_FILES_DIR = TUN_FILES_DIR,
-        TAP_FILES_DIR = TAP_FILES_DIR
+        TAP_FILES_DIR = TAP_FILES_DIR,
+        BASE_DIR = BASE_DIR
     )    
     
     # context processors

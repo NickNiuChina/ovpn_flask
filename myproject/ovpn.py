@@ -12,6 +12,7 @@ from flask import jsonify
 import datetime
 import re
 import os
+import subprocess
 import platform
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
@@ -316,11 +317,15 @@ def uploadTunIssueCert():
             filename = secure_filename(file.filename)            
             file.save(os.path.join(app.config['TUN_FILES_DIR'], app.config['REQ'] ,filename))
             # return redirect(url_for('download_file', name=filename))
+            generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-requests-tun.sh')    
+            # result = subprocess.run(["bash", generate_script], capture_output=True, shell=True)
+            print("-------------: " + generate_script)
+            flash('Successfully generate cert file!', 'success')
+            return redirect (url_for("ovpn.generateBossTunClient"))   
         else:
             flash('Filename length is not correct, please check!', 'danger')
             return redirect (url_for("ovpn.generateBossTunClient"))
-        flash('Successfully generate cert file!', 'success')
-        return redirect (url_for("ovpn.generateBossTunClient"))          
+       
 
 
 ####################################################################################
