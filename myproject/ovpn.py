@@ -16,11 +16,10 @@ import platform
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
-from pymysql.err import IntegrityError
 
 from myproject.auth import login_required
 from myproject.db import get_cur, get_db
-from django.contrib.messages.api import success
+# from django.contrib.messages.api import success
 
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
@@ -315,7 +314,7 @@ def uploadTunIssueCert():
         if allowed_file(file.filename):
             pass
             filename = secure_filename(file.filename)            
-            file.save(os.path.join(app.config['TAP_FILES_DIR'], app.config['REQ'] ,filename))
+            file.save(os.path.join(app.config['TUN_FILES_DIR'], app.config['REQ'] ,filename))
             # return redirect(url_for('download_file', name=filename))
         else:
             flash('Filename length is not correct, please check!', 'danger')
