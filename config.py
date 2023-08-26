@@ -20,7 +20,7 @@ class ProductionConfig(Config):
     PG_DATABASE_PORT = 5432
     
     SQL_FILE = 'schema.sql'
-    VERSION = 'v2.0.0'
+    VERSION = 'v0.0.1'
     
     # Log file locations
     # LOGFILE = 'D:\stmt_flask.log'

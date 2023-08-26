@@ -320,13 +320,8 @@ def listUsers():
     total_sql = "SELECT * FROM tb_user"
     if searchValue:
         query += " WHERE "
-        flag = 0 # notify wether OR if needed
-        for col in columns[:3]:
-            if flag:
-                query += "OR " + col + " LIKE %s "
-            else:
-                query += col + " LIKE %s "
-                flag += 1
+        query +=" username LIKE %s or display_name like %s "
+
     query += " ORDER BY {0} {1}".format(columns[ int(order_col) - 1 ], order_direction)
     if length:
         query += " LIMIT {0} OFFSET {1}".format(length, start)
@@ -343,7 +338,7 @@ def listUsers():
     # query = "SELECT * FROM {}".format(table)
     ftotal = 0
     if searchValue:
-        cur.execute(query, [f"%{searchValue}%"] * len(columns[:3]))
+        cur.execute(query, [f"%{searchValue}%"] * 2)
         ftotal =  cur.rowcount
     else:
         ftotal = cur.execute(query)

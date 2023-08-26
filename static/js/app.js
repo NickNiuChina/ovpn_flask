@@ -54,13 +54,30 @@ $(document).ready(function() {
         "lengthChange": true,
         "autoWidth": false,
         // "responsive": true, "lengthChange": true, "autoWidth": true,
-        "buttons": ["excel", "colvis"],
+        //"buttons": ["excel", "colvis"],
+        "buttons": [{
+                extend: 'excel',
+                text: 'Excel',
+                exportOptions: {
+                    modifier: {
+                        page: 'all',
+                        selected: null,
+                        search: 'none',
+                    },
+                    columns: [0, 1, 2, 3]
+                },
+            },
+            // { extend: 'excel', text: '<i class="fas fa-file-excel" aria-hidden="true"> Excel </i>' },
+            "colvis",
+            "pageLength"
+        ],
+        
         "lengthMenu": [100, 50, 20, "1000"],
         "processing": true,
         "serverSide": true,
         "destroy": true,
         "paging": true,
-        "search": {return: true },
+        //"search": {return: true },
         "ordering": true,
         "order": [5, "desc"],
         "ajax": {
@@ -317,7 +334,7 @@ $(document).ready(function() {
                         // </th>
                         var status = null;
                         var op = null;
-                        if (data["username"] != 'admin') {
+                        if (data["username"] != 'super') {
                             if (data["status"] == '1') {
                                 status = "success";
                                 op = "Enabled";
