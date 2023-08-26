@@ -47,3 +47,12 @@ class ProductionConfig(Config):
                 'TAP': 'enabled', 
             }
     }
+    
+    # subdirs
+    TUN_DIR = 'tun-ovpn-files'
+    TAP_DIR = 'tap-ovpn-files'
+    EASYRSA = 'easyrsa'
+    GENERIC_CLIENT = 'generic-ovpn'
+    REQ = "reqs"
+    REQ_DONE = "reqs-done"
+    VALIDATED = "validated"

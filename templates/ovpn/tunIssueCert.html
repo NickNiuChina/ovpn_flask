@@ -24,6 +24,16 @@
 	</div>
 	{#  content-header END #}
 
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+		<ul class=flashes>
+		{% for category, message in messages %}
+		<div class="text-{{ category }}">{{ message }}</div>
+		{% endfor %}
+		</ul>
+	{% endif %}
+	{% endwith %}
 	<section class="content">
 	  <div class="container-fluid">
 		<h4 class="m-0">Upload Req file for tun clients</h4>

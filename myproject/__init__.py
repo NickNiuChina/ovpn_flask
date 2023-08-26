@@ -157,7 +157,14 @@ def create_app(test_config=None):
         PLATFORM_NAME = PLATFORM_NAME,
         CURRENT_OVPN_SETTING = CURRENT_OVPN_SETTING
     )
-    
+    # update config for tun/tap files dir
+    PARENT_DIR = os.path.dirname(BASE_DIR)
+    TUN_FILES_DIR = os.path.join(PARENT_DIR, 'tun-ovpn-files')
+    TAP_FILES_DIR = os.path.join(PARENT_DIR, 'tap-ovpn-files')
+    app.config.update(
+        TUN_FILES_DIR = TUN_FILES_DIR,
+        TAP_FILES_DIR = TAP_FILES_DIR
+    )    
     
     # context processors
     @app.context_processor

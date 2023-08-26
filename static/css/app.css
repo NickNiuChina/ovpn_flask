@@ -38,3 +38,9 @@
      margin-left: -25px;
      margin-top: -20px;
  }
+ 
+ .custom-file-label {
+    text-decoration: none;
+    color: #bfbfbf;
+    font-size: 14px;
+}

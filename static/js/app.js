@@ -232,6 +232,22 @@ $(document).ready(function() {
         openNewLink.focus();
     });
 
+    /* **********************************************
+        tun upload req file page functions
+    ********************************************** */
+
+    // update the filename in the input 
+    $(".custom-file > input").on("change", function() {
+        var filePath = $(this).val();
+        if (filePath.length > 0) {
+            var arr = filePath.split('\\');
+            var fileName = arr[arr.length - 1];
+            $('.custom-file-label').text(fileName);
+        } else {
+            $('.custom-file-label').text("Please select Req file to upload");
+        }
+    })
+
 
     /* **********************************************
         admin user page functions

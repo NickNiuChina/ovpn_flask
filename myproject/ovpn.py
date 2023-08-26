@@ -7,12 +7,15 @@ from flask import request
 from flask import url_for
 from werkzeug.exceptions import abort
 from flask import session
-from flask import current_app
+from flask import current_app as app
 from flask import jsonify
 import datetime
 import re
+import os
+import platform
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 from pymysql.err import IntegrityError
 
 from myproject.auth import login_required
@@ -268,6 +271,18 @@ def generateBossTunClient():
     """
     return render_template("ovpn/tunIssueCert.html")
 
+ALLOWED_EXTENSIONS = {'req',}
+
+def allowed_file(filename):
+    """
+    Verifiy if the req filename and extension are valid
+
+    Returns:
+        True/False
+    """
+    split_filename = filename.rsplit('.', 1)
+    return '.' in filename and len(split_filename[0]) == 36 and split_filename[1].lower() in ALLOWED_EXTENSIONS
+
 @bp.route("/generate/tunissue/upload", methods=("GET", "POST"))
 @login_required
 def uploadTunIssueCert():
@@ -279,24 +294,34 @@ def uploadTunIssueCert():
     """
     if request.method == 'POST':
         # check if the post request has the file part
-        if 'file' not in request.files:
+        if 'upload_req' not in request.files:
             error = "No file part"
             flash(error, 'danger')
-            return redirect(request.url)
+            return (url_for("ovpn.generateBossTunClient"))
         
-        file = request.files['file']
+        file = request.files['upload_req']
         
-        print (" File uploaded: " + file)
+        print (" File uploaded: " + file.filename)
+        # print ("URL: " + request.url)
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
-    return redirect(url_for("ovpn.generateBossTunClient"))
+            flash('No selected file', 'danger')
+            return redirect (url_for("ovpn.generateBossTunClient"))
+        if platform.system().startswith("Windows"):
+            flash('Probably runs on windows in dev env, not allowed.', 'danger')
+            return redirect (url_for("ovpn.generateBossTunClient")) 
+                   
+        if allowed_file(file.filename):
+            pass
+            filename = secure_filename(file.filename)            
+            file.save(os.path.join(app.config['TAP_FILES_DIR'], app.config['REQ'] ,filename))
+            # return redirect(url_for('download_file', name=filename))
+        else:
+            flash('Filename length is not correct, please check!', 'danger')
+            return redirect (url_for("ovpn.generateBossTunClient"))
+        flash('Successfully generate cert file!', 'success')
+        return redirect (url_for("ovpn.generateBossTunClient"))          
 
 
 ####################################################################################
