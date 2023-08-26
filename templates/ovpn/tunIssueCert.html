@@ -28,7 +28,7 @@
 	  <div class="container-fluid">
 		<h4 class="m-0">Upload Req file for tun clients</h4>
 		<div class="col-md-6 "> {# mx-auto #}
-		    <form method="post" action="service/tunissue/upload" enctype ="multipart/form-data">
+		    <form method="post" action="{{ url_for('ovpn.uploadTunIssueCert') }}" enctype ="multipart/form-data">
 		        <div class="input-group">
 		            <div class="custom-file">
 		                <input type="file" 

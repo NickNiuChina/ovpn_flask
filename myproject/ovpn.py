@@ -21,9 +21,9 @@ from django.contrib.messages.api import success
 
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
-#################################################
+####################################################################################
 # test pages
-#################################################
+####################################################################################
 @bp.route("/test", methods=('GET', 'POST'))
 def test():
     """
@@ -35,9 +35,9 @@ def test():
     """
     return "Hello 世界！", 200
 
-#################################################
+####################################################################################
 # Main page
-#################################################
+####################################################################################
 @bp.route("/")
 @login_required
 def index():
@@ -88,9 +88,9 @@ def index():
     
     return render_template("ovpn/main.html", topOnline=topOnline)
 
-#################################################
+####################################################################################
 # introduction view
-#################################################
+####################################################################################
 
 @bp.route("/introduction")
 @login_required
@@ -102,9 +102,9 @@ def introduction():
     """
     return render_template("ovpn/introduction.html")
 
-#################################################
+####################################################################################
 # tips view
-#################################################
+####################################################################################
 
 @bp.route("/tips")
 @login_required
@@ -117,9 +117,9 @@ def tips():
     return render_template("ovpn/tips.html")
 
 
-#################################################
+####################################################################################
 # OVPN status views
-#################################################
+####################################################################################
  
 @bp.route("/tunclientsStatus")
 @login_required
@@ -253,9 +253,9 @@ def updateStoreName():
     return {"result": result}
 
 
-#####################
+####################################################################################
 # OVPN tun mode generate boss clients cert
-#####################
+####################################################################################
 
 @bp.route("/generate/bosstunclient")
 @login_required
@@ -268,9 +268,40 @@ def generateBossTunClient():
     """
     return render_template("ovpn/tunIssueCert.html")
 
-#####################
+@bp.route("/generate/tunissue/upload", methods=("GET", "POST"))
+@login_required
+def uploadTunIssueCert():
+    """
+    Generate boss cert files by uploaded boss req file
+
+    Returns:
+        template: tunIssueCert template with generate result: success/fail
+    """
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            error = "No file part"
+            flash(error, 'danger')
+            return redirect(request.url)
+        
+        file = request.files['file']
+        
+        print (" File uploaded: " + file)
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('download_file', name=filename))
+    return redirect(url_for("ovpn.generateBossTunClient"))
+
+
+####################################################################################
 # user management views
-#####################
+####################################################################################
 
 @bp.route("/list/users", methods=("GET", "POST"))
 @login_required
