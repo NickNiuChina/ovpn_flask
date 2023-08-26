@@ -180,7 +180,8 @@ def listTunClientsStatus():
     if searchValue:
         query += " WHERE "
         flag = 0 # notify wether OR if needed
-        for col in columns:
+        # skip search for changedate and status
+        for col in columns[:3]:
             if flag:
                 query += "OR " + col + " LIKE %s "
             else:
@@ -202,7 +203,7 @@ def listTunClientsStatus():
     # query = "SELECT * FROM {}".format(table)
     ftotal = 0
     if searchValue:
-        cur.execute(query, [f"%{searchValue}%"] * len(columns))
+        cur.execute(query, [f"%{searchValue}%"] * len(columns[:3]))
         ftotal =  cur.rowcount
     else:
         ftotal = cur.execute(query)
@@ -252,6 +253,20 @@ def updateStoreName():
     return {"result": result}
 
 
+#####################
+# OVPN tun mode generate boss clients cert
+#####################
+
+@bp.route("/generate/bosstunclient")
+@login_required
+def generateBossTunClient():
+    """
+    generateBossTunClient page
+
+    Returns:
+        template: generateBossTunClient template
+    """
+    return render_template("ovpn/tunIssueCert.html")
 
 #####################
 # user management views
@@ -299,14 +314,14 @@ def listUsers():
     # prepare sql for tb_student
     # cursor.execute("SELECT * FROM test WHERE text LIKE %s", f"%{param}%") # sql prepare
 
-    columns = ['user_type', 'username', 'display_name', 'expiredate', 'status']
+    columns = ['user_type', 'username', 'display_name', 'status']
     query = "SELECT * FROM tb_user"
     
     total_sql = "SELECT * FROM tb_user"
     if searchValue:
         query += " WHERE "
         flag = 0 # notify wether OR if needed
-        for col in columns:
+        for col in columns[:3]:
             if flag:
                 query += "OR " + col + " LIKE %s "
             else:
@@ -328,7 +343,7 @@ def listUsers():
     # query = "SELECT * FROM {}".format(table)
     ftotal = 0
     if searchValue:
-        cur.execute(query, [f"%{searchValue}%"] * len(columns))
+        cur.execute(query, [f"%{searchValue}%"] * len(columns[:3]))
         ftotal =  cur.rowcount
     else:
         ftotal = cur.execute(query)

@@ -60,6 +60,7 @@ $(document).ready(function() {
         "serverSide": true,
         "destroy": true,
         "paging": true,
+        "search": {return: true },
         "ordering": true,
         "order": [5, "desc"],
         "ajax": {

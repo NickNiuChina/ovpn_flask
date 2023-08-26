@@ -25,3 +25,25 @@ class ProductionConfig(Config):
     # Log file locations
     # LOGFILE = 'D:\stmt_flask.log'
     LOGFILE = 'stmt_flask.log'
+    OVPN = {
+        'CAREL_OVPN':
+            {
+                'TUN': 'enabled', 
+                'TAP': 'enabled', 
+            },
+        'SHIELD_OVPN':
+            {
+                'TUN': 'enabled', 
+                'TAP': 'disabled', 
+            },       
+        'SG_OVPN':
+            {
+                'TUN': 'disabled', 
+                'TAP': 'enabled', 
+            },
+        'DEV_OVPN':
+            {
+                'TUN': 'enabled', 
+                'TAP': 'enabled', 
+            }
+    }

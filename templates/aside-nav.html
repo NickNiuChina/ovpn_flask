@@ -2,7 +2,7 @@
     {# Brand Logo #}
     <a href="javascript:void(0);" οnclick="method()" class="brand-link">
       <img src="{{ url_for('static', filename='img/AdminLogo.png') }}" alt="Admin Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light"> Admin System </span>
+      <span class="brand-text font-weight-light"> {{ config.PLATFORM_NAME }} </span>
     </a>
 
     {# Sidebar #}
@@ -20,61 +20,121 @@
             </a>
           </li>
 
+		{# TUN mode menu #}
+		{% if config.CURRENT_OVPN_SETTING.TUN == 'enabled' %}
+	       <li class="nav-item menu-open">
+	        <a href="javascript:void(0);" class="nav-link">
+	          <i class="nav-icon fas fa-server"></i>
+	          <p>
+	            OVPN-tcp-443-tun
+	            <i class="right fas fa-angle-left"></i>
+	          </p>
+	        </a>
+	        <ul class="nav nav-treeview">
+						
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tunclientsStatus') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>OVPN clients status</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.generateBossTunClient') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>Generate boss cert</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>Generate generic cert</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>BOSS REQ files</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>BOSS cert files</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>Generic client certs</p>
+	            </a>
+	          </li>
+	
+	        </ul>
+	      </li>
+        {% endif %}
 
-       <li class="nav-item menu-open">
-        <a href="javascript:void(0);" class="nav-link">
-          <i class="nav-icon fas fa-server"></i>
-          <p>
-            OVPN-tcp-443-tun
-            <i class="right fas fa-angle-left"></i>
-          </p>
-        </a>
-        <ul class="nav nav-treeview">
-					
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.tunclientsStatus') }}" class="nav-link">
-              <i class="nav-icon far fa-file"></i>
-              <p>OVPN clients status</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
-              <i class="nav-icon far fa-file"></i>
-              <p>Generate boss cert</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
-              <i class="nav-icon far fa-file"></i>
-              <p>Generate generic cert</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
-              <i class="nav-icon far fa-file"></i>
-              <p>BOSS REQ files</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
-              <i class="nav-icon far fa-file"></i>
-              <p>BOSS cert files</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
-              <i class="nav-icon far fa-file"></i>
-              <p>Generic client certs</p>
-            </a>
-          </li>
-
-        </ul>
-      </li>
+		{# TAP mode menu #}
+		{% if config.CURRENT_OVPN_SETTING.TAP == 'enabled' %}
+	       <li class="nav-item menu-open">
+	        <a href="javascript:void(0);" class="nav-link">
+	          <i class="nav-icon fas fa-server"></i>
+	          <p>
+	            OVPN-tcp-443-tap
+	            <i class="right fas fa-angle-left"></i>
+	          </p>
+	        </a>
+	        <ul class="nav nav-treeview">
+						
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tunclientsStatus') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>OVPN clients status</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.generateBossTunClient') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>Generate boss cert</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>Generate generic cert</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>BOSS REQ files</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>BOSS cert files</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.tips') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>Generic client certs</p>
+	            </a>
+	          </li>
+	
+	        </ul>
+	      </li>
+        {% endif %}
 
       <li class="nav-item">
         <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link active">

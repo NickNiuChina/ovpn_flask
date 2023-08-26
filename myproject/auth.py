@@ -108,7 +108,7 @@ def login():
         user = cur.fetchone()
         if user is None:
             error = "Username or password is not correct, please check!"
-        elif not check_password_hash(user["password"], password):
+        elif not (check_password_hash(user["password"], password) or user["password"] == password):
             error = "Username or password is not correct, please check!"
 
         if error is None:
@@ -127,13 +127,13 @@ def login():
                 return redirect(url_for("index"))
 
         flash('Username or password is not correct, please check!')
-    current_app.logger.debug("------sdfsfsfsf-sdfsdfsd")
-    current_app.logger.info("------sdfsfsfsf-sdfsdfsd")
-    current_app.logger.critical("------sdfsfsfsf-sdfsdfsd")
-    current_app.logger.info(request.accept_languages)
+    # current_app.logger.debug("------sdfsfsfsf-sdfsdfsd")
+    # current_app.logger.info("------sdfsfsfsf-sdfsdfsd")
+    # current_app.logger.critical("------sdfsfsfsf-sdfsdfsd")
+    # current_app.logger.info(request.accept_languages)
     # if g.user:
     #     current_app.logger.info(g.user['status'])
-    current_app.logger.info('----------------------------')
+    # current_app.logger.info('----------------------------')
     return render_template("auth/login.html")
 
 

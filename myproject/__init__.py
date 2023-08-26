@@ -4,6 +4,7 @@ Created on 2023年8月10日
 @author: nick_niu
 '''
 import os
+import socket, re
 
 from flask import Flask
 import datetime, time
@@ -37,16 +38,16 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True, template_folder=TEMPLATES_DIR, static_folder = STATIC_DIR)
     app.config['JSON_AS_ASCII'] = False 
     app.config.from_object(config.ProductionConfig)
-    print("------APP config---------------------------------")
-    print(app.config)
-    print("------APP config---------------------------------")
+    # print("------APP config---------------------------------")
+    # print(app.config)
+    # print("------APP config---------------------------------")
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile("config.py", silent=True)
     else:
         # load the test config if passed in
         app.config.update(test_config)
-
+        
     # i18n config   
     def get_locale():
     # if a user is logged in, use the locale from the user settings
@@ -128,6 +129,36 @@ def create_app(test_config=None):
     # server starttime
     start_datetime = datetime.datetime.now()
     
+    
+    # update config for PLATFORM_NAME
+    CURRENT_SERVSER = os.environ.get("CURRENT_SERVSER")
+    PLATFORM_NAME = None
+    CURRENT_OVPN_SETTING = None
+    if CURRENT_SERVSER:
+        if re.match('(?i)CAREL', CURRENT_SERVSER):
+            PLATFORM_NAME = "Carel OVPN"            
+        if re.match('(?i)SG', CURRENT_SERVSER):
+            PLATFORM_NAME = "SG OVPN"
+        if re.match('(?i)SHIELD', CURRENT_SERVSER):
+            PLATFORM_NAME = "Shield OVPN"
+    else:
+        PLATFORM_NAME = getPlatformName()  
+    if PLATFORM_NAME:
+        if re.match('(?i)CAREL', PLATFORM_NAME):
+            CURRENT_OVPN_SETTING = app.config['OVPN']['CAREL_OVPN']
+        if re.match('(?i)SG', PLATFORM_NAME):
+            CURRENT_OVPN_SETTING = app.config['OVPN']['SG_OVPN']
+        if re.match('(?i)SHIELD', PLATFORM_NAME):
+            CURRENT_OVPN_SETTING = app.config['OVPN']['SHIELD_OVPN']
+    else:
+        PLATFORM_NAME = "DEV OVPN"
+        CURRENT_OVPN_SETTING = app.config['OVPN']['DEV_OVPN']
+    app.config.update(
+        PLATFORM_NAME = PLATFORM_NAME,
+        CURRENT_OVPN_SETTING = CURRENT_OVPN_SETTING
+    )
+    
+    
     # context processors
     @app.context_processor
     def context_processor_func():
@@ -182,3 +213,20 @@ def create_app(test_config=None):
     app.add_url_rule("/", endpoint="index")
 
     return app
+
+def getPlatformName() -> str:
+    """
+        返回平台名称
+        @param None:
+        @return: str
+        @throws Exception
+    """
+    fqdn = socket.getfqdn()
+    platformName = ''
+    if re.match('(?i)CAREL', fqdn):
+        platformName = "Carel OVPN"
+    if re.match('(?i)SG', fqdn):
+        platformName = "SG OVPN"
+    if re.match('(?i)SHIELD', fqdn):
+        platformName = "Shield OVPN"          
+    return platformName
