@@ -16,7 +16,8 @@ from werkzeug.security import generate_password_hash
 from pymysql.err import IntegrityError
 
 from myproject.auth import login_required
-from myproject.db import get_cur
+from myproject.db import get_cur, get_db
+from django.contrib.messages.api import success
 
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
@@ -217,6 +218,40 @@ def listTunClientsStatus():
     
     print (data)
     return data
+
+@bp.route("/tunclientsStatus/update/storename", methods=("GET", "POST"))
+@login_required
+def updateStoreName():
+    """
+    tunclientsStatus page update storename
+
+    Returns:
+        result: result:result
+    """
+    if request.method == "POST":
+        cn = request.values.get('cn')
+        newstorename = request.values.get('newstorename')
+    cur = get_cur()
+    conn = get_db()
+    cur.execute('select * from tunovpnclients where cn=%s', (cn,))
+    res = cur.rowcount
+    
+    if res:
+        pass
+    else:
+        result = "cn not found"
+        
+    cur.execute('update tunovpnclients set storename=%s where cn=%s', (newstorename, cn))
+    res = cur.rowcount
+    conn.commit()
+    if res:
+        result = "success"
+    else:
+        result = "Error when update storename"
+       
+    return {"result": result}
+
+
 
 #####################
 # user management views

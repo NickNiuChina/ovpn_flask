@@ -59,7 +59,7 @@
 	                    <th>ToggleDate</th>
 	                    <th>Expire</th>
 	                    <th>Status</th>
-	                    <th>远程连接</th>
+	                    <th>Connections</th>
 	                  </tr>
 	                  </thead>
 	     
@@ -70,135 +70,45 @@
 	                    <th>ToggleDate</th>
 	                    <th>Expire</th>
 	                    <th>Status</th>
-	                    <th>远程连接</th>
+	                    <th>Connections</th>
 	                  </tfoot>
 	                </table>	              
 	            </div>{# /.card-body #}
 			</div>
 		</div>
 
-		{# add user modal #}
-		<div class="modal fade" id="addStudentUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<form action="{{ url_for('ovpn.addUser') }}" method="post">
-						<div class="modal-header">
-							<h4 class="modal-title" id="myModalLabel">Add student account</h4>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>							
-						</div>
-						<div class="modal-body">
+		{# change storename modal #}
+		<div class="modal fade" id="tunclientStatusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    
+		    <div class="modal-content">
+			
+			<form method="post" action="javascript: void(0)" enctype ="multipart/form-data">
+		      
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="tunclientstatusModalLabel">Update store name</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      
+		      <div class="modal-body">
+				<div class="form-group display_store_info">Something wrong, please report!</div>
+		        <div class="form-group">
+		          <input type="text" class="form-control" name="newstorename" placeholder="new store name">
+	            </div>
+	            <div class="form-group error_info"></div>
+			  </div>
 
-							<div class="form-group"></div>
-
-							<div class="form-group">
-								<label for="student-no" class="control-label">学生(Only unregistered):</label>
-								<select class="form-control" name="student_no" id="student-no">
-
-								</select>
-							</div>
-
-							<div class="form-group">
-								<label for="student-username" class="control-label">用户名:</label>
-								<input type="text" class="form-control" name="student_username" id="student-username" required
-								oninvalid="this.setCustomValidity('Please Enter valid username')"
-                       			oninput="setCustomValidity('')"> 
-							</div>
-
-							<div class="form-group">
-								<label for="user-student-password" class="control-label">密码:</label> 
-								<input type="password" class="form-control" name="password" id="user-student-password" required
-								oninvalid="this.setCustomValidity('Please Enter valid password')"
-                       			oninput="setCustomValidity('')">
-							</div>
-
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-							<button type="submit" class="btn btn-primary">提交</button>
-						</div>
-					</form>
-				</div>
-			</div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-primary">Update</button>
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		      </div>
+		    
+		    </form>  		      
+		    </div>
+		  </div>
 		</div>
-
-		{# update user modal #}
-		<div class="modal fade" id="updateUser" tabindex="-1" role="dialog"
-			aria-labelledby="myModalLabel">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<form action="{{ url_for('ovpn.updateUser') }}" method="post">
-						<div class="modal-header">
-							<h4 class="modal-title" id="udpate-myModalLabel">更新用户信息</h4>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div class="form-group">
-
-								<label for="update-user_id" class="control-label">UserID:</label> 
-								<input type="text" class="form-control" name="user_id" id="update-user_id" readonly>
-							</div>
-
-							<div class="form-group">
-								<label for="update-username" class="control-label">Username:</label> 
-								<input type="text" class="form-control" name="username" id="update-username" required>
-							</div>
-
-							<div class="form-group">
-								<label for="update-password" class="control-label">Password:</label> 
-								<input type="password" class="form-control"  name="password" id="update-password" required>
-							</div>
-
-							<div class="form-group">
-								<label for="update-display_name" class="control-label">Dispaly name:</label> 
-								<input type="text" class="form-control" name="display_name" id="update-display_name">
-							</div>
-
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<button type="submit" class="btn btn-primary">提交</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-
-		{# delete user #}
-		<div class="modal fade" id="deleteUser" tabindex="-1" role="dialog"
-			aria-labelledby="myModalLabel">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<form action="{{ url_for('ovpn.deleteUser') }}" method="post">
-						<div class="modal-header">
-							<h4 class="modal-title" id="udpate-myModalLabel">Delete account info</h4>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>							
-						</div>
-						<div class="modal-body">
-							确认要删除该同学的所有信息吗（该操作不可逆）？
-							<div class="form-group hidden">
-								<label for="delete-username" class="control-label">用户id:</label> 
-								<input
-									type="text" class="form-control" name="username"
-									id="delete-username">
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-							<button type="submit" id="delete_student" class="btn btn-danger">删除</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-
 
 	</section>
 </div>

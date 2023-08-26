@@ -42,11 +42,11 @@ $(document).ready(function() {
             $(a).removeClass("active");
         }
     });
-    
-	/* **********************************************
-        admin user page functions
-	********************************************** */   
-    
+
+    /* **********************************************
+    Ovpn tun clients status page functions
+    ********************************************** */
+
     $("#tuntbclientstatus").DataTable({
         //"dom": 'Blfrtip',
         "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
@@ -128,7 +128,7 @@ $(document).ready(function() {
                         var reg = RegExp(/boss/);
                         if (data["cn"].length == 41 || reg.test(data["cn"])) {
                             var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Mgmt</a>"
-                            // html += "<a href='javascript:void(0);' class='connect8443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Oper</a>"
+                                // html += "<a href='javascript:void(0);' class='connect8443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Oper</a>"
                             html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> SSH</a>"
                             return html;
                         } else {
@@ -143,6 +143,77 @@ $(document).ready(function() {
             },
         ],
     });
+
+
+    $('#tunclientStatusModal').on('shown.bs.modal',
+        function(e) {
+            storename = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
+            cn = $(e.relatedTarget).parent().parent().children(".dtr-control").next().text();
+            var thismodal = $('#tunclientStatusModal');
+            // thismodal.find('.modal-body').html("<p>storename: " + storename + "</p><p>cn: " + cn + "</p>");
+            thismodal.find('.modal-body .display_store_info').html("<p>storename: " + storename + "</p><p>cn: " + cn + "</p>");
+            $(this).on('click', '.btn-primary', { 'filename': cn }, function(e) {
+                var newstorename = thismodal.find('input').val();
+                console.log("newstorename:" + newstorename);
+                if (newstorename) {
+                    $.post("tunclientsStatus/update/storename", { 'cn': cn, 'newstorename': newstorename }, function(result) {
+                        console.log("服务器返回结果：" + result.result);
+                        $('#tuntbclientstatus').DataTable().ajax.reload(); // reload table data
+                        $('#tunclientStatusModal').modal('hide'); // hide modal
+                    });
+                } else {
+					thismodal.find('.modal-body .error_info').html("<p class='text-danger'>Error: failed to update storename!</p>");
+				}
+            });
+        });
+
+    $("#tunclientStatusModal").on("hidden.bs.modal", function(e) { 
+		// remove the actual elements from the DOM when fully hidden
+        $('#tunclientStatusModal').find("input[type=text], textarea").val("");
+        $(this).find('form').trigger('reset');
+    });
+
+    // Port 443 connection
+    $('#tuntbclientstatus tbody').on('click', '.conn4ect443', function(e) {
+        var clientIp = $(this).parent().parent().children().eq(2).text();
+        var cn = $(this).parent().parent().children().eq(1).text();
+        // console.log(clientIp);
+        var ipSliceList = clientIp.split('.')
+            // console.log(ipSliceList);
+        var toUrlpart = 'boss-0x';
+        for (var i = 0; i < ipSliceList.length; i++) {
+            var everyPart = parseInt(ipSliceList[i]).toString(16);
+            // console.log("长度：" + everyPart.length);
+            if (everyPart.length < 2) {
+                everyPart = "0" + String(everyPart);
+                // console.log("转化后：" + everyPart);
+            }
+            // console.log(parseInt(ipSliceList[i]).toString(16));
+            toUrlpart = toUrlpart + everyPart;
+        }
+        // console.log(toUrlpart);
+        var url = "/" + toUrlpart + "/";
+        console.log("转化后：" + url);
+        var openNewLink = window.open(url);
+        openNewLink.focus();
+    });
+
+
+    // SSH connection
+    // https://service.carel-remote.com/wssh/?hostname=xx&username=yy&password=str_base64_encoded&title=boss-a98bd3ba-cfc3-11ed-94a8-c400ad64f34a
+    // https://service.carel-remote.com/wssh/?hostname=192.168.120.62&username=root&title=boss-a98bd3ba-cfc3-11ed-94a8-c400ad64f34a
+    $('#tuntbclientstatus tbody').on('click', '.sshConnect', function(e) {
+        var clientIp = $(this).parent().parent().children().eq(2).text();
+        var cn = $(this).parent().parent().children().eq(1).text();
+        var storename = $(this).parent().parent().children().eq(0).text();
+        var url = "/wssh/" + "?hostname=" + clientIp;
+        url = url + '&' + "username=root";
+        url = url + "&title=" + storename;
+        console.log("ssh url: " + url);
+        var openNewLink = window.open(url);
+        openNewLink.focus();
+    });
+
 
     /* **********************************************
         admin user page functions
