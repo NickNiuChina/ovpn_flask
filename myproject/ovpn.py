@@ -330,6 +330,46 @@ def uploadTunIssueCert():
             return redirect (url_for("ovpn.generateBossTunClient"))
        
 
+####################################################################################
+# OVPN tun mode list reqs files
+####################################################################################
+
+@bp.route("/tunReqFileList", methods=("GET", "POST"))
+@login_required
+def tunReqFileList():
+    """
+    Req file list
+        
+    Returns:
+        template: Req file list template
+    """
+    return render_template("ovpn/tunReqFileList.html")
+
+@bp.route("/tunReqFiles/list", methods=("GET", "POST"))
+@login_required
+def tunReqFiles():
+    """
+    Req file list
+        
+    Returns:
+        Json: Req file list
+        
+        fname = pathlib.Path('0036ddf6-a8e9-11ed-9d88-c400addbd0cf.req')
+        ctime = datetime.datetime.fromtimestamp(fname.stat().st_ctime, tz=datetime.timezone.utc)
+        mtime = datetime.datetime.fromtimestamp(fname.stat().st_mtime, tz=datetime.timezone.utc)
+        ctime.strftime('%Y-%m-%d_%H:%M:%S')
+    """
+    result = {
+        "data":
+            [
+                [
+                    "0036ddf6-a8e9-11ed-9d88-c400addbd0cf.req",
+                    "2023/08/26_22:52:32",
+                    "NA"
+                ],
+            ]
+        }
+    return result
 
 ####################################################################################
 # user management views
