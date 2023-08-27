@@ -9,6 +9,7 @@ from werkzeug.exceptions import abort
 from flask import session
 from flask import current_app as app
 from flask import jsonify
+from flask import send_file
 import datetime
 import re
 import os
@@ -360,6 +361,9 @@ def tunReqFiles():
         ctime.strftime('%Y-%m-%d_%H:%M:%S')
     """
     result = {
+        "draw": "1",
+        "recordsFiltered": 1,
+        "recordsTotal": 1,
         "data":
             [
                 [
@@ -370,6 +374,30 @@ def tunReqFiles():
             ]
         }
     return result
+
+@bp.route("/tunReqFileList/download/<filename>", methods=("GET", "POST"))
+@login_required
+def tunReqFileDownload(filename):
+    """
+    Req file download
+    @param filename: send from the url     
+    @return: success or fail
+    """
+    file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'], filename)
+    
+    flash("You are trying to download: " + file_path, 'success')
+    return send_file(file_path,as_attachment=True)
+
+
+@bp.route("/tunReqFileList/delete/<filename>", methods=("GET", "POST"))
+@login_required
+def tunReqFileDelete():
+    """
+    Req file delete
+    @param filename: send from the url     
+    @return: success or fail
+    """
+    return render_template("ovpn/tunReqFileList.html")
 
 ####################################################################################
 # user management views

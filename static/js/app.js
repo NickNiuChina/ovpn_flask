@@ -289,6 +289,65 @@ $(document).ready(function() {
         }],
     });
 
+
+	// tun mode delete req file button
+    $('#tunreqDelModal').on('show.bs.modal',
+        function(e) {
+            var reqFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
+            $(this).on('click', '.btn-danger', { 'filename': reqFileName }, function(e) {
+                // alert("Deleted!!");
+                $.post("service/tunreqs/delete", { 'filename': reqFileName }, function(result) {
+                    // console.log(result)
+                    $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
+                });
+                $('#tunreqDelModal').modal('hide'); // hide modal
+            });
+        })
+
+    // tun req files download
+    $('#tuntbreqfiles tbody').on('click', '.reqDownload', function() {
+        var reqFileName = $(this).parent().parent().children(".dtr-control").text();
+        //Set the File URL.
+        var url = "tunReqFileList/download/" + reqFileName;
+        console.log(url);
+        $.ajax({
+            url: url,
+            cache: false,
+            xhr: function() {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 2) {
+                        if (xhr.status == 200) {
+                            xhr.responseType = "blob";
+                        } else {
+                            xhr.responseType = "text";
+                        }
+                    }
+                };
+                return xhr;
+            },
+            success: function(data) {
+                //Convert the Byte Data to BLOB object.
+                var blob = new Blob([data], { type: "application/octetstream" });
+
+                //Check the Browser type and download the File.
+                var isIE = false || !!document.documentMode;
+                if (isIE) {
+                    window.navigator.msSaveBlob(blob, reqFileName);
+                } else {
+                    var url = window.URL || window.webkitURL;
+                    link = url.createObjectURL(blob);
+                    var a = $("<a />");
+                    a.attr("download", reqFileName);
+                    a.attr("href", link);
+                    $("body").append(a);
+                    a[0].click();
+                    $("body").remove(a);
+                }
+            }
+        });
+    });
+
     /* **********************************************
         admin user page functions
     ********************************************** */
