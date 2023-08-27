@@ -299,7 +299,7 @@ $(document).ready(function() {
                 // alert("Deleted!!");
                 $.post("tunReqFileList/delete", { 'filename': reqFileName }, function(result) {
                     console.log(result);
-                    $('#tuntbreqfiles').DataTable().ajax.reload(null, false); // reload table data
+                    $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
                 });
                 $('#tunreqDelModal').modal('hide'); // hide modal
             });
