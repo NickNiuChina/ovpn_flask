@@ -332,6 +332,21 @@ def uploadTunIssueCert():
         else:
             flash('Filename length is not correct, please check!', 'danger')
             return redirect (url_for("ovpn.generateBossTunClient"))
+
+####################################################################################
+# OVPN tun generate generic certifications
+####################################################################################
+
+@bp.route("/generate/genericTunClient")
+@login_required
+def generateGenericTunClient():
+    """
+    generateBossTunClient page
+
+    Returns:
+        template: generateBossTunClient template
+    """
+    return render_template("ovpn/tunGenericIssueCert.html")
        
 
 ####################################################################################

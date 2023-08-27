@@ -1,3 +1,3 @@
 #! /bin/sh
 # To be filled
-# /opt/mgmt_service/script/mgmt_service &>> /var/log/mgmt.log &
+# flask --app myproject run --debug --host=0.0.0.0 &>> /var/log/ovpnflask.log &
