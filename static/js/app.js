@@ -302,7 +302,7 @@ $(document).ready(function() {
                 });
                 $('#tunreqDelModal').modal('hide'); // hide modal
             });
-        })
+        });
 
     // tun req files download
     $('#tuntbreqfiles tbody').on('click', '.reqDownload', function() {

@@ -10,11 +10,14 @@ from flask import session
 from flask import current_app as app
 from flask import jsonify
 from flask import send_file
+
 import datetime
 import re
 import os
 import subprocess
 import platform
+import pathlib
+
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
@@ -360,18 +363,31 @@ def tunReqFiles():
         mtime = datetime.datetime.fromtimestamp(fname.stat().st_mtime, tz=datetime.timezone.utc)
         ctime.strftime('%Y-%m-%d_%H:%M:%S')
     """
+    
+    # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
+    files = [f for f in pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE']).iterdir() 
+             if f.is_file() and re.findall('req', f.name)]
+    count = len(files)
+    
+    # prepare return data
+    data = []
+    for file in files:
+        ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
+        data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
+
+
     result = {
         "draw": "1",
-        "recordsFiltered": 1,
-        "recordsTotal": 1,
-        "data":
-            [
-                [
-                    "0036ddf6-a8e9-11ed-9d88-c400addbd0cf.req",
-                    "2023/08/26_22:52:32",
-                    "NA"
-                ],
-            ]
+        "recordsFiltered": count,
+        "recordsTotal": count,
+        "data": data
+            # [
+            #     [
+            #         "0036ddf6-a8e9-11ed-9d88-c400addbd0cf.req",
+            #         "2023/08/26_22:52:32",
+            #         "NA"
+            #     ],
+            # ]
         }
     return result
 
