@@ -428,6 +428,95 @@ def tunReqFileDelete():
     else:
         return {'result': 'No filename provided!'}
 
+####################################################################################
+# OVPN tun mode list certs files
+####################################################################################
+
+@bp.route("/tunCertFileList", methods=("GET", "POST"))
+@login_required
+def tunCertFileList():
+    """
+    Tun cert file list
+        
+    Returns:
+        template: Tun cert file list template
+    """
+    return render_template("ovpn/tunCertFileList.html")
+
+
+@bp.route("/tunCertFiles/list", methods=("GET", "POST"))
+@login_required
+def tunCertFiles():
+    """
+    Cert file list
+        
+    Returns:
+        Json: Cert file list
+    """
+    draw = request.values.get('draw')
+    searchValue = request.values.get('search[value]')
+    
+    # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
+    files = [f for f in pathlib.Path(app.config['TUN_FILES_DIR'], app.config['VALIDATED']).iterdir() 
+             if f.is_file() and re.findall('p7mb64', f.name)]
+    count = len(files)
+    
+    # prepare return data
+    data = []
+    searchString = searchValue.strip()
+    
+    if searchString:
+        for file in files:
+            if re.findall(searchString, file.name):
+                ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
+                data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
+    else:
+        for file in files:
+            data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
+            ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
+            data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
+
+    result = {
+        "draw": draw,
+        "recordsFiltered": count,
+        "recordsTotal": count,
+        "data": data
+        }
+    return result
+
+@bp.route("/tunCertFileList/download/<filename>", methods=("GET", "POST"))
+@login_required
+def tunCertFileDownload(filename):
+    """
+    Cert file download
+    @param filename: send from the url     
+    @return: success or fail
+    """
+    file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED'], filename)
+    
+    print("You are trying to download: " + file_path, 'success')
+    return send_file(file_path,as_attachment=True)
+
+
+@bp.route("/tunCertFileList/delete", methods=("GET", "POST"))
+@login_required
+def tunCertFileDelete():
+    """
+    Cert file delete
+    @param filename: send from the url     
+    @return: success or fail
+    """
+    filename = request.values.get('filename')
+    if filename:
+        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED'], filename)
+        print("You are trying to delete: " + file_path, 'success')
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return {'result':'true'}
+        else:
+            return {'result': 'File does not existed!'}
+    else:
+        return {'result': 'No filename provided!'}
     
 ####################################################################################
 # user management views
