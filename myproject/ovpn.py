@@ -358,15 +358,18 @@ def generateGenericTunClientCert():
     """
     cn = request.values.get('new_cn')
     new_cn = cn.strip()
+    if platform.system().startswith("Windows"):
+        flash('Probably runs on windows in dev env, not allowed.', 'danger')
+        return render_template("ovpn/tunGenericIssueCert.html") 
     if not new_cn:
-        flash("CN is all space, invalid!")
+        flash("CN is all space, invalid!", "danger")
         return render_template("ovpn/tunGenericIssueCert.html")    
     pattern = '^[0-9a-zA-Z_-]*$'
     
     if re.match(pattern, new_cn):
         pass
     else:      
-        flash("Only space, number, _ allowed, please check!")
+        flash("Only space, number, _ allowed, please check!", "danger")
         return render_template("ovpn/tunGenericIssueCert.html")       
 
 ####################################################################################
