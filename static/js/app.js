@@ -298,8 +298,8 @@ $(document).ready(function() {
             $(this).on('click', '.btn-danger', { 'filename': reqFileName }, function(e) {
                 // alert("Deleted!!");
                 $.post("tunReqFileList/delete", { 'filename': reqFileName }, function(result) {
-                    console.log(result)
-                    $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
+                    console.log(result);
+                    $('#tuntbreqfiles').DataTable().ajax.reload(null, false); // reload table data
                 });
                 $('#tunreqDelModal').modal('hide'); // hide modal
             });

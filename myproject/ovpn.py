@@ -411,7 +411,7 @@ def tunReqFileDelete():
         print("You are trying to delete: " + file_path, 'success')
         if os.path.exists(file_path):
             os.remove(file_path)
-            return {'result': 'true'}
+            return {'result':'true'}
         else:
             return {'result': 'File does not existed!'}
     else:
