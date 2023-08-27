@@ -363,6 +363,7 @@ def tunReqFiles():
         mtime = datetime.datetime.fromtimestamp(fname.stat().st_mtime, tz=datetime.timezone.utc)
         ctime.strftime('%Y-%m-%d_%H:%M:%S')
     """
+    draw = request.values.get('draw')
     
     # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
     files = [f for f in pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE']).iterdir() 
@@ -376,7 +377,7 @@ def tunReqFiles():
         data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
 
     result = {
-        "draw": "1",
+        "draw": draw,
         "recordsFiltered": count,
         "recordsTotal": count,
         "data": data
