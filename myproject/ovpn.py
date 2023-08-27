@@ -24,7 +24,6 @@ from werkzeug.utils import secure_filename
 
 from myproject.auth import login_required
 from myproject.db import get_cur, get_db
-# from django.contrib.messages.api import success
 
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
@@ -49,10 +48,8 @@ def test():
 @login_required
 def index():
     """ 
-    Main page
-
-    Returns:
-        Main page templates and recently 5 launched clients
+    @summary: Main page
+    @return: Main page templates and recently 5 launched clients
     """
     cur = get_cur()
     
@@ -102,10 +99,9 @@ def index():
 @bp.route("/introduction")
 @login_required
 def introduction():
-    """introduction page
-
-    Returns:
-        template: introduction template
+    """
+    @summary: introduction page
+    @return: template: introduction template
     """
     return render_template("ovpn/introduction.html")
 
@@ -368,9 +364,10 @@ def generateGenericTunClientCert():
     
     if re.match(pattern, new_cn):
         flash("New CN name is OK!", "success")
-        return render_template("ovpn/tunGenericIssueCert.html") 
+        return render_template("ovpn/tunGenericIssueCert.html")
+        # generate new CN here 
     else:      
-        flash("Only space, number, _ allowed, please check!", "danger")
+        flash("Only a-zA-Z, number, _ allowed, please check!", "danger")
         return render_template("ovpn/tunGenericIssueCert.html")       
 
 ####################################################################################
