@@ -347,7 +347,19 @@ def generateGenericTunClient():
         template: generateBossTunClient template
     """
     return render_template("ovpn/tunGenericIssueCert.html")
-       
+
+@bp.route("/generate/genericTunClient/genericClient")
+@login_required
+def generateGenericTunClientCert():
+    """
+    generateBossTunClientCert URL
+    @param param: Post with argument
+    @return: template with success or fail
+    """
+    new_cn = request.values.get('new_cn')
+    
+    flash("You are trying to: " + new_cn, "danger")
+    return render_template("ovpn/tunGenericIssueCert.html")       
 
 ####################################################################################
 # OVPN tun mode list reqs files
