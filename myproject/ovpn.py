@@ -384,7 +384,9 @@ def tunReqFiles():
         for file in files:
             ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
             data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
-
+    
+    # Ordering
+    data.sort()
     result = {
         "draw": draw,
         "recordsFiltered": count,
@@ -471,10 +473,11 @@ def tunCertFiles():
                 data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
     else:
         for file in files:
-            data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
             ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
             data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
 
+    # Ordering
+    data.sort()
     result = {
         "draw": draw,
         "recordsFiltered": count,
