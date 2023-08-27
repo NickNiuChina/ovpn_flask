@@ -389,21 +389,24 @@ def tunReqFileDownload(filename):
     return send_file(file_path,as_attachment=True)
 
 
-@bp.route("/tunReqFileList/delete/<filename>", methods=("GET", "POST"))
+@bp.route("/tunReqFileList/delete", methods=("GET", "POST"))
 @login_required
-def tunReqFileDelete(filename):
+def tunReqFileDelete():
     """
     Req file delete
     @param filename: send from the url     
     @return: success or fail
     """
-    file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'], filename)
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        return {'result': 'success'}
+    filename = request.values.get('filename')
+    if filename:
+        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'], filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return {'result': 'success'}
+        else:
+            return {'result': 'File does not existed!'}
     else:
-        return {'result': 'File does not existed'}
-
+        return {'result': 'No filename provided!'}
 ####################################################################################
 # user management views
 ####################################################################################
