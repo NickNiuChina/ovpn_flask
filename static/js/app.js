@@ -412,7 +412,7 @@ $(document).ready(function() {
      $('#tuntbcertfiles tbody').on('click', '.certDownload', function() {
         var certFileName = $(this).parent().parent().children(".dtr-control").text();
         //Set the File URL.
-        var url = "tunReqFileList/download/" + certFileName;
+        var url = "tunCertFileList/download/" + certFileName;
         console.log(url);
         $.ajax({
             url: url,
