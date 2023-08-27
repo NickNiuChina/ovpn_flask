@@ -453,6 +453,73 @@ $(document).ready(function() {
     });   
 
     /* **********************************************
+        tun mode generic cert file list page functions
+    ********************************************** */
+    $("#tuntbgenericcertfiles").DataTable({
+        "dom": 'Blfrtip',
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        // "responsive": true, "lengthChange": true, "autoWidth": true,
+        // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        "buttons": ["excel", "colvis"],
+        "lengthMenu": [5, 50, 100, 1000],
+        //
+        "processing": true,
+        "serverSide": true,
+        // "searching": true,
+        "destroy": true,
+        "paging": false,
+        // "pagingType": 'input',
+        "ordering": false,
+        // "iDisplayLength": 10,
+        // "bLengthChange": true,
+        // "lengthMenu": [20, 50, 100, 1000],
+        "ajax": {
+            'url': "tunGenericCertFiles/list",
+            'type': 'POST',
+            'data': {},
+            'dataType': 'json',
+        },
+        // datatable inline-button
+        // https://datatables.net/reference/option/columnDefs
+        "columnDefs": [{
+            "targets": 3,
+            "data": null,
+            "render": function(data, type, row) {
+                var id = '"' + row.id + '"';
+                var html = "<a href='javascript:void(0);'  class='certDelete btn btn-danger btn-xs' data-toggle='modal' data-target='#tungenericcertDelModal'  ><i class='fa fa-times'></i> Delete</a>"
+                    // html += "<a href='javascript:void(0);'   onclick='deleteCertByFilename(" + 99 + ")'  class='down btn btn-default btn-xs'><i class='fa fa-arrow-down'></i>Download</a>"
+                html += "<a href='javascript:void(0);' class='certDownload btn btn-default btn-xs'><i class='fa fa-arrow-down'></i>Download</a>"
+                return html;
+            }
+        }],
+    });
+
+
+    $('#tungenericcertDelModal').on('show.bs.modal',
+        function(e) {
+            var certFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
+            $(this).on('click', '.btn-danger', { 'filename': certFileName }, function(e) {
+                // alert("Deleted!!");
+                $.post("tunGenericCertFileList/delete", { 'filename': certFileName }, function(result) {
+                    // console.log(result)
+                    $('#tuntbgenericcertfiles').DataTable().ajax.reload();
+                });
+                $('#tungenericcertDelModal').modal('hide'); // hide modal
+            });
+        });
+        
+    $('#tuntbgenericcertfiles tbody').on('click', '.certDownload', function(e) {
+        var certFileName = $(this).parent().parent().children(".dtr-control").text();
+        e.preventDefault();
+        var url = 'tunGenericCertFileList/download/' + certFileName;
+        console.log(url);
+        window.location.href = url;
+    });
+
+
+    /* **********************************************
         admin user page functions
     ********************************************** */
 
