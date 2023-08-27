@@ -290,13 +290,13 @@ $(document).ready(function() {
     });
 
 
-	// tun mode delete req file button
+	// tun mode delete req file
     $('#tunreqDelModal').on('show.bs.modal',
         function(e) {
             var reqFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
             $(this).on('click', '.btn-danger', { 'filename': reqFileName }, function(e) {
                 // alert("Deleted!!");
-                $.post("service/tunreqs/delete", { 'filename': reqFileName }, function(result) {
+                $.post("tunReqFileList/delete", { 'filename': reqFileName }, function(result) {
                     // console.log(result)
                     $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
                 });
