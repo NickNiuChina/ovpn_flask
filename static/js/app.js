@@ -253,7 +253,8 @@ $(document).ready(function() {
     ********************************************** */
 
     $("#tuntbreqfiles").DataTable({
-        "dom": 'Blfrtip',
+        //"dom": 'Blfrtip',
+        "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
