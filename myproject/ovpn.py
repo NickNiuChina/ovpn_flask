@@ -348,7 +348,7 @@ def generateGenericTunClient():
     """
     return render_template("ovpn/tunGenericIssueCert.html")
 
-@bp.route("/generate/genericTunClient/genericClient", methods=("GET", "POST"))
+@bp.route("/generate/genericTunClient/create", methods=("GET", "POST"))
 @login_required
 def generateGenericTunClientCert():
     """
@@ -356,10 +356,18 @@ def generateGenericTunClientCert():
     @param param: Post with argument
     @return: template with success or fail
     """
-    new_cn = request.values.get('new_cn')
+    cn = request.values.get('new_cn')
+    new_cn = cn.strip()
+    if not new_cn:
+        flash("CN is all space, invalid!")
+        return render_template("ovpn/tunGenericIssueCert.html")    
     pattern = '^[0-9a-zA-Z_-]*$'
-    flash("You are trying to: " + new_cn, "danger")
-    return render_template("ovpn/tunGenericIssueCert.html")       
+    
+    if re.match(pattern, new_cn):
+        pass
+    else:      
+        flash("Only space, number, _ allowed, please check!")
+        return render_template("ovpn/tunGenericIssueCert.html")       
 
 ####################################################################################
 # OVPN tun mode list reqs files
