@@ -367,7 +367,8 @@ def generateGenericTunClientCert():
     pattern = '^[0-9a-zA-Z_-]*$'
     
     if re.match(pattern, new_cn):
-        pass
+        flash("New CN name is OK!", "success")
+        return render_template("ovpn/tunGenericIssueCert.html") 
     else:      
         flash("Only space, number, _ allowed, please check!", "danger")
         return render_template("ovpn/tunGenericIssueCert.html")       
