@@ -400,6 +400,7 @@ def tunReqFileDelete():
     filename = request.values.get('filename')
     if filename:
         file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'], filename)
+        print("You are trying to delete: " + file_path, 'success')
         if os.path.exists(file_path):
             os.remove(file_path)
             return {'result': 'success'}
