@@ -375,19 +375,11 @@ def tunReqFiles():
         ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
         data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
 
-
     result = {
         "draw": "1",
         "recordsFiltered": count,
         "recordsTotal": count,
         "data": data
-            # [
-            #     [
-            #         "0036ddf6-a8e9-11ed-9d88-c400addbd0cf.req",
-            #         "2023/08/26_22:52:32",
-            #         "NA"
-            #     ],
-            # ]
         }
     return result
 
@@ -424,6 +416,8 @@ def tunReqFileDelete():
             return {'result': 'File does not existed!'}
     else:
         return {'result': 'No filename provided!'}
+
+    
 ####################################################################################
 # user management views
 ####################################################################################

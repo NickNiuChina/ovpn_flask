@@ -301,6 +301,7 @@ $(document).ready(function() {
                     // console.log(result)
                     $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
                 });
+                $('#tuntbreqfiles').DataTable().ajax.reload();
                 $('#tunreqDelModal').modal('hide'); // hide modal
             });
         });
