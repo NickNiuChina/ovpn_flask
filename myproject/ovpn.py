@@ -382,6 +382,7 @@ def tunReqFiles():
                 data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
     else:
         for file in files:
+            ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
             data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
             ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
             data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
