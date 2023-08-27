@@ -374,14 +374,16 @@ def tunReqFiles():
     # prepare return data
     data = []
     searchString = searchValue.strip()
-    print("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL: " + searchString)
-    for file in files:
-        ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
-        if searchString and re.findall(searchString, file.name):
-            print("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL: " + "Searching works")
-            print(searchString, file.name)
+    
+    if searchString:
+        for file in files:
+            if re.findall(searchString, file.name):
+                ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
+                data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
+    else:
+        for file in files:
             data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
-        else:
+            ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
             data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
 
     result = {
