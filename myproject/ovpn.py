@@ -364,6 +364,7 @@ def tunReqFiles():
         ctime.strftime('%Y-%m-%d_%H:%M:%S')
     """
     draw = request.values.get('draw')
+    searchValue = request.values.get('search[value]')
     
     # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
     files = [f for f in pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE']).iterdir() 
@@ -374,7 +375,11 @@ def tunReqFiles():
     data = []
     for file in files:
         ctime = datetime.datetime.fromtimestamp(file.stat().st_ctime, tz=datetime.timezone.utc)
-        data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
+        searchString = searchValue.strip()
+        if searchString and re.findall(searchString, file.name):
+            data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
+        else:
+            data.append([file.name, ctime.strftime('%Y-%m-%d_%H:%M:%S'), "NA"])
 
     result = {
         "draw": draw,
