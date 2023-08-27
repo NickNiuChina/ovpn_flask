@@ -348,7 +348,7 @@ def generateGenericTunClient():
     """
     return render_template("ovpn/tunGenericIssueCert.html")
 
-@bp.route("/generate/genericTunClient/genericClient")
+@bp.route("/generate/genericTunClient/genericClient", methods=("GET", "POST"))
 @login_required
 def generateGenericTunClientCert():
     """
@@ -357,7 +357,7 @@ def generateGenericTunClientCert():
     @return: template with success or fail
     """
     new_cn = request.values.get('new_cn')
-    
+    pattern = '^[0-9a-zA-Z_-]*$'
     flash("You are trying to: " + new_cn, "danger")
     return render_template("ovpn/tunGenericIssueCert.html")       
 
