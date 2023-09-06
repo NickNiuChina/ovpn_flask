@@ -404,17 +404,18 @@ def tunReqFiles():
     
     # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
     
-    files_dir = app.config['TUN_FILES_DIR']
-    
-    if not pathlib.Path(files_dir).exists():
-        return {
+    files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
+    reqs_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE']) 
+    # return none if directory does not exist
+    if not files_dir.exists() or not reqs_dir.exists():
+        return { 
         "draw": draw,
         "recordsFiltered": 0,
         "recordsTotal": 0,
         "data": []
         }
     
-    files = [f for f in pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE']).iterdir() 
+    files = [f for f in .iterdir() 
              if f.is_file() and re.findall('req', f.name)]
     count = len(files)
     
