@@ -14,8 +14,8 @@ class ProductionConfig(Config):
     
     # postgres configurations 
     PG_DATABASE_USER="mgmt"
-    PG_DATABASE_PASSWORD = 'mgmtdb'
-    PG_DATABASE_DB = 'rootroot'
+    PG_DATABASE_PASSWORD = 'rootroot'
+    PG_DATABASE_DB = 'mgmtdb'
     PG_DATABASE_HOST = '127.0.0.1'
     PG_DATABASE_PORT = 5432
     
