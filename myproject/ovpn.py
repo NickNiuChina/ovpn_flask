@@ -124,16 +124,22 @@ def tips():
 # OVPN status views
 ####################################################################################
  
-@bp.route("/tunclientsStatus")
+@bp.route("/<any(tun,tap):mode>ClientsStatus")
 @login_required
-def tunclientsStatus():
+def clientsStatus(mode):
     """
-    tunclientsStatus page
+    tun or tap clientsStatus page
 
     Returns:
-        template: tunclientsStatus template
+        template: tun or tap clientsStatus template
     """
-    return render_template("ovpn/tunclientsStatus.html")
+    
+    if mode.lower() == 'tun':
+        MODE = 'tun'
+    else:
+        MODE = 'tap'        
+    
+    return render_template("ovpn/{}ClientsStatus.html".format(MODE))
  
 @bp.route("/list/tunClientsStatus", methods=("GET", "POST"))
 @login_required

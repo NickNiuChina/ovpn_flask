@@ -33,7 +33,7 @@
 	        <ul class="nav nav-treeview">
 						
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.tunclientsStatus') }}" class="nav-link">
+	            <a href="{{ url_for('ovpn.clientsStatus', mode='tun') }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
 	              <p>OVPN clients status</p>
 	            </a>
@@ -91,7 +91,7 @@
 	        <ul class="nav nav-treeview">
 						
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.tunclientsStatus') }}" class="nav-link">
+	            <a href="{{ url_for('ovpn.clientsStatus', mode='tap') }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
 	              <p>OVPN clients status</p>
 	            </a>
