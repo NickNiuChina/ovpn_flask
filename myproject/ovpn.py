@@ -415,7 +415,7 @@ def tunReqFiles():
         "data": []
         }
     
-    files = [f for f in .iterdir() 
+    files = [f for f in reqs_dir.iterdir() 
              if f.is_file() and re.findall('req', f.name)]
     count = len(files)
     
