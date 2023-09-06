@@ -13,9 +13,9 @@ class ProductionConfig(Config):
     SECRET_KEY = "96f8bcfb789054901969a5f406ea6a97"
     
     # postgres configurations 
-    PG_DATABASE_USER="ovpnflask"
-    PG_DATABASE_PASSWORD = 'ovpnflask'
-    PG_DATABASE_DB = 'ovpnflask'
+    PG_DATABASE_USER="mgmt"
+    PG_DATABASE_PASSWORD = 'mgmtdb'
+    PG_DATABASE_DB = 'rootroot'
     PG_DATABASE_HOST = '127.0.0.1'
     PG_DATABASE_PORT = 5432
     

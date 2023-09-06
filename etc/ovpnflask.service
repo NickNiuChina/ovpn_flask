@@ -1,9 +1,9 @@
 [Unit]
-Description=Microblog web application
+Description=OvpnFlask web application
 After=network.target
 
 [Service]
-User=ubuntu
+User=root
 WorkingDirectory=/home/ubuntu/microblog
 Environment=FLASK_CONFIG=production
 Environment=DATABASE_URL=sqlite:////path/to/the/database.sqlite
