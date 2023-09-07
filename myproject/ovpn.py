@@ -143,7 +143,7 @@ def clientsStatus(mode):
  
 @bp.route("/list/<any(tun,tap):mode>ClientsStatus", methods=("GET", "POST"))
 @login_required
-def listTunClientsStatus(mode):
+def listClientsStatus(mode):
     """
     List tunclientsStatus
         
@@ -196,9 +196,9 @@ def listTunClientsStatus(mode):
         # skip search for changedate and status
         for col in columns[:3]:
             if flag:
-                query += "OR " + col + " LIKE %s "
+                query += " OR UPPER({column}) LIKE UPPER(%s) ".format(column=col)
             else:
-                query += col + " LIKE %s "
+                query += " UPPER({column}) LIKE UPPER(%s) ".format(column=col)
                 flag += 1
     query += " ORDER BY {0} {1}".format(columns[ int(order_col) - 1 ], order_direction)
     if length:
@@ -233,29 +233,37 @@ def listTunClientsStatus(mode):
     print (data)
     return data
 
-@bp.route("/tunclientsStatus/update/storename", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>ClientsStatus/update/storename", methods=("GET", "POST"))
 @login_required
-def updateStoreName():
+def updateStoreName(mode):
     """
-    tunclientsStatus page update storename
+    tun or tap clientsStatus page update storename
 
     Returns:
         result: result:result
     """
+    
+    if mode.lower() == 'tun':
+        table = 'tunovpnclients'
+    else:
+        table = 'ovpnclients'    
+    
     if request.method == "POST":
         cn = request.values.get('cn')
         newstorename = request.values.get('newstorename')
     cur = get_cur()
     conn = get_db()
-    cur.execute('select * from tunovpnclients where cn=%s', (cn,))
+    sql = "select * from {table} where cn=%s".format(table=table)
+    cur.execute(sql, (cn,))
     res = cur.rowcount
     
     if res:
         pass
     else:
         result = "cn not found"
-        
-    cur.execute('update tunovpnclients set storename=%s where cn=%s', (newstorename, cn))
+    
+    sql = "update {table} set storename=%s where cn=%s".format(table=table)    
+    cur.execute(sql, (newstorename, cn))
     res = cur.rowcount
     conn.commit()
     if res:
@@ -384,22 +392,29 @@ def generateGenericTunClientCert():
 # OVPN tun mode list reqs files
 ####################################################################################
 
-@bp.route("/tunReqFileList", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>ReqFileList", methods=("GET", "POST"))
 @login_required
-def tunReqFileList():
+def reqFileList(mode):
     """
     Req file list
         
     Returns:
         template: Req file list template
     """
-    return render_template("ovpn/tunReqFileList.html")
+    
+    if mode.lower() == 'tun':
+        MODE = 'tun'
+    else:
+        MODE = 'tap'     
+    
+    
+    return render_template("ovpn/{mode}ReqFileList.html".format(mode=MODE))
 
-@bp.route("/tunReqFiles/list", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>ReqFiles/list", methods=("GET", "POST"))
 @login_required
-def tunReqFiles():
+def reqFiles(mode):
     """
-    Req file list
+    TUN or TAP mode Req file list
         
     Returns:
         Json: Req file list
@@ -409,13 +424,19 @@ def tunReqFiles():
         mtime = datetime.datetime.fromtimestamp(fname.stat().st_mtime, tz=datetime.timezone.utc)
         ctime.strftime('%Y-%m-%d_%H:%M:%S')
     """
+    if mode.lower() == 'tun':
+        files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
+        reqs_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE']) 
+    else:
+        files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
+        reqs_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['REQ_DONE']) 
+    
+    
     draw = request.values.get('draw')
     searchValue = request.values.get('search[value]')
     
     # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
     
-    files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
-    reqs_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE']) 
     # return none if directory does not exist
     if not files_dir.exists() or not reqs_dir.exists():
         return { 
@@ -491,32 +512,57 @@ def tunReqFileDelete():
 # OVPN tun mode list certs files
 ####################################################################################
 
-@bp.route("/tunCertFileList", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>CertFileList", methods=("GET", "POST"))
 @login_required
-def tunCertFileList():
+def certFileList(mode):
     """
     Tun cert file list
         
     Returns:
         template: Tun cert file list template
     """
-    return render_template("ovpn/tunCertFileList.html")
+    
+    if mode.lower() == 'tun':
+        MODE = 'tun'
+    else:
+        MODE = 'tap'  
+    
+    return render_template("ovpn/{mode}CertFileList.html".format(mode=MODE))
 
 
-@bp.route("/tunCertFiles/list", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>CertFiles/list", methods=("GET", "POST"))
 @login_required
-def tunCertFiles():
+def certFiles(mode):
     """
     Cert file list
         
     Returns:
         Json: Cert file list
     """
+    if mode.lower() == 'tun':
+        files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
+        cert_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['VALIDATED']) 
+    else:
+        files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
+        cert_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['VALIDATED']) 
+    
+    
     draw = request.values.get('draw')
     searchValue = request.values.get('search[value]')
     
     # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
-    files = [f for f in pathlib.Path(app.config['TUN_FILES_DIR'], app.config['VALIDATED']).iterdir() 
+    
+    # return none if directory does not exist
+    if not files_dir.exists() or not cert_dir.exists():
+        return { 
+            "draw": draw,
+            "recordsFiltered": 0,
+            "recordsTotal": 0,
+            "data": []
+        }
+    
+    # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
+    files = [f for f in cert_dir.iterdir() 
              if f.is_file() and re.findall('p7mb64', f.name)]
     count = len(files)
     
@@ -583,32 +629,57 @@ def tunCertFileDelete():
 # OVPN tun mode generic clients files
 ####################################################################################
 
-@bp.route("/tunGenericCertFileList", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>GenericCertFileList", methods=("GET", "POST"))
 @login_required
-def tunGenericCertFileList():
+def genericCertFileList(mode):
     """
     Tun generic cert file list
         
     Returns:
         template: Tun generic cert file list template
     """
-    return render_template("ovpn/tunGenericCertFileList.html")
+
+    if mode.lower() == 'tun':
+        MODE = 'tun'
+    else:
+        MODE = 'tap'     
+    
+    return render_template("ovpn/{mode}GenericCertFileList.html".format(mode=MODE))
 
 
-@bp.route("/tunGenericCertFiles/list", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>GenericCertFiles/list", methods=("GET", "POST"))
 @login_required
-def tunGenericCertFiles():
+def genericCertFiles(mode):
     """
     Generic cert file list
         
     Returns:
         Json: Generic cert file list
     """
+    if mode.lower() == 'tun':
+        files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
+        generic_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['GENERIC_CLIENT']) 
+    else:
+        files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
+        generic_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['GENERIC_CLIENT']) 
+    
+    
     draw = request.values.get('draw')
     searchValue = request.values.get('search[value]')
     
     # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
-    files = [f for f in pathlib.Path(app.config['TUN_FILES_DIR'], app.config['GENERIC_CLIENT']).iterdir() 
+    
+    # return none if directory does not exist
+    if not files_dir.exists() or not generic_dir.exists():
+        return { 
+            "draw": draw,
+            "recordsFiltered": 0,
+            "recordsTotal": 0,
+            "data": []
+        }
+    
+    # list -> PosixPath('/opt/tun-ovpn-files/reqs-done/80b7caa2-b998-11ed-b796-c400ad53ffa4.req')
+    files = [f for f in generic_dir.iterdir() 
              if f.is_file() and re.findall('zip', f.name)]
     count = len(files)
     
