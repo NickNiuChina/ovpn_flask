@@ -12,6 +12,9 @@ class ProductionConfig(Config):
     DEBUG = False
     SECRET_KEY = "96f8bcfb789054901969a5f406ea6a97"
     
+    # session age
+    SESSION_COOKIE_AGE = 120
+    
     # postgres configurations 
     PG_DATABASE_USER="mgmt"
     PG_DATABASE_PASSWORD = 'rootroot'
@@ -19,7 +22,10 @@ class ProductionConfig(Config):
     PG_DATABASE_HOST = '127.0.0.1'
     PG_DATABASE_PORT = 5432
     
+    # data
     SQL_FILE = 'schema.sql'
+    
+    # version
     VERSION = 'v1.0.0'
     
     # Log file locations

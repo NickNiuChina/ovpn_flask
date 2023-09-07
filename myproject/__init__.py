@@ -38,9 +38,9 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True, template_folder=TEMPLATES_DIR, static_folder = STATIC_DIR)
     app.config['JSON_AS_ASCII'] = False 
     app.config.from_object(config.ProductionConfig)
-    # print("------APP config---------------------------------")
-    # print(app.config)
-    # print("------APP config---------------------------------")
+    print("------APP config---------------------------------")
+    print(app.config)
+    print("------APP config---------------------------------")
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile("config.py", silent=True)
@@ -123,8 +123,8 @@ def create_app(test_config=None):
     @app.before_request
     def make_session_permanent():
         session.permanent = True
-        app.permanent_session_lifetime = datetime.timedelta(minutes=60)
-        # app.logger.info("Before request logger!!")
+        s_age = int(app.config['SESSION_COOKIE_AGE'])
+        app.permanent_session_lifetime = datetime.timedelta(minutes=s_age)
     
     # server starttime
     start_datetime = datetime.datetime.now()

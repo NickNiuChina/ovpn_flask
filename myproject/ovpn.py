@@ -141,16 +141,20 @@ def clientsStatus(mode):
     
     return render_template("ovpn/{}ClientsStatus.html".format(MODE))
  
-@bp.route("/list/tunClientsStatus", methods=("GET", "POST"))
+@bp.route("/list/<any(tun,tap):mode>ClientsStatus", methods=("GET", "POST"))
 @login_required
-def listTunClientsStatus():
+def listTunClientsStatus(mode):
     """
     List tunclientsStatus
         
     Returns:
         objects: all list from 'tunovpnclients' table
     """
-    table = 'tunovpnclients'
+    if mode.lower() == 'tun':
+        table = 'tunovpnclients'
+    else:
+        table = 'ovpnclients'
+    
     # arguments
     # post
     if request.method == "POST":

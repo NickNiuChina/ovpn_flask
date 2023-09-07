@@ -518,6 +518,124 @@ $(document).ready(function() {
         window.location.href = url;
     });
 
+    /* **********************************************
+    Ovpn tap clients status page functions
+    ********************************************** */
+    $("#taptbclientstatus").DataTable({
+        //"dom": 'Blfrtip',
+        "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
+        "responsive": true,
+        "lengthChange": true,
+        "autoWidth": false,
+        // "responsive": true, "lengthChange": true, "autoWidth": true,
+        //"buttons": ["excel", "colvis"],
+        "buttons": [{
+                extend: 'excel',
+                text: 'Excel',
+                exportOptions: {
+                    modifier: {
+                        page: 'all',
+                        selected: null,
+                        search: 'none',
+                    },
+                    columns: [0, 1, 2, 3]
+                },
+            },
+            // { extend: 'excel', text: '<i class="fas fa-file-excel" aria-hidden="true"> Excel </i>' },
+            "colvis",
+            "pageLength"
+        ],
+        
+        "lengthMenu": [100, 50, 20, "1000"],
+        "processing": true,
+        "serverSide": true,
+        "destroy": true,
+        "paging": true,
+        //"search": {return: true },
+        "ordering": true,
+        "order": [5, "desc"],
+        "ajax": {
+            'url': "list/tapClientsStatus",
+            'type': 'POST',
+            'data': {},
+            'dataType': 'json',
+        },
+        "columnDefs": [{
+                "targets": 0,
+                "data": null,
+                "render": function(data, type, row) {
+                    var temp = data["storename"] ? data["storename"] : "Unnamed";
+                    var html = "<a href='javascript:void(0);'  class='clientstatus' data-toggle='modal' data-target='#tunclientStatusModal'>" + temp + "</a>"
+                    return html;
+                }
+            },
+            {
+                "targets": 1,
+                "data": null,
+                "render": function(data, type, row) {
+                    return data["cn"];
+                }
+            },
+            {
+                "targets": 2,
+                "data": null,
+                "render": function(data, type, row) {
+                    return data["ip"];
+                }
+            },
+            {
+                "targets": 3,
+                "data": null,
+                "render": function(data, type, row) {
+                    var rdate = new Date(data["changedate"])
+                        // console.log(formatDate(rdate));
+                    return formatDate(rdate);
+                }
+            },
+            {
+                "targets": 4,
+                "data": null,
+                "render": function(data, type, row) {
+                    var rdate = new Date(data["expiredate"])
+                        // console.log(formatDate(rdate));
+                    return formatDate(rdate);
+                }
+            },
+            {
+                "targets": 5,
+                "data": null,
+                "render": function(data, type, row) {
+                    // console.log(data[5]);
+                    var html = data["status"] ? "<i class='fa fa-circle text-green'></i>" : "<i class='fa fa-circle text-red'></i>";
+                    return html;
+                }
+            },
+            {
+                "targets": 6,
+                "orderable": false,
+                "data": null,
+                "render": function(data, type, row) {
+                    // console.log(data[5]);
+                    if (data["status"]) {
+                        var reg = RegExp(/boss/);
+                        if (data["cn"].length == 41 || reg.test(data["cn"])) {
+                            var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Mgmt</a>"
+                                // html += "<a href='javascript:void(0);' class='connect8443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Oper</a>"
+                            html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> SSH</a>"
+                            return html;
+                        } else {
+                            var html = 'NotApplied';
+                            return html;
+                        }
+                    } else {
+                        var html = 'Unreachable';
+                        return html;
+                    }
+                }
+            },
+        ],
+    });
+
 
     /* **********************************************
         admin user page functions
