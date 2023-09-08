@@ -492,6 +492,8 @@ ALTER TABLE ONLY public.tb_user ALTER COLUMN user_id SET DEFAULT nextval('public
 
 COPY public.tb_user (user_id, user_type, username, password, display_name, status, create_time, update_time) FROM stdin;
 1	1	admin	pbkdf2:sha256:600000$FlDCDfmlKXRRkCrc$c1d8349c16ae8a02324327b0e761b47f958ea731361410274ae2fcda068a61ee	admin	1	2023-08-23 13:53:35.370594	2023-08-23 13:53:35.370594
+1	1	super	pbkdf2:sha256:600000$t2EDGjqrUewWwnqF$00ebb9996083b8a9fb7394beab0873b0178c679b5fa17a24305905a3b689325b	super	1	2023-08-23 13:53:35.370594	2023-08-23 13:53:35.370594
+1	1	user	pbkdf2:sha256:600000$t2EDGjqrUewWwnqF$00ebb9996083b8a9fb7394beab0873b0178c679b5fa17a24305905a3b689325b	user	1	2023-08-23 13:53:35.370594	2023-08-23 13:53:35.370594
 \.
 
 

@@ -474,31 +474,41 @@ def reqFiles(mode):
         }
     return result
 
-@bp.route("/tunReqFileList/download/<filename>", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>ReqFileList/download/<filename>", methods=("GET", "POST"))
 @login_required
-def tunReqFileDownload(filename):
+def reqFileDownload(mode,filename):
     """
     Req file download
     @param filename: send from the url     
     @return: success or fail
     """
-    file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'], filename)
-    
+
+    if mode.lower() == 'tun':
+        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'], filename)
+    else:
+        file_path = os.path.join(app.config['TAP_FILES_DIR'],app.config['REQ_DONE'], filename)
+ 
     print("You are trying to download: " + file_path, 'success')
-    return send_file(file_path,as_attachment=True)
+    
+    return send_file(file_path, as_attachment=True)
 
 
-@bp.route("/tunReqFileList/delete", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>ReqFileList/delete", methods=("GET", "POST"))
 @login_required
-def tunReqFileDelete():
+def reqFileDelete(mode):
     """
     Req file delete
     @param filename: send from the url     
     @return: success or fail
     """
+    if mode.lower() == 'tun':
+        file_dir = app.config['TUN_FILES_DIR'],app.config['REQ_DONE']
+    else:
+        file_dir = app.config['TAP_FILES_DIR'],app.config['REQ_DONE'] 
+    
     filename = request.values.get('filename')
     if filename:
-        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'], filename)
+        file_path = os.path.join(file_dir, filename)
         print("You are trying to delete: " + file_path, 'success')
         if os.path.exists(file_path):
             os.remove(file_path)
@@ -509,7 +519,7 @@ def tunReqFileDelete():
         return {'result': 'No filename provided!'}
 
 ####################################################################################
-# OVPN tun mode list certs files
+# OVPN tun/tap mode list certs files
 ####################################################################################
 
 @bp.route("/<any(tun,tap):mode>CertFileList", methods=("GET", "POST"))
@@ -590,31 +600,41 @@ def certFiles(mode):
         }
     return result
 
-@bp.route("/tunCertFileList/download/<filename>", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>CertFileList/download/<filename>", methods=("GET", "POST"))
 @login_required
-def tunCertFileDownload(filename):
+def certFileDownload(mode,filename):
     """
     Cert file download
     @param filename: send from the url     
     @return: success or fail
     """
-    file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED'], filename)
+    
+    if mode.lower() == 'tun':
+        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED'], filename)
+    else:
+        file_path = os.path.join(app.config['TAP_FILES_DIR'],app.config['VALIDATED'], filename)
     
     print("You are trying to download: " + file_path, 'success')
     return send_file(file_path,as_attachment=True)
 
 
-@bp.route("/tunCertFileList/delete", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>CertFileList/delete", methods=("GET", "POST"))
 @login_required
-def tunCertFileDelete():
+def certFileDelete(mode):
     """
     Cert file delete
     @param filename: send from the url     
     @return: success or fail
     """
+    
+    if mode.lower() == 'tun':
+        file_dir = app.config['TUN_FILES_DIR'],app.config['VALIDATED']
+    else:
+        file_dir = app.config['TAP_FILES_DIR'],app.config['VALIDATED'] 
+    
     filename = request.values.get('filename')
     if filename:
-        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED'], filename)
+        file_path = os.path.join(file_dir, filename)
         print("You are trying to delete: " + file_path, 'success')
         if os.path.exists(file_path):
             os.remove(file_path)
@@ -707,31 +727,44 @@ def genericCertFiles(mode):
         }
     return result
 
-@bp.route("/tunGenericCertFileList/download/<filename>", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>GenericCertFileList/download/<filename>", methods=("GET", "POST"))
 @login_required
-def tunGenericCertFileDownload(filename):
+def genericCertFileDownload(mode, filename):
     """
     Generic cert file download
+    @mode tun or tap in url
     @param filename: send from the url     
     @return: success or fail
     """
-    file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT'], filename)
+    
+    if mode.lower() == 'tun':
+        file_dir = app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT']
+    else:
+        file_dir = app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT']
+    
+    file_path = os.path.join(file_dir, filename)
     
     print("You are trying to download: " + file_path, 'success')
     return send_file(file_path,as_attachment=True)
 
 
-@bp.route("/tunGenericCertFileList/delete", methods=("GET", "POST"))
+@bp.route("/<any(tun,tap):mode>GenericCertFileList/delete", methods=("GET", "POST"))
 @login_required
-def tunGenericCertFileDelete():
+def genericCertFileDelete(mode):
     """
     Generic cert file delete
     @param filename: send from the url     
     @return: success or fail
     """
+    
+    if mode.lower() == 'tun':
+        file_dir =app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT']
+    else:
+        file_dir = app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT']  
+    
     filename = request.values.get('filename')
     if filename:
-        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT'], filename)
+        file_path = os.path.join(file_dir, filename)
         print("You are trying to delete: " + file_path, 'success')
         if os.path.exists(file_path):
             os.remove(file_path)
