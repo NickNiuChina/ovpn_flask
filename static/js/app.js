@@ -1096,7 +1096,7 @@ $(document).ready(function() {
                         var status = null;
                         var op = null;
                         if (data["username"] != 'super' && data["username"] != 'admin') {
-                            if (data["status"] == '1') {
+                            if (data["status"] == '0') {
                                 status = "success";
                                 op = "Enabled";
                             } else {
