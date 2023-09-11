@@ -62,3 +62,6 @@ class ProductionConfig(Config):
     REQ = "reqs"
     REQ_DONE = "reqs-done"
     VALIDATED = "validated"
+    
+    # VPN_SCRIPT_DIR, in the same dir with this project, usually in /opt.
+    VPN_SCRIPT_DIR = 'vpntool'

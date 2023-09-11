@@ -275,19 +275,25 @@ def updateStoreName(mode):
 
 
 ####################################################################################
-# OVPN tun mode generate boss clients cert
+# OVPN tun/tap mode generate boss clients cert
 ####################################################################################
 
-@bp.route("/generate/bosstunclient")
+@bp.route("/generate/boss<any(Tun,Tap):mode>Client")
 @login_required
-def generateBossTunClient():
+def generateBossClient(mode):
     """
-    generateBossTunClient page
+    generate Boss Client file page
 
     Returns:
-        template: generateBossTunClient template
+        template: generateBossClient template tap/tun
     """
-    return render_template("ovpn/tunIssueCert.html")
+    
+    if mode.lower() == 'tun':
+        MODE = 'tun'
+    else:
+        MODE = 'tap'   
+    
+    return render_template("ovpn/{mode}IssueCert.html".format(mode=MODE))
 
 ALLOWED_EXTENSIONS = {'req',}
 
@@ -301,9 +307,9 @@ def allowed_file(filename):
     split_filename = filename.rsplit('.', 1)
     return '.' in filename and len(split_filename[0]) == 36 and split_filename[1].lower() in ALLOWED_EXTENSIONS
 
-@bp.route("/generate/tunissue/upload", methods=("GET", "POST"))
+@bp.route("/generate/<any(tun,tap):mode>Issue/upload", methods=("GET", "POST"))
 @login_required
-def uploadTunIssueCert():
+def uploadIssueCert():
     """
     Generate boss cert files by uploaded boss req file
 
@@ -351,16 +357,22 @@ def uploadTunIssueCert():
 # OVPN tun generate generic certifications
 ####################################################################################
 
-@bp.route("/generate/genericTunClient")
+@bp.route("/generate/generic<any(Tun,Tap):mode>Client")
 @login_required
-def generateGenericTunClient():
+def generateGenericClient(mode):
     """
     generateBossTunClient page
 
     Returns:
         template: generateBossTunClient template
     """
-    return render_template("ovpn/tunGenericIssueCert.html")
+
+    if mode.lower() == 'tun':
+        MODE = 'tun'
+    else:
+        MODE = 'tap'         
+    
+    return render_template("ovpn/{mode}GenericIssueCert.html".format(mode=MODE))
 
 @bp.route("/generate/genericTunClient/create", methods=("GET", "POST"))
 @login_required
