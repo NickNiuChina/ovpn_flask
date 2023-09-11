@@ -514,9 +514,9 @@ def reqFileDelete(mode):
     @return: success or fail
     """
     if mode.lower() == 'tun':
-        file_dir = app.config['TUN_FILES_DIR'],app.config['REQ_DONE']
+        file_dir =  os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'])
     else:
-        file_dir = app.config['TAP_FILES_DIR'],app.config['REQ_DONE'] 
+        file_dir =  os.path.join(app.config['TAP_FILES_DIR'],app.config['REQ_DONE']) 
     
     filename = request.values.get('filename')
     if filename:
@@ -640,9 +640,9 @@ def certFileDelete(mode):
     """
     
     if mode.lower() == 'tun':
-        file_dir = app.config['TUN_FILES_DIR'],app.config['VALIDATED']
+        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED'])
     else:
-        file_dir = app.config['TAP_FILES_DIR'],app.config['VALIDATED'] 
+        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['VALIDATED']) 
     
     filename = request.values.get('filename')
     if filename:
@@ -750,9 +750,9 @@ def genericCertFileDownload(mode, filename):
     """
     
     if mode.lower() == 'tun':
-        file_dir = app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT']
+        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT'])
     else:
-        file_dir = app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT']
+        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT'])
     
     file_path = os.path.join(file_dir, filename)
     
@@ -770,9 +770,9 @@ def genericCertFileDelete(mode):
     """
     
     if mode.lower() == 'tun':
-        file_dir =app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT']
+        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT'])
     else:
-        file_dir = app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT']  
+        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT'])  
     
     filename = request.values.get('filename')
     if filename:
