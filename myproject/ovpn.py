@@ -309,19 +309,25 @@ def allowed_file(filename):
 
 @bp.route("/generate/<any(tun,tap):mode>Issue/upload", methods=("GET", "POST"))
 @login_required
-def uploadIssueCert():
+def uploadIssueCert(mode):
     """
     Generate boss cert files by uploaded boss req file
 
     Returns:
         template: tunIssueCert template with generate result: success/fail
     """
+    
+    if mode.lower() == 'tun':
+        files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
+    else:
+        files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
+    
     if request.method == 'POST':
         # check if the post request has the file part
         if 'upload_req' not in request.files:
             error = "No file part"
             flash(error, 'danger')
-            return (url_for("ovpn.generateBossTunClient"))
+            return (url_for("ovpn.generateBossClient", mode=mode))
         
         file = request.files['upload_req']
         
@@ -331,27 +337,25 @@ def uploadIssueCert():
         # empty file without a filename.
         if file.filename == '':
             flash('No selected file', 'danger')
-            return redirect (url_for("ovpn.generateBossTunClient"))
+            return redirect (url_for("ovpn.generateBossClient", mode=mode))
         if platform.system().startswith("Windows"):
             flash('Probably runs on windows in dev env, not allowed.', 'danger')
-            return redirect (url_for("ovpn.generateBossTunClient")) 
+            return redirect (url_for("ovpn.generateBossClient", mode=mode)) 
                    
         if allowed_file(file.filename):
-            pass
             filename = secure_filename(file.filename)            
-            file.save(os.path.join(app.config['TUN_FILES_DIR'], app.config['REQ'] ,filename))
-            # return redirect(url_for('download_file', name=filename))
+            file.save(os.path.join(files_dir, app.config['REQ'] ,filename))
             generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-requests-tun.sh')    
             result = subprocess.run(["bash", generate_script], capture_output=True, shell=False)
             if result.returncode == 0 and re.findall('SELFDEFINEDS', result.stdout.decode('utf-8'), re.MULTILINE):
                 flash('Successfully generate cert file!', 'success')
-                return redirect (url_for("ovpn.generateBossTunClient"))
+                return redirect (url_for("ovpn.generateBossClient", mode=mode))
             else:
                 flash('Something wrong, please report!', 'danger')
-                return redirect (url_for("ovpn.generateBossTunClient"))   
+                return redirect (url_for("ovpn.generateBossClient", mode=mode))   
         else:
             flash('Filename length is not correct, please check!', 'danger')
-            return redirect (url_for("ovpn.generateBossTunClient"))
+            return redirect (url_for("ovpn.generateBossClient", mode=mode))
 
 ####################################################################################
 # OVPN tun generate generic certifications
@@ -374,14 +378,20 @@ def generateGenericClient(mode):
     
     return render_template("ovpn/{mode}GenericIssueCert.html".format(mode=MODE))
 
-@bp.route("/generate/genericTunClient/create", methods=("GET", "POST"))
+@bp.route("/generate/generic<any(Tun,Tap):mode>Client/create", methods=("GET", "POST"))
 @login_required
-def generateGenericTunClientCert():
+def generateGenericClientCert(mode):
     """
     generateBossTunClientCert URL
     @param param: Post with argument
     @return: template with success or fail
     """
+    
+    if mode.lower() == 'tun':
+        files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
+    else:
+        files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
+    
     cn = request.values.get('new_cn')
     new_cn = cn.strip()
     if platform.system().startswith("Windows"):
