@@ -36,7 +36,7 @@
 	{% endwith %}
 	<section class="content">
 	  <div class="container-fluid">
-		<h4 class="m-0">Upload Req file for tun clients</h4>
+		<h4 class="m-0">Upload Req file for tap clients</h4>
 		<div class="col-md-6 "> {# mx-auto #}
 		    <form method="post" action="{{ url_for('ovpn.uploadIssueCert', mode='tap') }}" enctype ="multipart/form-data">
 		        <div class="input-group">
