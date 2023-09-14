@@ -1089,11 +1089,11 @@ def toggleUser():
      
     db = get_db()
     cur = db.cursor()
-    result = cur.execute(
+    cur.execute(
         "SELECT username FROM tb_user where username=%s", (target_user,)
     )
-
-    if result < 1:
+    result = cur.rowcount
+    if not result:
         error = "The user does not exist: " + target_user
         flash(error, 'danger')
         return redirect(url_for("ovpn.adminUser"))
@@ -1107,7 +1107,7 @@ def toggleUser():
                          (user_status, update_time,target_user)
                          )
     db.commit()
-    if result < 1:
+    if not result:
         error = "Failed during toggle user status. User: " + target_user
         flash(error, 'danger')
         return redirect(url_for("ovpn.adminUser"))
