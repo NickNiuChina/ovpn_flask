@@ -1072,7 +1072,7 @@ $(document).ready(function() {
                 "targets": 4,
                 "data": null,
                 "render": function(data, type, row) {
-                    if (data["status"] == '2') {
+                    if (data["status"] == '0') {
                         return "Disabled";
                     } else {
                         return "Enabled";
@@ -1086,7 +1086,7 @@ $(document).ready(function() {
                 "data": null,
                 "render": function(data, type, row) {
                     // console.log(data[5]);
-                    if (data["status"]) {
+                    //if (data["status"] == '0' || data["status"] == '1') {
                         //     <th>
                         //     <button class="btn btn-default" data-user-id="${user.userId }"
                         //         data-toggle="modal" data-target="#changeStatus">禁用</button>
@@ -1120,8 +1120,6 @@ $(document).ready(function() {
                             return "HIDED!";
                         }
                     }
-
-                }
             },
         ],
     });
