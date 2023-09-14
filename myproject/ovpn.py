@@ -1099,7 +1099,7 @@ def toggleUser():
         return redirect(url_for("ovpn.adminUser"))
 
     if user_status == "1":
-        user_status = 2
+        user_status = 0
     else:
         user_status = 1
     update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
