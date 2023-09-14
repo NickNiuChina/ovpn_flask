@@ -1,13 +1,48 @@
 #!/bin/bash
 
-# Generate openvpn client files for generic clients
+# Generate openvpn client files for boss
+# This was borrowed from Carel HQ
+# This only works on Carel China Ali cloud ECS 'Openvpn server'.
+# Released on Feb/28/2022 nick.niu@carel.com
+
+
+#/opt/tun-ovpn-files
+# easyrsa
+# easyrsa-all
+# generic-ovpn
+# reqs
+# reqs-done
+# validated
+
+# check arguments count
+if [ "$#" -ne 4 ]; then
+    echo "FATAL ERROR: ARGUMENTS COUNT IS NOT CORRECT"
+    exit 5
+fi
+
+# OVPN main directory
+OVPN_DIR=$1
+# OVPN cn
+CN=$2
+
+# CS: for oss backup dir
+# oss://carelvpn/shield/    carel or sgovpn
+CS=$3
+
+FILES_DIR=$4
+# dir: tun-ovpn-files or tap-ovpn-files currently
+
 
 # Tools and dirs
 export OPENSSL=/usr/bin/openssl
-export EASYRSACMD=/opt/tun-ovpn-files/easyrsa/easyrsa
+export EASYRSACMD=${OVPN_DIR}/easyrsa/easyrsa
 
-export BACKUPDIR=/opt/tun-ovpn-files/easyrsa-all
-export TOOLDIR=/opt/tun-ovpn-files/easyrsa
+export REQDIR=${OVPN_DIR}/reqs
+
+export BACKUPDIR=${OVPN_DIR}/easyrsa-all
+export TOOLDIR=${OVPN_DIR}/easyrsa
+export REQDIR=${OVPN_DIR}/reqs
+export REQDONEDIR=${OVPN_DIR}/reqs-done
 
 if ! [[ -r ${OPENSSL} ]]; then
     echo "FATAL ERROR: CHECK OPENSSL LAMBDA LAYER"
@@ -16,6 +51,11 @@ fi
 if ! [[ -r ${EASYRSACMD} ]]; then
     echo "FATAL ERROR: CHECK EASYRSA LAMBDA LAYER"
     exit 5
+fi
+
+if [[ "`ls -al ${REQDIR}/ | grep req`" == "" ]]; then
+    echo "FATAL ERROR: Did not see any NEW reqs files."
+    exit 2
 fi
 
 # Ensure the workdir is a tmp dir in case any failure occurs 
@@ -309,31 +349,31 @@ cp -fv $WORKDIR/pki/issued/*.crt $BACKUPDIR/pki/issued/
 cp -fv $WORKDIR/pki/certs_by_serial/*.pem $BACKUPDIR/pki/certs_by_serial/
 
 for FILE in $WORKDIR/pki/reqs/*.req; do
-    ossutil64 cp $FILE oss://carelvpn/tun-ovpn-files/easyrsa-tcp/pki/reqs/ -f
+    ossutil64 cp $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/reqs/ -f
 done
 
 for FILE in $WORKDIR/pki/private/*.key; do
-    ossutil64 cp -f $FILE oss://carelvpn/tun-ovpn-files/easyrsa-tcp/pki/private/ -f
+    ossutil64 cp -f $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/private/ -f
 done
 
 for FILE in $WORKDIR/pki/issued/*.crt; do
-    ossutil64 cp -f $FILE oss://carelvpn/tun-ovpn-files/easyrsa-tcp/pki/issued/ -f
+    ossutil64 cp -f $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/issued/ -f
 done
 
 for FILE in $WORKDIR/pki/certs_by_serial/*.pem; do
-    ossutil64 cp -f $FILE oss://carelvpn/tun-ovpn-files/easyrsa-tcp/pki/certs_by_serial/ -f
+    ossutil64 cp -f $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/certs_by_serial/ -f
 done
 
 # Update OSS store
 echo "Updating OSS store"
 cd $WORKDIR
 for REQFILE in $WORKDIR/reqs/*.req; do
-    ossutil64 cp $REQFILE oss://carelvpn/tun-ovpn-files/reqs/ -f
+    ossutil64 cp $REQFILE oss://carelvpn/${CS}/${FILES_DIR}/reqs/ -f
 done
 
 for CERTFILE in $WORKDIR/*.p7mb64; do
-    ossutil64 cp $CERTFILE oss://carelvpn/tun-ovpn-files/validated/ -f
-    cp -fv $CERTFILE /opt/tun-ovpn-files/validated/
+    ossutil64 cp $CERTFILE oss://carelvpn/${CS}/${FILES_DIR}/validated/ -f
+    cp -fv $CERTFILE ${OVPN_DIR}/validated/
 done
 
 cd && rm -rf $WORKDIR

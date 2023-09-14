@@ -39,7 +39,7 @@
 	  <div class="container-fluid">
 		<h4 class="m-0">Upload Req file for tun clients</h4>
 		<div class="col-md-6 "> {# mx-auto #}
-		    <form method="post" action="{{ url_for('ovpn.generateGenericTunClientCert') }}" enctype ="multipart/form-data">
+		    <form method="post" action="{{ url_for('ovpn.generateGenericClientCert', mode='Tun') }}" enctype ="multipart/form-data">
 		        <div class="input-group">
 		            <label>请输入需要生成的CN（字母 数字 与 _ - 组合）：</label>
 		            <div class="input-group">

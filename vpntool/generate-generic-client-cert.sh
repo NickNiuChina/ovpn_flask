@@ -14,18 +14,26 @@
 
 
 # check arguments count
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 4 ]; then
     echo "FATAL ERROR: ARGUMENTS COUNT IS NOT CORRECT"
     exit 5
 fi
 
 # OVPN main directory
 OVPN_DIR=$1
+# OVPN cn
 CN=$2
+
+# CS: for oss backup dir
+# oss://carelvpn/shield/    carel or sgovpn
+CS=$3
+
+FILES_DIR=$4
+# dir: tun-ovpn-files or tap-ovpn-files currently
 
 # check relative dirs
 if ! [[ -d $OVPN_DIR  ]];then
-    echo "FATAL ERROR: OVPN_DIR DID NOT EXIST"
+    echo "FATAL ERROR: OVPN_DIR DOES NOT EXIST"
     exit 5
 fi
 
@@ -188,28 +196,30 @@ cp -fv $WORKDIR/pki/private/${CN}.key $BACKUPDIR/pki/private/
 cp -fv $WORKDIR/pki/issued/${CN}.crt $BACKUPDIR/pki/issued/
 cp -fv $WORKDIR/pki/certs_by_serial/*.pem $BACKUPDIR/pki/certs_by_serial/
 cp -fv $WORKDIR/${CN}.zip "${OVPN_DIR}/generic-ovpn/"
-#for FILE in $WORKDIR/pki/reqs/*.req; do
-#    ossutil64 cp $FILE oss://carelvpn/tun-ovpn-files/easyrsa-tcp/pki/reqs/ -f
-#done
 
-#for FILE in $WORKDIR/pki/private/*.key; do
-#    ossutil64 cp -f $FILE oss://carelvpn/tun-ovpn-files/easyrsa-tcp/pki/private/ -f
-#done
+for FILE in $WORKDIR/pki/reqs/*.req; do
+    ossutil64 cp $FILE oss://carelvpn/${CM}/${FILES_DIR}/easyrsa-tcp/pki/reqs/ -f
+done
 
-#for FILE in $WORKDIR/pki/issued/*.crt; do
-#    ossutil64 cp -f $FILE oss://carelvpn/tun-ovpn-files/easyrsa-tcp/pki/issued/ -f
-#done
+for FILE in $WORKDIR/pki/private/*.key; do
+    ossutil64 cp -f $FILE oss://carelvpn/${CM}/${FILES_DIR}/easyrsa-tcp/pki/private/ -f
+done
 
-#for FILE in $WORKDIR/pki/certs_by_serial/*.pem; do
-#    ossutil64 cp -f $FILE oss://carelvpn/tun-ovpn-files/easyrsa-tcp/pki/certs_by_serial/ -f
-#done
+for FILE in $WORKDIR/pki/issued/*.crt; do
+    ossutil64 cp -f $FILE oss://carelvpn/${CM}/${FILES_DIR}/easyrsa-tcp/pki/issued/ -f
+done
+
+for FILE in $WORKDIR/pki/certs_by_serial/*.pem; do
+    ossutil64 cp -f $FILE oss://carelvpn/${CM}/${FILES_DIR}/easyrsa-tcp/pki/certs_by_serial/ -f
+done
 
 # Update OSS store
 echo "Updating OSS store"
 cd $WORKDIR
-#for REQFILE in $WORKDIR/reqs/*.req; do
-#    ossutil64 cp $REQFILE oss://carelvpn/tun-ovpn-files/reqs/ -f
-#done
+
+for REQFILE in $WORKDIR/reqs/*.req; do
+    ossutil64 cp $REQFILE oss://carelvpn/${CM}/${FILES_DIR}/reqs/ -f
+done
 
 cd && rm -rf $WORKDIR
 
