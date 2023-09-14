@@ -1082,7 +1082,7 @@ def toggleUser():
         user_status = request.args.get('user_status')
     print("userstatus: " + user_status)
     print("target_user: " + target_user)
-    if not(user_status == "1" or user_status == "2"):
+    if not(user_status == "1" or user_status == "0"):
         error = "Error occurs, user_status: " + user_status
         flash(error, 'danger')
         return redirect(url_for("ovpn.adminUser"))
@@ -1103,9 +1103,10 @@ def toggleUser():
     else:
         user_status = 1
     update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    result = cur.execute("update tb_user set status=%s, update_time=%s where username = %s", 
+    cur.execute("update tb_user set status=%s, update_time=%s where username = %s", 
                          (user_status, update_time,target_user)
                          )
+    result = cur.rowcount
     db.commit()
     if not result:
         error = "Failed during toggle user status. User: " + target_user
@@ -1113,5 +1114,6 @@ def toggleUser():
         return redirect(url_for("ovpn.adminUser"))
     
     success = "Toggle user successfully. User: " + target_user
-    flash(success, 'success')    
-    return redirect(url_for("ovpn.adminUser"))          
+    flash("fffffffffffffffffffffffffffffffffffffffffffffff", 'danger')
+    print("########################################################################################################################")    
+    return redirect (url_for("ovpn.adminUser"))          
