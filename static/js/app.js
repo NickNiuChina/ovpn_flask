@@ -47,7 +47,7 @@ $(document).ready(function() {
     Ovpn tun clients status page functions
     ********************************************** */
 
-    $("#tuntbclientstatus").DataTable({
+    var tunTBclientStatus = $("#tuntbclientstatus").DataTable({
         //"dom": 'Blfrtip',
         "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
         "responsive": true,
@@ -86,7 +86,8 @@ $(document).ready(function() {
             'data': {},
             'dataType': 'json',
         },
-        "columnDefs": [{
+        "columnDefs": [
+			{
                 "targets": 0,
                 "data": null,
                 "render": function(data, type, row) {
@@ -159,7 +160,24 @@ $(document).ready(function() {
                     }
                 }
             },
+            {
+                "targets": 7,
+                "orderable": false,
+                "data": null,
+                "render": function(data, type, row) {
+						var html = "<a href='javascript:void(0);' class='checkProxyConfig btn btn-default btn-xs'><i class='fa fa-file'></i> proxy</a>"
+						return html;
+
+                }
+            },
         ],
+        // hide the ProxyConfig check if it is not "super"
+        "initComplete": function(settings, json) {         
+	        if (settings.jqXHR.responseJSON.privs != 'super'){
+				// alert(settings.jqXHR.responseJSON.privs  );
+	            tunTBclientStatus.columns([7]).visible(false);
+	        }
+   		}
     });
 
 

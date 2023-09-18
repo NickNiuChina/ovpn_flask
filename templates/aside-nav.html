@@ -136,12 +136,45 @@
 	      </li>
         {% endif %}
 
+	{% if session['username'] == 'super' or session['username'] == 'admin'  %}
       <li class="nav-item">
         <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link active">
           <i class="nav-icon fas fa-table"></i>
           <p>Users Management</p>
         </a>
       </li>
+    {% endif %}
+
+
+		{# management menu for super only #}
+		{% if session['username'] == 'super' %}
+	       <li class="nav-item menu-open">
+	        <a href="javascript:void(0);" class="nav-link">
+	          <i class="nav-icon fas fa-server"></i>
+	          <p>
+	            Management
+	            <i class="right fas fa-angle-left"></i>
+	          </p>
+	        </a>
+	        <ul class="nav nav-treeview">
+						
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.clientsStatus', mode='tap') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>All proxy config</p>
+	            </a>
+	          </li>
+	
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.generateBossClient', mode='Tap') }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>All proxy config</p>
+	            </a>
+	          </li>
+
+	        </ul>
+	      </li>
+        {% endif %}
 
 
         {# if userType == 0 #}

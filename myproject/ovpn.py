@@ -227,6 +227,7 @@ def listClientsStatus(mode):
         'recordsFiltered': ftotal,
         'recordsTotal': total,
         'draw': draw,
+        'privs': session['username'],
         'data': results
     }
     
