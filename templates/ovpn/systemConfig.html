@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %} System config {% endblock %}
+{% block content %}
+
+{# Content Wrapper. Contains page content #}
+<div class="content-wrapper">
+
+	{# Content Header (Page header) #}
+	<div class="content-header">
+		<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+			<h1 class="m-0"> System configuration </h1>
+			</div><!-- /.col -->
+			<div class="col-sm-6">
+			<ol class="breadcrumb float-sm-right">
+				<li class="breadcrumb-item"><a href="{{ url_for('ovpn.index') }}">Home</a></li>
+				<li class="breadcrumb-item active">Main</li>
+			</ol>
+			</div>
+		</div>
+		</div>
+	</div>
+	{#  content-header END #}
+
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+		<ul class=flashes>
+		{% for category, message in messages %}
+		<div class="text-{{ category }}">{{ message }}</div>
+		{% endfor %}
+		</ul>
+	{% endif %}
+	{% endwith %}
+
+
+	
+	<section class="content">
+	  <div class="container-fluid">
+
+		<div class="col-md-8">
+			<div class="card card-secondary">
+			<div class="card-header">
+			<h3 class="card-title">Config</h3>
+			</div>
+			
+			
+			<form class="form-horizontal">
+				<div class="card-body">
+					
+					<div class="form-group row">
+						<label for="inputEmail3" class="col-sm-2 col-form-label">Public IP</label>
+						<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputEmail3" placeholder="Public IP">
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+						<div class="col-sm-10">
+						<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+						</div>
+					</div>
+		
+					</div>
+					
+					<div class="card-footer">
+					<button type="submit" class="btn btn-info float-right">Update</button>
+				</div>			
+			</form>
+		</div>
+
+	  </div>
+	</section>  
+
+</div>
+{% endblock %}

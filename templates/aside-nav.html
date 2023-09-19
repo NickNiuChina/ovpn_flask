@@ -136,14 +136,14 @@
 	      </li>
         {% endif %}
 
-	{% if session['user_type'] == 1 %}
-      <li class="nav-item">
-        <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link active">
-          <i class="nav-icon fas fa-table"></i>
-          <p>Users Management</p>
-        </a>
-      </li>
-    {% endif %}
+		{% if session['user_type'] == 1 %}
+	      <li class="nav-item">
+	        <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link active">
+	          <i class="nav-icon fas fa-table"></i>
+	          <p>Users Management</p>
+	        </a>
+	      </li>
+	    {% endif %}
 
 
 		{# management menu for super only #}
@@ -159,7 +159,7 @@
 	        <ul class="nav nav-treeview">
 						
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.clientsStatus', mode='tap') }}" class="nav-link">
+	            <a href="{{ url_for('ovpn.systemConfig') }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
 	              <p>System</p>
 	            </a>

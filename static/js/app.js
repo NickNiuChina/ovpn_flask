@@ -1153,11 +1153,12 @@ $(document).ready(function() {
             type: "post",
             data: params,
             success: function(result) {
-                user = result[0];
-                console.log(result);
+                user = result;
+                console.log(user);
                 modal.find('#update-user_id').val(user.user_id);
+                modal.find('#update-user_type').val(user.user_type);
                 modal.find('#update-username').val(user.username);
-                modal.find('#update-password').val('000000');
+                modal.find('#update-password').val('');
                 modal.find('#update-display_name').val(user.display_name);
             }
         })

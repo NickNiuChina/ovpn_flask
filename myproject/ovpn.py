@@ -17,6 +17,7 @@ import os
 import subprocess
 import platform
 import pathlib
+import psycopg2
 
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
@@ -24,6 +25,7 @@ from werkzeug.utils import secure_filename
 
 from myproject.auth import login_required
 from myproject.db import get_cur, get_db
+from MySQLdb._mysql import result
 
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
@@ -912,6 +914,7 @@ def updateUser():
 
     if request.method == "POST":
         user_id = request.values.get('user_id')
+        user_type = request.values.get('user_type')
         username = request.values.get('username')
         password = request.values.get('password')
         display_name = request.values.get('display_name')
@@ -920,17 +923,19 @@ def updateUser():
         flash(error, 'danger')
         return redirect(url_for("ovpn.adminUser"))
     
-    args = [user_id, username, password, display_name]    
+    args = [user_id, user_type, username, password, display_name]    
     cur = get_cur()
     
     # students list
     update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    result = cur.execute("update tb_user set" 
+    cur.execute("update tb_user set" 
                 " username=%s,"
+                " user_type=%s,"
                 " password=%s,"
                 " display_name=%s,"
                 " update_time=%s"
-                " where user_id=%s", [username, generate_password_hash(password), display_name, update_time, user_id])
+                " where user_id=%s", [username, user_type, generate_password_hash(password), display_name, update_time, user_id])
+    result = cur.rowcount
     get_db().commit()
     if result < 1:
         error = "Failed during update user. User: " + username
@@ -957,11 +962,12 @@ def getUser():
     if request.method == "GET":
         user_id = request.args.get('user_id')    
     
-    cur = get_db().cursor()
+    cur = get_db().cursor(cursor_factory = psycopg2.extras.RealDictCursor)
     
-    # students list
+    # User object
     cur.execute("select * from tb_user where user_id = %s", (user_id,))
-    user = cur.fetchall()
+    user = cur.fetchone()
+    print(user)
     return jsonify(user)
 
 @bp.route("/admin/delete/user", methods=("GET", "POST"))
@@ -1117,4 +1123,17 @@ def toggleUser():
     success = "Toggle user successfully. User: " + target_user
     flash("fffffffffffffffffffffffffffffffffffffffffffffff", 'danger')
     print("########################################################################################################################")    
-    return redirect (url_for("ovpn.adminUser"))          
+    return redirect (url_for("ovpn.adminUser"))
+
+####################################################################################
+# System management views
+####################################################################################
+@bp.route("/system")
+@login_required
+def systemConfig():
+    """system config page
+
+    Returns:
+        template: system config template
+    """
+    return render_template("ovpn/systemConfig.html")       
