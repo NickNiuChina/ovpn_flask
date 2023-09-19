@@ -146,9 +146,8 @@ $(document).ready(function() {
                     if (data["status"]) {
                         var reg = RegExp(/boss/);
                         if (data["cn"].length == 41 || reg.test(data["cn"])) {
-                            var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Mgmt</a>"
-                                // html += "<a href='javascript:void(0);' class='connect8443 btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> Oper</a>"
-                            html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> SSH</a>"
+                            var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='far fa-arrow-alt-circle-right'></i> Mgmt</a>"                           
+                            html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-terminal'></i> SSH</a>"
                             return html;
                         } else {
                             var html = 'NotApplied';

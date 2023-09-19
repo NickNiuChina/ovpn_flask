@@ -136,7 +136,7 @@
 	      </li>
         {% endif %}
 
-	{% if session['username'] == 'super' or session['username'] == 'admin'  %}
+	{% if session['user_type'] == 1 %}
       <li class="nav-item">
         <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link active">
           <i class="nav-icon fas fa-table"></i>
@@ -152,7 +152,7 @@
 	        <a href="javascript:void(0);" class="nav-link">
 	          <i class="nav-icon fas fa-server"></i>
 	          <p>
-	            Management
+	            Configuration
 	            <i class="right fas fa-angle-left"></i>
 	          </p>
 	        </a>
@@ -161,7 +161,7 @@
 	          <li class="nav-item">
 	            <a href="{{ url_for('ovpn.clientsStatus', mode='tap') }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
-	              <p>All proxy config</p>
+	              <p>System</p>
 	            </a>
 	          </li>
 	
@@ -174,23 +174,6 @@
 
 	        </ul>
 	      </li>
-        {% endif %}
-
-
-        {# if userType == 0 #}
-        {% if session['user_type'] == 0 %}
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.userScore') }}" class="nav-link">
-              <i class="nav-icon far fa-file"></i>
-              <p>成绩查询</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url_for('ovpn.userInfo') }}" class="nav-link">
-              <i class="nav-icon far fa-file"></i>
-              <p>档案查询</p>
-            </a>
-          </li>                                     
         {% endif %}
         
         </ul>
