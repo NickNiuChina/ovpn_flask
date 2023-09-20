@@ -1239,4 +1239,9 @@ $(document).ready(function() {
     //     alert("button is clicked");
     // });
 
+    /* **********************************************
+        management page functions
+    ********************************************** */
+   $('#systemConfigForm').find('#publicIp').val('HHHHHHHHHHHHHHHHHHHHHHHH0');
+
 });
