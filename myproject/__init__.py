@@ -153,9 +153,21 @@ def create_app(test_config=None):
     else:
         PLATFORM_NAME = "DEV OVPN"
         CURRENT_OVPN_SETTING = app.config['OVPN']['DEV_OVPN']
+    
+    SITE_NAME = ''
+    if re.match('(?i)CAREL', PLATFORM_NAME):
+        SITE_NAME = "carel"
+    if re.match('(?i)SG', PLATFORM_NAME):
+        SITE_NAME = "sgovpn"
+    if re.match('(?i)SHIELD', PLATFORM_NAME):
+        SITE_NAME = "shield" 
+    if re.match('(?i)DEV', PLATFORM_NAME):
+        SITE_NAME = "dev" 
+            
     app.config.update(
         PLATFORM_NAME = PLATFORM_NAME,
-        CURRENT_OVPN_SETTING = CURRENT_OVPN_SETTING
+        CURRENT_OVPN_SETTING = CURRENT_OVPN_SETTING,
+        SITE_NAME = SITE_NAME
     )
     # update config for tun/tap files dir
     PARENT_DIR = os.path.dirname(BASE_DIR)

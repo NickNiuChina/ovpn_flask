@@ -327,7 +327,7 @@ def uploadIssueCert(mode):
         files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
         mode = 'Tap'
     
-    print ('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX: ' + app.config['PLATFORM_NAME'])
+    print ('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX: ' + app.config['SITE_NAME'])
     
     if request.method == 'POST':
         # check if the post request has the file part
