@@ -420,7 +420,7 @@ def generateGenericClientCert(mode):
     if re.match(pattern, new_cn):
         # bash /opt/ovpn_flask/vpntool/generate-generic-client-cert.sh /opt/tun-ovpn-files cn dev tun-ovpn-files
         generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-generic-client-cert.sh')    
-        result = subprocess.run(["bash", generate_script, new_cn, files_dir, app.config['SITE_NAME'], subdir], capture_output=True, shell=False)
+        result = subprocess.run(["bash", generate_script, files_dir, new_cn, app.config['SITE_NAME'], subdir], capture_output=True, shell=False)
         print ("--------------: " + generate_script)
         print ("--------------: " + new_cn)
         print ("--------------: " + files_dir)
