@@ -11,7 +11,7 @@
 # reqs-done
 # validated
 
-
+# bash /opt/ovpn_flask/vpntool/generate-generic-client-cert.sh /opt/tun-ovpn-files cn carel tun-ovpn-files
 
 # check arguments count
 if [ "$#" -ne 4 ]; then
@@ -25,7 +25,7 @@ OVPN_DIR=$1
 CN=$2
 
 # CS: for oss backup dir
-# oss://carelvpn/shield/    carel or sgovpn
+# shield dev carel or sgovpn
 CS=$3
 
 FILES_DIR=$4
