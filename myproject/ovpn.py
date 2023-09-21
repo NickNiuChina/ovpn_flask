@@ -327,6 +327,8 @@ def uploadIssueCert(mode):
         files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
         mode = 'Tap'
     
+    print ('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX: ' + app.config['PLATFORM_NAME'])
+    
     if request.method == 'POST':
         # check if the post request has the file part
         if 'upload_req' not in request.files:
@@ -350,8 +352,9 @@ def uploadIssueCert(mode):
         if allowed_file(file.filename):
             filename = secure_filename(file.filename)            
             file.save(os.path.join(files_dir, app.config['REQ'] ,filename))
-            generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-requests-tun.sh')    
-            result = subprocess.run(["bash", generate_script], capture_output=True, shell=False)
+            # bash /opt/ovpn_flask/vpntool/generate-boss-client-cert.sh /opt/tun-ovpn-files carel tun-ovpn-files
+            generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-boss-client-cert.sh')    
+            result = subprocess.run(["bash", generate_script, files_dir], capture_output=True, shell=False)
             if result.returncode == 0 and re.findall('SELFDEFINEDS', result.stdout.decode('utf-8'), re.MULTILINE):
                 flash('Successfully generate cert file!', 'success')
                 return redirect (url_for("ovpn.generateBossClient", mode=mode))

@@ -15,7 +15,7 @@
 # validated
 
 # ex
-# bash /opt/ovpn_flask/vpntool/generate-boss-client-cert.sh /opt/tun-ovpn-files oss://carelvpn/carel tun-ovpn-files
+# bash /opt/ovpn_flask/vpntool/generate-boss-client-cert.sh /opt/tun-ovpn-files carel tun-ovpn-files
 
 # check arguments count
 if [ "$#" -ne 3 ]; then
@@ -27,7 +27,7 @@ fi
 OVPN_DIR=$1
 
 # CS: for oss backup dir
-# oss://carelvpn/carel/    carel or sgovpn
+# carel shield or sgovpn
 CS=$2
 
 FILES_DIR=$3
