@@ -14,22 +14,23 @@
 # reqs-done
 # validated
 
+# ex
+# bash /opt/ovpn_flask/vpntool/generate-boss-client-cert.sh /opt/tun-ovpn-files oss://carelvpn/carel tun-ovpn-files
+
 # check arguments count
-if [ "$#" -ne 4 ]; then
+if [ "$#" -ne 3 ]; then
     echo "FATAL ERROR: ARGUMENTS COUNT IS NOT CORRECT"
     exit 5
 fi
 
 # OVPN main directory
 OVPN_DIR=$1
-# OVPN cn
-CN=$2
 
 # CS: for oss backup dir
-# oss://carelvpn/shield/    carel or sgovpn
-CS=$3
+# oss://carelvpn/carel/    carel or sgovpn
+CS=$2
 
-FILES_DIR=$4
+FILES_DIR=$3
 # dir: tun-ovpn-files or tap-ovpn-files currently
 
 
