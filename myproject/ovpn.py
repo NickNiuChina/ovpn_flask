@@ -422,9 +422,10 @@ def generateGenericClientCert(mode):
         generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-generic-client-cert.sh')    
         result = subprocess.run(["bash", generate_script, new_cn, files_dir, app.config['SITE_NAME'], subdir], capture_output=True, shell=False)
         print ("--------------: " + generate_script)
+        print ("--------------: " + new_cn)
         print ("--------------: " + files_dir)
         print ("--------------: " + app.config['SITE_NAME'])
-        print ("--------------: " + files_dir)
+        print ("--------------: " + subdir)
         if result.returncode == 0 and re.findall('SELFDEFINEDS', result.stdout.decode('utf-8'), re.MULTILINE):
             flash('Successfully generate cert file for cn: ' + new_cn, 'success')
             return redirect (url_for("ovpn.generateBossClient", mode=mode))
