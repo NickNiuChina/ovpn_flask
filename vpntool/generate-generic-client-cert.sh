@@ -217,10 +217,6 @@ done
 echo "Updating OSS store"
 cd $WORKDIR
 
-for REQFILE in $WORKDIR/reqs/*.req; do
-    ossutil64 cp $REQFILE oss://carelvpn/${CS}/${FILES_DIR}/reqs/ -f
-done
-
 cd && rm -rf $WORKDIR
 
 echo "SELFDEFINEDSUCCESS"; # This will tell the upload process is tatolly successlly
