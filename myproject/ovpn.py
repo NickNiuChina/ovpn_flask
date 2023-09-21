@@ -321,10 +321,10 @@ def uploadIssueCert(mode):
     """
     
     if mode.lower() == 'tun':
-        files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
+        files_dir = app.config['TUN_FILES_DIR']
         mode = 'Tun'
     else:
-        files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
+        files_dir = app.config['TAP_FILES_DIR']
         mode = 'Tap'
     
     if request.method == 'POST':
