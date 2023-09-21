@@ -401,9 +401,11 @@ def generateGenericClientCert(mode):
     if mode.lower() == 'tun':
         files_dir = app.config['TUN_FILES_DIR']
         subdir = "tun-ovpn-files"
+        mode="Tun"
     else:
         files_dir = app.config['TAP_FILES_DIR']
         subdir = "tap-ovpn-files"
+        mode="Tap"
     
     cn = request.values.get('new_cn')
     new_cn = cn.strip()
