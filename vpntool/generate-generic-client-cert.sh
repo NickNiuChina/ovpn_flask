@@ -213,6 +213,9 @@ for FILE in $WORKDIR/pki/certs_by_serial/*.pem; do
     ossutil64 cp -f $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/certs_by_serial/ -f
 done
 
+ossutil64 cp -f $WORKDIR/${CN}.zip oss://carelvpn/${CS}/${FILES_DIR}/generic-ovpn/ -f
+
+
 # Update OSS store
 echo "Updating OSS store"
 cd $WORKDIR

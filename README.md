@@ -28,4 +28,8 @@ OVPN Management private project. Based on Python Flask.
 
     echo $CURRENT_SERVSER
 
+  3. Boss URL
+  - URL
+    len("RVRP@9801456451909-0xc0a8788a@") - 30
+
   
