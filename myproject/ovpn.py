@@ -430,7 +430,7 @@ def generateGenericClientCert(mode):
             flash('Successfully generate cert file for cn: ' + new_cn, 'success')
             return redirect (url_for("ovpn.generateBossClient", mode=mode))
         else:
-            flash('Something wrong, please report!', 'danger')
+            flash(result.stdout.decode('utf-8'), 'danger')
             return redirect (url_for("ovpn.generateBossClient", mode=mode))  
         return render_template("ovpn/tunGenericIssueCert.html")
         # generate new CN here 
