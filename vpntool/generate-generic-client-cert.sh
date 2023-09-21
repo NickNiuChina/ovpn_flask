@@ -11,7 +11,7 @@
 # reqs-done
 # validated
 
-# bash /opt/ovpn_flask/vpntool/generate-generic-client-cert.sh /opt/tun-ovpn-files cn carel tun-ovpn-files
+# bash /opt/ovpn_flask/vpntool/generate-generic-client-cert.sh /opt/tun-ovpn-files cn dev tun-ovpn-files
 
 # check arguments count
 if [ "$#" -ne 4 ]; then
