@@ -399,9 +399,11 @@ def generateGenericClientCert(mode):
     """
     
     if mode.lower() == 'tun':
-        files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
+        files_dir = app.config['TUN_FILES_DIR']
+        subdir = "tun-ovpn-files"
     else:
-        files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
+        files_dir = app.config['TAP_FILES_DIR']
+        subdir = "tap-ovpn-files"
     
     cn = request.values.get('new_cn')
     new_cn = cn.strip()
@@ -414,7 +416,19 @@ def generateGenericClientCert(mode):
     pattern = '^[0-9a-zA-Z_-]*$'
     
     if re.match(pattern, new_cn):
-        flash("New CN name is OK!", "success")
+        # bash /opt/ovpn_flask/vpntool/generate-generic-client-cert.sh /opt/tun-ovpn-files cn dev tun-ovpn-files
+        generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-generic-client-cert.sh')    
+        result = subprocess.run(["bash", generate_script, new_cn, files_dir, app.config['SITE_NAME'], subdir], capture_output=True, shell=False)
+        # print ("--------------: " + generate_script)
+        # print ("--------------: " + files_dir)
+        # print ("--------------: " + app.config['SITE_NAME'])
+        # print ("--------------: " + files_dir)
+        if result.returncode == 0 and re.findall('SELFDEFINEDS', result.stdout.decode('utf-8'), re.MULTILINE):
+            flash('Successfully generate cert file for cn: ' + new_cn, 'success')
+            return redirect (url_for("ovpn.generateBossClient", mode=mode))
+        else:
+            flash('Something wrong, please report!', 'danger')
+            return redirect (url_for("ovpn.generateBossClient", mode=mode))  
         return render_template("ovpn/tunGenericIssueCert.html")
         # generate new CN here 
     else:      
