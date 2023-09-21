@@ -1112,7 +1112,7 @@ $(document).ready(function() {
                         // </th>
                         var status = null;
                         var op = null;
-                        if (data["username"] != 'super' && data["username"] != 'admin') {
+                        if (data["username"] != 'super') {
                             if (data["status"] == '0') {
                                 status = "success";
                                 op = "Enabled";
