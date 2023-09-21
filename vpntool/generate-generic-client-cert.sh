@@ -198,19 +198,19 @@ cp -fv $WORKDIR/pki/certs_by_serial/*.pem $BACKUPDIR/pki/certs_by_serial/
 cp -fv $WORKDIR/${CN}.zip "${OVPN_DIR}/generic-ovpn/"
 
 for FILE in $WORKDIR/pki/reqs/*.req; do
-    ossutil64 cp $FILE oss://carelvpn/${CM}/${FILES_DIR}/easyrsa-tcp/pki/reqs/ -f
+    ossutil64 cp $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/reqs/ -f
 done
 
 for FILE in $WORKDIR/pki/private/*.key; do
-    ossutil64 cp -f $FILE oss://carelvpn/${CM}/${FILES_DIR}/easyrsa-tcp/pki/private/ -f
+    ossutil64 cp -f $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/private/ -f
 done
 
 for FILE in $WORKDIR/pki/issued/*.crt; do
-    ossutil64 cp -f $FILE oss://carelvpn/${CM}/${FILES_DIR}/easyrsa-tcp/pki/issued/ -f
+    ossutil64 cp -f $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/issued/ -f
 done
 
 for FILE in $WORKDIR/pki/certs_by_serial/*.pem; do
-    ossutil64 cp -f $FILE oss://carelvpn/${CM}/${FILES_DIR}/easyrsa-tcp/pki/certs_by_serial/ -f
+    ossutil64 cp -f $FILE oss://carelvpn/${CS}/${FILES_DIR}/easyrsa-tcp/pki/certs_by_serial/ -f
 done
 
 # Update OSS store
@@ -218,7 +218,7 @@ echo "Updating OSS store"
 cd $WORKDIR
 
 for REQFILE in $WORKDIR/reqs/*.req; do
-    ossutil64 cp $REQFILE oss://carelvpn/${CM}/${FILES_DIR}/reqs/ -f
+    ossutil64 cp $REQFILE oss://carelvpn/${CS}/${FILES_DIR}/reqs/ -f
 done
 
 cd && rm -rf $WORKDIR
