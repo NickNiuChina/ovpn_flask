@@ -323,9 +323,11 @@ def uploadIssueCert(mode):
     if mode.lower() == 'tun':
         files_dir = app.config['TUN_FILES_DIR']
         mode = 'Tun'
+        subdir = "tun-ovpn-files"
     else:
         files_dir = app.config['TAP_FILES_DIR']
         mode = 'Tap'
+        subdir = "tap-ovpn-files"
     
     if request.method == 'POST':
         # check if the post request has the file part
@@ -350,9 +352,8 @@ def uploadIssueCert(mode):
             filename = secure_filename(file.filename)            
             file.save(os.path.join(files_dir, app.config['REQ'] ,filename))
             # bash /opt/ovpn_flask/vpntool/generate-boss-client-cert.sh  carel tun-ovpn-files
-            ovpn_files_root = "/opt/{}".format(files_dir)
             generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-boss-client-cert.sh')    
-            result = subprocess.run(["bash", generate_script, ovpn_files_root, app.config['SITE_NAME'], files_dir], capture_output=True, shell=False)
+            result = subprocess.run(["bash", generate_script, files_dir, app.config['SITE_NAME'], subdir], capture_output=True, shell=False)
             print ("--------------: " + generate_script)
             print ("--------------: " + ovpn_files_root)
             print ("--------------: " + app.config['SITE_NAME'])
