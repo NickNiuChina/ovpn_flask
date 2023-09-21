@@ -162,11 +162,11 @@ echo "Generating OpenVPN ZIP FILE for $CN"
 
 TARGET=${WORKDIR}/${CN}
 
-cp ${WORKDIR}/ta.key ${WORKDIR}/${CN}/
-cp ${WORKDIR}/pki/ca.crt ${WORKDIR}/${CN}/
-cp ${WORKDIR}/pki/private/$CN.key ${WORKDIR}/${CN}/
-cp ${WORKDIR}/pki/issued/$CN.crt ${WORKDIR}/${CN}/
-cp $OVPN ${WORKDIR}/${CN}/
+cp -fv ${WORKDIR}/ta.key ${WORKDIR}/${CN}/
+cp -fv ${WORKDIR}/pki/ca.crt ${WORKDIR}/${CN}/
+cp -fv ${WORKDIR}/pki/private/$CN.key ${WORKDIR}/${CN}/
+cp -fv ${WORKDIR}/pki/issued/$CN.crt ${WORKDIR}/${CN}/
+cp -fv ${OVPN} ${WORKDIR}/${CN}/
 
 zip -r $CN.zip $CN
 
