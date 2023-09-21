@@ -353,6 +353,10 @@ def uploadIssueCert(mode):
             ovpn_files_root = "/opt/{}".format(files_dir)
             generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-boss-client-cert.sh')    
             result = subprocess.run(["bash", generate_script, ovpn_files_root, app.config['SITE_NAME'], files_dir], capture_output=True, shell=False)
+            print ("--------------: " + generate_script)
+            print ("--------------: " + ovpn_files_root)
+            print ("--------------: " + app.config['SITE_NAME'])
+            print ("--------------: " + files_dir)
             if result.returncode == 0 and re.findall('SELFDEFINEDS', result.stdout.decode('utf-8'), re.MULTILINE):
                 flash('Successfully generate cert file!', 'success')
                 return redirect (url_for("ovpn.generateBossClient", mode=mode))
