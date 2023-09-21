@@ -25,7 +25,7 @@ from werkzeug.utils import secure_filename
 
 from myproject.auth import login_required
 from myproject.db import get_cur, get_db
-from MySQLdb._mysql import result
+#from MySQLdb._mysql import result
 
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
