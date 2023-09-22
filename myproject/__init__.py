@@ -38,15 +38,19 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True, template_folder=TEMPLATES_DIR, static_folder = STATIC_DIR)
     app.config['JSON_AS_ASCII'] = False 
     app.config.from_object(config.ProductionConfig)
-    print("------APP config---------------------------------")
-    print(app.config)
-    print("------APP config---------------------------------")
+
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile("config.py", silent=True)
     else:
         # load the test config if passed in
         app.config.update(test_config)
+
+    print("------APP config---------------------------------")
+    for key in app.config.keys():
+        print("{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))))
+    # print(app.config.keys())
+    print("------APP config---------------------------------")
         
     # i18n config   
     def get_locale():

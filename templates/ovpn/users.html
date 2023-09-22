@@ -83,7 +83,7 @@
 		</div>
 
 		{# add user #}
-		<div class="modal fade" id="addStudentUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal fade" id="addUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<form action="{{ url_for('ovpn.addUser') }}" method="post">
@@ -99,23 +99,30 @@
 							<div class="form-group"></div>
 
 							<div class="form-group">
-								<label for="username" class="control-label">Username:</label>
+								<label for="user-username" class="control-label">Username:</label>
+								<input type="text" class="form-control" name="username" id="user-username" required
+								oninvalid="this.setCustomValidity('Please Enter valid username')"
+                       			oninput="setCustomValidity('')">
+							</div>
+
+							<div class="form-group">
+								<label for="student-username" class="control-label">User Trpe:</label>
 								<select class="form-control" name="username" id="addUserUsername">
 
 								</select>
 							</div>
 
 							<div class="form-group">
-								<label for="student-username" class="control-label">用户名:</label>
-								<input type="text" class="form-control" name="student_username" id="student-username" required
-								oninvalid="this.setCustomValidity('Please Enter valid username')"
-                       			oninput="setCustomValidity('')"> 
+								<label for="user-student-password" class="control-label">Password:</label> 
+								<input type="password" class="form-control" name="password" id="user-student-password" required
+								oninvalid="this.setCustomValidity('Please Enter valid password')"
+                       			oninput="setCustomValidity('')">
 							</div>
 
 							<div class="form-group">
-								<label for="user-student-password" class="control-label">密码:</label> 
-								<input type="password" class="form-control" name="password" id="user-student-password" required
-								oninvalid="this.setCustomValidity('Please Enter valid password')"
+								<label for="user-display-name" class="control-label">Display Name:</label> 
+								<input type="text" class="form-control" name="display-name" id="user-display-name" required
+								oninvalid="this.setCustomValidity('Please Enter valid dispalay name')"
                        			oninput="setCustomValidity('')">
 							</div>
 

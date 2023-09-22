@@ -1183,7 +1183,7 @@ $(document).ready(function() {
         // });
     });
 
-    $('#addStudentUser').on('shown.bs.modal', function(event) {
+    $('#addUser').on('shown.bs.modal', function(event) {
         var modal = $(this);
         $.ajax({
             url: 'admin/getStudents',
@@ -1242,6 +1242,7 @@ $(document).ready(function() {
     /* **********************************************
         management page functions
     ********************************************** */
+   
    $('#systemConfigForm').find('#publicIp').val('HHHHHHHHHHHHHHHHHHHHHHHH0');
 
 });

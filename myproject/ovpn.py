@@ -362,7 +362,7 @@ def uploadIssueCert(mode):
                 flash('Successfully generate cert file!', 'success')
                 return redirect (url_for("ovpn.generateBossClient", mode=mode))
             else:
-                flash('Something wrong, please report!', 'danger')
+                flash(result.stdout.decode('utf-8'), 'danger')
                 return redirect (url_for("ovpn.generateBossClient", mode=mode))   
         else:
             flash('Filename length is not correct, please check!', 'danger')
