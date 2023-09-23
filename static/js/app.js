@@ -172,7 +172,7 @@ $(document).ready(function() {
         ],
         // hide the ProxyConfig check if it is not "super"
         "initComplete": function(settings, json) {         
-	        if (settings.jqXHR.responseJSON.privs != 'super'){
+	        if (settings.jqXHR.responseJSON.privs != 'super' && settings.jqXHR.responseJSON.privs != 'admin'){
 				// alert(settings.jqXHR.responseJSON.privs  );
 	            tunTBclientStatus.columns([7]).visible(false);
 	        }
