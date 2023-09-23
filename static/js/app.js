@@ -170,7 +170,7 @@ $(document).ready(function() {
                 }
             },
         ],
-        // hide the ProxyConfig check if it is not "super"
+        // hide the ProxyConfig check if it is not "super" or "admin"
         "initComplete": function(settings, json) {         
 	        if (settings.jqXHR.responseJSON.privs != 'super' && settings.jqXHR.responseJSON.privs != 'admin'){
 				// alert(settings.jqXHR.responseJSON.privs  );
@@ -248,6 +248,20 @@ $(document).ready(function() {
         var openNewLink = window.open(url);
         openNewLink.focus();
     });
+
+	// checkProxyConfig button func
+    $('#tuntbclientstatus tbody').on('click', '.checkProxyConfig', function(e) {
+            var reqFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
+            var clientIp = $(this).parent().parent().children().eq(2).text();
+            alert(clientIp);
+            //$(this).on('click', '.btn-danger', { 'filename': reqFileName }, function(e) {
+            //    $.post("tunReqFileList/delete", { 'filename': reqFileName }, function(result) {
+             //       console.log(result);
+             //       $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
+            //    });
+           //     $('#tunreqDelModal').modal('hide'); // hide modal
+          //  });
+        });
 
     /* **********************************************
         tun upload req file page functions
