@@ -18,10 +18,12 @@ import subprocess
 import platform
 import pathlib
 import psycopg2
+from random import randint
 
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import ImmutableMultiDict
 
 from myproject.auth import login_required
 from myproject.db import get_cur, get_db
@@ -106,6 +108,105 @@ def introduction():
     @return: template: introduction template
     """
     return render_template("ovpn/introduction.html")
+
+####################################################################################
+# refresh proxy config button view
+####################################################################################
+
+@bp.route("/refresh/proxyConfig", methods=("POST", "GET"))
+@login_required
+def refreshProxyConfig():
+    """
+    @summary: refresh all proxy config and restart Apache
+    @return: refreshed page
+    """
+    # db cursor
+    conn = get_db()    
+    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+
+    # system configs
+    sql = "select * from sysconfig"
+    cur.execute(sql)
+    
+    # js console result
+    result = "success"
+    message = "all good"
+    urls = []
+    
+    previousUrl = request.referrer
+    
+    for row in cur.fetchall():
+        if row['item'] == "IP_REMOTE":
+            IP_REMOTE = row['ivalue']
+        if row['item'] == "IP_PORT":
+            IP_PORT = row['ivalue']
+        if row['item'] == "PROXY_PREFIX":
+            PROXY_PREFIX = row['ivalue']
+        if row['item'] == "APACHE_ROOT":
+            APACHE_ROOT = row['ivalue']
+        if row['item'] == "APACHE_SUB":
+            APACHE_SUB = row['ivalue'] 
+    
+    # Apache config files
+    proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
+    proxyConfigTemplate = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
+
+    # erease config file
+    with open(proxyConfigFile, 'w') as fp:
+        fp.truncate()
+    # read the proxy config template 
+       
+    with open(proxyConfigTemplate, 'r') as fp:
+        targetConfig = [p.strip() for p in fp.read().split('\n\n')][0]
+           
+    for table in ['tunovpnclients', 'ovpnclients']:
+        sql = "select * from {table}".format(table=table)
+        cur.execute(sql)
+        count = cur.rowcount
+    
+        ovpnClients = cur.fetchall()
+        
+        for ovpnClient in ovpnClients:
+            url = ''
+            ip = ovpnClient['ip']
+            # config proxy if not
+            if len(ovpnClient['url']) < 10:
+                # need to setup proxyConfig, set url to: len("RVRP@9801456451909-0xc0a8788a@") - 30 // len(9801456451909) - 13
+                sql = "update {table} set url=%s where cn=%s".format(table=table)
+                IP_CODED = generateUrl(PROXY_PREFIX,ip)
+                url = PROXY_PREFIX + '@' + IP_CODED +'@'
+                try:
+                    cur.execute(sql,(IP_CODED, ovpnClient['cn']))
+                    conn.commit()
+                    result='success'
+                    update='yes'
+                except Exception as e:
+                    message=str(e)
+                    result = "danger"   
+            else:
+                IP_CODED = ovpnClient['url']
+                update = 'no'
+                url = PROXY_PREFIX + '@' + IP_CODED +'@'
+            
+            urls.append(url)
+            flag = 0          
+
+            newConfig = targetConfig 
+            newConfig = newConfig.replace("__IP_LOCALE__", ip)
+            newConfig = newConfig.replace("__PROXY_PREFIX__", PROXY_PREFIX)
+            newConfig = newConfig.replace("__IP_CODED__", IP_CODED)
+            newConfig = newConfig.replace("__IP_REMOTE__", IP_REMOTE)
+            newConfig = newConfig.replace("__IP_PORT__", IP_PORT)
+                
+            with open(proxyConfigFile, 'a') as fp:
+                fp.write("\n")
+                fp.write(newConfig)
+                fp.write("\n")
+            
+    flash(message, result)
+    return redirect(previousUrl)     
+    # return {"result": result, 'urls': urls, 'message': message}
+
 
 ####################################################################################
 # tips view
@@ -276,6 +377,221 @@ def updateStoreName(mode):
        
     return {"result": result}
 
+def ip2hex(ip):
+    """
+        @param param: ip address
+        @return: hex ip prefixed '0x' like: 0x115ff0861
+    """
+    l = ip.split('.')
+    return '0x{:02x}{:02x}{:02x}{:02x}'.format(*map(int, l))
+
+def generateUrl(PROXY_PREFIX, ip):
+    """
+        @param PROXY_PREFIX: PROXY_PREFIX from db
+        @param ip: ip address
+        @return: boss url like: RVRP@9801456451909-0xc0a8788a@
+    """
+    hexIp = ip2hex(ip)
+    n = 13
+    randomIntAddress = ''.join(["{}".format(randint(0, 9)) for num in range(0, n)])    
+    return '{}-{}'.format(randomIntAddress, hexIp)
+
+@bp.route("/check<any(Tun,Tap):mode>ProxyConfig", methods=("POST",))
+@login_required
+def checkProxyConfig(mode):
+    """
+    Check a proxy if configured, configure it if not and open a new page to show configure for check
+
+    Returns:
+        result: show config new page
+    """
+    
+    if mode.lower() == 'tun':
+        table = 'tunovpnclients'
+        MODE="Tun"
+    else:
+        table = 'ovpnclients'    
+        MODE="tap"
+        
+    if request.method == "POST":
+        cn = request.values.get('cn').strip()
+    
+    conn = get_db()    
+    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+    
+    sql = "select * from {table} where cn=%s".format(table=table)
+    cur.execute(sql, (cn,))
+    res = cur.rowcount
+
+    ovpnClient = cur.fetchone()
+
+    url = ''
+    ip = ovpnClient['ip']
+
+    sql = "select * from sysconfig"
+    cur.execute(sql)
+    
+    for row in cur.fetchall():
+        if row['item'] == "IP_REMOTE":
+            IP_REMOTE = row['ivalue']
+        if row['item'] == "IP_PORT":
+            IP_PORT = row['ivalue']
+        if row['item'] == "PROXY_PREFIX":
+            PROXY_PREFIX = row['ivalue']
+        if row['item'] == "APACHE_ROOT":
+            APACHE_ROOT = row['ivalue']
+        if row['item'] == "APACHE_SUB":
+            APACHE_SUB = row['ivalue'] 
+    
+    result='success'
+    message='all good'
+    
+    # config proxy if not
+    if len(ovpnClient['url']) < 10:
+        # need to setup proxyConfig, set url to: len("RVRP@9801456451909-0xc0a8788a@") - 30 // len(9801456451909) - 13
+        sql = "update {table} set url=%s where cn=%s".format(table=table)
+        IP_CODED = generateUrl(PROXY_PREFIX,ip)
+        url = PROXY_PREFIX + '@' + IP_CODED +'@'
+        try:
+            cur.execute(sql,(IP_CODED, cn))
+            conn.commit()
+            result='success'
+            update='yes'
+        except Exception as e:
+            message=str(e)
+            result = "danger"   
+    else:
+        IP_CODED = ovpnClient['url']
+        update = 'no'
+        url = PROXY_PREFIX + '@' + IP_CODED +'@'
+    
+    proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
+    proxyConfigTemplate = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
+
+    flag = 0
+    
+    with open(proxyConfigFile, 'r') as fp:
+        lst = [p.strip() for p in fp.read().split('\n\n')]
+    
+    for lc in lst:
+        if re.findall(ip, lc):
+            flag = 1
+            break
+    
+    if not flag:
+        with open(proxyConfigTemplate, 'r') as fp:
+            newConfig = [p.strip() for p in fp.read().split('\n\n')]
+            newConfig = newConfig[0].replace("__IP_LOCALE__", ip)
+            newConfig = newConfig.replace("__PROXY_PREFIX__", PROXY_PREFIX)
+            newConfig = newConfig.replace("__IP_CODED__", IP_CODED)
+            newConfig = newConfig.replace("__IP_REMOTE__", IP_REMOTE)
+            newConfig = newConfig.replace("__IP_PORT__", IP_PORT)
+        
+        with open(proxyConfigFile, 'a') as fp:
+            fp.write("\n")
+            fp.write(newConfig)
+            fp.write("\n")
+    return {"result": result, 'url': url, 'message': message, 'update': update}
+
+@bp.route("/show<any(Tun,Tap):mode>ProxyConfig/<cn>", methods=("POST","GET"))
+@login_required
+def showProxyConfig(mode,cn):
+    """
+    @param mode: tun or tap mode 
+    @param: cn name from URL
+    @return: cn proxy config 
+    """
+    
+    if mode.lower() == 'tun':
+        table = 'tunovpnclients'
+        MODE="Tun"
+    else:
+        table = 'ovpnclients'    
+        MODE="tap"
+        
+    conn = get_db()    
+    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+    
+    sql = "select * from {table} where cn=%s".format(table=table)
+    cur.execute(sql, (cn,))
+    res = cur.rowcount
+
+    ovpnClient = cur.fetchone()
+
+    url = ''
+    ip = ovpnClient['ip']
+
+    sql = "select * from sysconfig"
+    cur.execute(sql)
+    
+    for row in cur.fetchall():
+        if row['item'] == "IP_REMOTE":
+            IP_REMOTE = row['ivalue']
+        if row['item'] == "IP_PORT":
+            IP_PORT = row['ivalue']
+        if row['item'] == "PROXY_PREFIX":
+            PROXY_PREFIX = row['ivalue']
+        if row['item'] == "APACHE_ROOT":
+            APACHE_ROOT = row['ivalue']
+        if row['item'] == "APACHE_SUB":
+            APACHE_SUB = row['ivalue']
+    
+    proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
+
+    flag = 0
+    
+    with open(proxyConfigFile, 'r') as fp:
+        lst = [p.strip() for p in fp.read().split('\n\n')]
+    
+    for lc in lst:
+        if re.findall(ip, lc):
+            flag = 1
+            targetConfig = lc
+            break
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print(ip)
+    print(lst[0])
+    
+    if not flag:
+        result = "something wrong"
+    else:
+        configResult = targetConfig
+        
+    # restart Apache2
+    result = subprocess.run('systemctl restart apache2', capture_output=True, shell=True)
+    if result.returncode != 0:
+        apacheResult = "Something wrong when restart Apache:<br>" + result.stdout.decode("utf-8") + '<br>'
+    else:
+        apacheResult = "Apache restarted successfully!<br>"
+    return apacheResult + configResult.replace("\n", "<br>")
+
+@bp.route("/showAllProxyConfig", methods=("POST","GET"))
+@login_required
+def showAllProxyConfigs():
+    """
+    @return: all proxy configs 
+    """
+        
+    conn = get_db()    
+    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+    
+    sql = "select * from sysconfig"
+    cur.execute(sql)
+    
+    for row in cur.fetchall():
+        if row['item'] == "APACHE_ROOT":
+            APACHE_ROOT = row['ivalue']
+        if row['item'] == "APACHE_SUB":
+            APACHE_SUB = row['ivalue']
+    
+    proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
+    
+    allProxyConfigs = ''
+    with open(proxyConfigFile, 'r') as fp:
+        for line in fp:
+            allProxyConfigs += line.replace("\n", "<br>")
+    
+    return "All the current Apache Proxy configs as following: <br><br>" + allProxyConfigs.replace("\n", "<br>")
 
 ####################################################################################
 # OVPN tun/tap mode generate boss clients cert
@@ -1151,7 +1467,8 @@ def toggleUser():
 ####################################################################################
 # System management views
 ####################################################################################
-@bp.route("/system")
+
+@bp.route("/system", methods=("GET", "POST"))
 @login_required
 def systemConfig():
     """system config page
@@ -1159,4 +1476,78 @@ def systemConfig():
     Returns:
         template: system config template
     """
-    return render_template("ovpn/systemConfig.html")       
+    return render_template("ovpn/systemConfig.html")
+
+@bp.route("/system/config", methods=("GET", "POST"))
+@login_required
+def systemConfigs():
+    """system config API
+
+    Returns:
+        template: system config object from db
+    """
+    # post
+    if request.method == "POST":
+        draw = request.values.get('draw')
+        
+    cur = get_db().cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+    
+    # User object
+    cur.execute("select * from sysconfig order by id asc")
+    ftotal =  cur.rowcount
+    configs = cur.fetchall()
+    
+    data = {
+        'recordsFiltered': ftotal,
+        'recordsTotal': ftotal,
+        'draw': draw,
+        'data': configs
+    }
+
+    return jsonify(data)
+
+@bp.route("/system/updateConfig", methods=("POST",))
+@login_required
+def systemConfigsUpdate():
+    """system config update API
+
+    Returns:
+        redict: systemConfig with flash result
+    """
+    # post
+    if request.method == "POST":
+        args = request.form
+    
+    conn = get_db()    
+    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+
+    result = "success"
+    # UPDATE table_name SET column_name1= value1, column_name2= value2
+    sql = "UPDATE sysconfig SET"
+    
+    flag=0
+    
+    message = ''
+    for key in list(args.keys()):
+        if not args.get(key):
+            message = "Error: null value submited!"
+            result = "danger"
+            break
+
+    sql = "update sysconfig set ivalue=%s where item=%s"  
+    if result == "success":
+        for key in list(args.keys()):
+            try:
+                cur.execute(sql, (args.get(key), key))
+                conn.commit()
+            except Exception as e:
+                message = e
+                result = "danger"
+            finally:
+                pass
+    
+    if not message:
+        message = "Update successfully!!"
+                          
+    # return redirect (url_for("ovpn.systemConfig"))
+    return {"result": result, 'message': str(message)}

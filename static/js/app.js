@@ -5,6 +5,21 @@ $(document).ready(function() {
     var cn;
     var storename;
 
+	const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+	const appendAlert = (message, type) => {
+	  const wrapper = document.createElement('div');
+	  wrapper.innerHTML = [
+	    `<div class="alert alert-${type} alert-dismissible fade show " role="alert">`,
+	    `   <div>${message}</div>`,
+	    '   <button type="button" class="close" data-dismiss="alert" aria-label="Close">',
+	    '<span aria-hidden="true">&times;</span>',
+	    '</button>',
+	    '</div>'
+	  ].join('\n');
+	
+	  alertPlaceholder.append(wrapper);
+	};
+
     function formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -164,9 +179,19 @@ $(document).ready(function() {
                 "orderable": false,
                 "data": null,
                 "render": function(data, type, row) {
-						var html = "<a href='javascript:void(0);' class='checkProxyConfig btn btn-default btn-xs'><i class='fa fa-file'></i> proxy</a>"
-						return html;
-
+					if (data["status"]) {
+						var reg = RegExp(/boss/);
+						if (data["cn"].length == 41 || reg.test(data["cn"])) {
+							var html = "<a href='javascript:void(0);' class='checkProxyConfig btn btn-default btn-xs'><i class='fa fa-file'></i> proxy</a>"
+							return html;
+						} else {
+						    var html = 'NotApplied';
+                            return html;	
+						}
+					} else {
+                        var html = 'Unreachable';
+                        return html;							
+					}
                 }
             },
         ],
@@ -251,16 +276,15 @@ $(document).ready(function() {
 
 	// checkProxyConfig button func
     $('#tuntbclientstatus tbody').on('click', '.checkProxyConfig', function(e) {
-            var reqFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
+            var reqFileName = $(this).parent().parent().children().eq(1).text();
             var clientIp = $(this).parent().parent().children().eq(2).text();
-            alert(clientIp);
-            //$(this).on('click', '.btn-danger', { 'filename': reqFileName }, function(e) {
-            //    $.post("tunReqFileList/delete", { 'filename': reqFileName }, function(result) {
-             //       console.log(result);
-             //       $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
-            //    });
-           //     $('#tunreqDelModal').modal('hide'); // hide modal
-          //  });
+            //alert(reqFileName);
+            $.post("checkTunProxyConfig", { 'cn': reqFileName }, function(result) {
+            	console.log(result);
+            	var openNewLink = window.open("showTunProxyConfig/" + reqFileName);
+        		openNewLink.focus();
+            	// $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
+            });
         });
 
     /* **********************************************
@@ -1257,6 +1281,55 @@ $(document).ready(function() {
         management page functions
     ********************************************** */
    
-   $('#systemConfigForm').find('#publicIp').val('HHHHHHHHHHHHHHHHHHHHHHHH0');
+	var tbSystemConfigTable = $("#tbSystemConfig").DataTable({
+        "dom": 'lfrt',
+        "responsive": false,
+        "lengthChange": false,
+        "autoWidth": false,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "destroy": true,
+        "paging": false,
+        "ordering": false,
+        "ajax": {
+            'url': "system/config",
+            'type': 'POST',
+            'data': {},
+            'dataType': 'json',
+        },
+        "columnDefs": [
+			{
+	            "targets": 0,
+	            "data": null,
+	            "render": function(data, type, row) {
+					//console.log(data);
+	                return data['item'];
+	            }
+        	},
+			{
+	            "targets": 1,
+	            "data": null,
+	            "render": function(data, type, row) {
+					console.log(data);
+	                var html = '<input type="text" class="form-control" value=' + data['ivalue'] + ' name=' + data['item'] + ' required>';
+	                return html;
+	            }
+        	},
+        ],
+    });
+
+    $('#updateSystemConfig').click( function() {
+        var data = tbSystemConfigTable.$('input, select').serialize();
+        //alert(
+        //    "The following data would have been submitted to the server: \n\n"+
+        //    data.substr( 0, 120 )+'...'
+       // );
+        $.post("system/updateConfig", data, function(result) {
+            console.log(result);
+            appendAlert(result['message'], result['result']);
+            $('#tbSystemConfig').DataTable().ajax.reload();
+        });
+    } );
 
 });

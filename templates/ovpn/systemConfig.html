@@ -34,6 +34,7 @@
 		</ul>
 	{% endif %}
 	{% endwith %}
+	
 
 
 	
@@ -42,34 +43,36 @@
 
 		<div class="col-md-8">
 			<div class="card card-secondary">
-			<div class="card-header">
-			<h3 class="card-title">Config</h3>
-			</div>
+				
+			{# <div class="alert alert-danger alert-dismissible fade show" role="alert">
+			  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			    <span aria-hidden="true">&times;</span>
+			  </button>
+			</div> #}		
+				<div id="liveAlertPlaceholder"></div>
+					
+				<div class="card-header">
+				<h3 class="card-title">Config</h3>
+				</div>
 			
-			
-			<form class="form-horizontal" id="systemConfigForm">
 				<div class="card-body">
+		            <table id="tbSystemConfig" class="table table-bordered table-striped table-hover">
+		              <thead>
+		              <tr>
+		                <th>Items</th>
+		                <th>Values</th>
+
+		              </tr>
+		              </thead>
+		 
+		            </table>	
+				</div>
 					
-					<div class="form-group row">
-						<label for="inputEmail3" class="col-sm-2 col-form-label">Public IP</label>
-						<div class="col-sm-10">
-						<input type="text" class="form-control" id="publicIp" placeholder="Public IP">
-						</div>
-					</div>
-					
-					<div class="form-group row">
-						<label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-						<div class="col-sm-10">
-						<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-						</div>
-					</div>
-		
-					</div>
-					
-					<div class="card-footer">
-					<button type="submit" class="btn btn-info float-right">Update</button>
+				<div class="card-footer">
+					<button type="submit" id='updateSystemConfig' class="btn btn-info float-right">Update</button>
 				</div>			
-			</form>
+
 		</div>
 
 	  </div>

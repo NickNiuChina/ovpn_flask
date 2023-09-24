@@ -65,3 +65,9 @@ class ProductionConfig(Config):
     
     # VPN_SCRIPT_DIR, in the same dir with this project, usually in /opt.
     VPN_SCRIPT_DIR = 'vpntool'
+    
+    # servers dirs
+    APACHE_ROOT = "C:\\Users\\nick_\\Downloads\\Apache-RemotePRO\\Apache-RemotePRO"
+    IP_REMOTE = 'service.carel-remote.com'
+    IP_PORT = '443'
+    PROXY_PREFIX = 'PVP'
