@@ -146,10 +146,18 @@ def refreshProxyConfig():
             APACHE_ROOT = row['ivalue']
         if row['item'] == "APACHE_SUB":
             APACHE_SUB = row['ivalue'] 
-    
+
+    # previous URL
+    previousUrl = request.referrer
+         
     # Apache config files
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
     proxyConfigTemplate = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
+    
+    if not proxyConfigFile.exists() or proxyConfigTemplate.exists():
+        flash("Error: Apache config directory does not exist!!", "danger")
+        return redirect(previousUrl)
+
 
     # erease config file
     with open(proxyConfigFile, 'w') as fp:
@@ -593,10 +601,9 @@ def showAllProxyConfigs():
 
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
     if not proxyConfigFile.exists():
-        print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
-        print(previousUrl)
-        flash('Apache config directory does not exist!!', 'danger')
-        return redirect(previousUrl)
+        # print(previousUrl)
+        # flash('Apache config directory does not exist!!', 'danger')
+        return "Error: Apache config directory does not exist!!"
     
     allProxyConfigs = ''
     with open(proxyConfigFile, 'r') as fp:
@@ -604,6 +611,36 @@ def showAllProxyConfigs():
             allProxyConfigs += line.replace("\n", "<br>")
     
     return "All the current Apache Proxy configs as following: <br><br>" + allProxyConfigs.replace("\n", "<br>")
+
+@bp.route("/showProxyConfigTempalte", methods=("POST","GET"))
+@login_required
+def showProxyConfigTempalte():
+    """
+    @return: boss proxy config tempalte 
+    """
+        
+    conn = get_db()    
+    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+    
+    sql = "select * from sysconfig"
+    cur.execute(sql)
+    
+    for row in cur.fetchall():
+        if row['item'] == "APACHE_ROOT":
+            APACHE_ROOT = row['ivalue']
+        if row['item'] == "APACHE_SUB":
+            APACHE_SUB = row['ivalue']
+
+    proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
+    if not proxyConfigFile.exists():        
+        return 'Error: Apache config directory does not exist!!'
+    
+    proxyConfigTempalte = ''
+    with open(proxyConfigFile, 'r') as fp:
+        for line in fp:
+            proxyConfigTempalte += line.replace("\n", "<br>")
+    
+    return "Boss proxy config template as following: <br><br>" + proxyConfigTempalte.replace("\n", "<br>")
 
 ####################################################################################
 # OVPN tun/tap mode generate boss clients cert
