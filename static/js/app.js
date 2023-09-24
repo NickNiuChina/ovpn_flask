@@ -237,25 +237,18 @@ $(document).ready(function() {
     $('#tuntbclientstatus tbody').on('click', '.conn4ect443', function(e) {
         var clientIp = $(this).parent().parent().children().eq(2).text();
         var cn = $(this).parent().parent().children().eq(1).text();
-        // console.log(clientIp);
-        var ipSliceList = clientIp.split('.')
-            // console.log(ipSliceList);
-        var toUrlpart = 'boss-0x';
-        for (var i = 0; i < ipSliceList.length; i++) {
-            var everyPart = parseInt(ipSliceList[i]).toString(16);
-            // console.log("长度：" + everyPart.length);
-            if (everyPart.length < 2) {
-                everyPart = "0" + String(everyPart);
-                // console.log("转化后：" + everyPart);
-            }
-            // console.log(parseInt(ipSliceList[i]).toString(16));
-            toUrlpart = toUrlpart + everyPart;
-        }
-        // console.log(toUrlpart);
-        var url = "/" + toUrlpart + "/";
-        console.log("转化后：" + url);
-        var openNewLink = window.open(url);
-        openNewLink.focus();
+        // console.log(clientIp, cn);
+        $.post("checkTunProxyConfig", { 'cn': cn }, function(result) {
+        	console.log(result);
+        	if (result['result'] == 'success') {
+            	var url = "/" + result['url'] + '/';
+		        var openNewLink = window.open(url);
+		        openNewLink.focus();
+            } else {
+				appendAlert(result['message'], result['result']);
+			}
+        });
+
     });
 
 
@@ -281,9 +274,13 @@ $(document).ready(function() {
             //alert(reqFileName);
             $.post("checkTunProxyConfig", { 'cn': reqFileName }, function(result) {
             	console.log(result);
-            	var openNewLink = window.open("showTunProxyConfig/" + reqFileName);
-        		openNewLink.focus();
-            	// $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
+            	if (result['result'] == 'success') {
+	            	var openNewLink = window.open("showTunProxyConfig/" + reqFileName);
+	        		openNewLink.focus();
+	            	// $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
+	            } else {
+					appendAlert(result['message'], result['result']);
+				}
             });
         });
 

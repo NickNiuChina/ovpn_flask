@@ -467,7 +467,12 @@ def checkProxyConfig(mode):
     
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
     proxyConfigTemplate = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
-
+    
+    if not proxyConfigFile.exists() or not proxyConfigTemplate.exists():
+        message = "Apache config file does not exited!!"
+        result = "danger"
+        return {"result": result, 'message': message}
+    
     flag = 0
     
     with open(proxyConfigFile, 'r') as fp:
@@ -584,7 +589,14 @@ def showAllProxyConfigs():
         if row['item'] == "APACHE_SUB":
             APACHE_SUB = row['ivalue']
     
+    previousUrl = request.referrer
+
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
+    if not proxyConfigFile.exists():
+        print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
+        print(previousUrl)
+        flash('Apache config directory does not exist!!', 'danger')
+        return redirect(previousUrl)
     
     allProxyConfigs = ''
     with open(proxyConfigFile, 'r') as fp:

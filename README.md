@@ -32,4 +32,8 @@ OVPN Management private project. Based on Python Flask.
   - URL
     len("RVRP@9801456451909-0xc0a8788a@") - 30
 
+    # 添加url列
+    ALTER TABLE IF EXISTS public.tunovpnclients
+    ADD COLUMN url character varying(30) NOT NULL DEFAULT 0;
+
   
