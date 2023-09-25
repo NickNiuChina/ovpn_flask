@@ -124,16 +124,22 @@ def refreshProxyConfig():
     conn = get_db()    
     cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
+    previousUrl = request.referrer
+    
     # system configs
     sql = "select * from sysconfig"
-    cur.execute(sql)
     
-    # js console result
-    result = "success"
-    message = "all good"
+    try:
+        cur.execute(sql)    
+        # js console result
+        result = "success"
+        message = "all good"
+    except Exception as e:
+        result = "danger"
+        message = "Error: " + str(e)
+        flash(message, result)
+        return redirect(previousUrl)          
     urls = []
-    
-    previousUrl = request.referrer
     
     for row in cur.fetchall():
         if row['item'] == "IP_REMOTE":
@@ -436,8 +442,13 @@ def checkProxyConfig(mode):
     url = ''
     ip = ovpnClient['ip']
 
-    sql = "select * from sysconfig"
-    cur.execute(sql)
+    try:
+        sql = "select * from sysconfig"
+        cur.execute(sql)
+    except Exception as e:
+        message = "DB ERROR: " + str(e)
+        result = "danger"
+        return {"result": result, 'message': message}
     
     for row in cur.fetchall():
         if row['item'] == "IP_REMOTE":
@@ -589,7 +600,10 @@ def showAllProxyConfigs():
     cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
     
     sql = "select * from sysconfig"
-    cur.execute(sql)
+    try:
+        cur.execute(sql)
+    except Exception as e:
+        return "FATAL ERROR: " + str(e) 
     
     for row in cur.fetchall():
         if row['item'] == "APACHE_ROOT":
@@ -623,7 +637,10 @@ def showProxyConfigTempalte():
     cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
     
     sql = "select * from sysconfig"
-    cur.execute(sql)
+    try:
+        cur.execute(sql)
+    except Exception as e:
+        return "FATAL ERROR " + str(e)
     
     for row in cur.fetchall():
         if row['item'] == "APACHE_ROOT":
@@ -1541,10 +1558,14 @@ def systemConfigs():
         
     cur = get_db().cursor(cursor_factory = psycopg2.extras.RealDictCursor)
     
-    # User object
-    cur.execute("select * from sysconfig order by id asc")
-    ftotal =  cur.rowcount
-    configs = cur.fetchall()
+    # sysconfig object
+    try:
+        cur.execute("select * from sysconfig order by id asc")
+        ftotal =  cur.rowcount
+        configs = cur.fetchall()
+    except Exception as e:
+        ftotal = 0
+        configs = []
     
     data = {
         'recordsFiltered': ftotal,
@@ -1577,11 +1598,17 @@ def systemConfigsUpdate():
     flag=0
     
     message = ''
+    
+    if len(list(args.keys())) < 1:
+            message = "Error: no value submited!"
+            result = "danger"
+            return {"result": result, 'message': str(message)}
+    
     for key in list(args.keys()):
         if not args.get(key):
             message = "Error: null value submited!"
             result = "danger"
-            break
+            return {"result": result, 'message': str(message)}
 
     sql = "update sysconfig set ivalue=%s where item=%s"  
     if result == "success":
@@ -1592,6 +1619,7 @@ def systemConfigsUpdate():
             except Exception as e:
                 message = e
                 result = "danger"
+                return {"result": result, 'message': str(message)}
             finally:
                 pass
     
