@@ -1,3 +1,6 @@
+"""
+    Main views to response to request and Blueprint implemented.
+"""
 from flask import Blueprint
 from flask import flash
 from flask import g
@@ -37,11 +40,8 @@ bp = Blueprint("ovpn", __name__, url_prefix='/')
 @bp.route("/test", methods=('GET', 'POST'))
 def test():
     """
-    test page
-        This is for test purpose only.
-
-    Returns:
-        list: flask will take the list or dict and turns to jason automatically.
+    @summary: test page for test purpose only.
+    @return: flask will take the list or dict and turns to jason automatically.
     """
     return "Hello 世界！", 200
 
@@ -229,10 +229,9 @@ def refreshProxyConfig():
 @bp.route("/tips")
 @login_required
 def tips():
-    """tips page
-
-    Returns:
-        template: tips template
+    """
+    @summary: tips page
+    @return: tips template
     """
     return render_template("ovpn/tips.html")
 
@@ -245,10 +244,9 @@ def tips():
 @login_required
 def clientsStatus(mode):
     """
-    tun or tap clientsStatus page
-
-    Returns:
-        template: tun or tap clientsStatus template
+    @summary: clientsStatus page
+    @param mode: tun or tap mode 
+    @return: clientsStatus template
     """
     
     if mode.lower() == 'tun':
@@ -262,10 +260,9 @@ def clientsStatus(mode):
 @login_required
 def listClientsStatus(mode):
     """
-    List tunclientsStatus
-        
-    Returns:
-        objects: all list from 'tunovpnclients' table
+    @summary: List tunclientsStatus
+    @param mode: tun or tap mode
+    @return: all list from 'tunovpnclients' or 'ovpnclients' table based on mode
     """
     if mode.lower() == 'tun':
         table = 'tunovpnclients'
@@ -355,10 +352,9 @@ def listClientsStatus(mode):
 @login_required
 def updateStoreName(mode):
     """
-    tun or tap clientsStatus page update storename
-
-    Returns:
-        result: result:result
+    @summary: clientsStatus page update storename
+    @param mode: tun or tap mode
+    @return: result
     """
     
     if mode.lower() == 'tun':
@@ -393,7 +389,8 @@ def updateStoreName(mode):
 
 def ip2hex(ip):
     """
-        @param param: ip address
+        @summary: turn ip to hex
+        @param ip: ip address
         @return: hex ip prefixed '0x' like: 0x115ff0861
     """
     l = ip.split('.')
@@ -401,6 +398,7 @@ def ip2hex(ip):
 
 def generateUrl(PROXY_PREFIX, ip):
     """
+        @summary: generate BOSS URL
         @param PROXY_PREFIX: PROXY_PREFIX from db
         @param ip: ip address
         @return: boss url like: RVRP@9801456451909-0xc0a8788a@
@@ -414,10 +412,9 @@ def generateUrl(PROXY_PREFIX, ip):
 @login_required
 def checkProxyConfig(mode):
     """
-    Check a proxy if configured, configure it if not and open a new page to show configure for check
-
-    Returns:
-        result: show config new page
+    @summary: Check a proxy if configured, configure it if not and open a new page to show configure for check
+    @param mode: tun or tap 
+    @return: result with result and url and some other info
     """
     
     if mode.lower() == 'tun':
@@ -521,9 +518,10 @@ def checkProxyConfig(mode):
 @login_required
 def showProxyConfig(mode,cn):
     """
+    @summary: Return the Proxy config from Apache config files
     @param mode: tun or tap mode 
     @param: cn name from URL
-    @return: cn proxy config 
+    @return: cn proxy config from Apache config files
     """
     
     if mode.lower() == 'tun':
@@ -572,9 +570,6 @@ def showProxyConfig(mode,cn):
             flag = 1
             targetConfig = lc
             break
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-    print(ip)
-    print(lst[0])
     
     if not flag:
         result = "something wrong"
@@ -593,6 +588,7 @@ def showProxyConfig(mode,cn):
 @login_required
 def showAllProxyConfigs():
     """
+    @summary: return all the proxy config from Apache config file
     @return: all proxy configs 
     """
         

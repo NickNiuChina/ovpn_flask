@@ -20,7 +20,7 @@ from flask_babel import Babel
 
 def create_app(test_config=None):
     """
-        创建 Flask APP
+        @summary: create Flask APP
         @param test_config:
         @return: flask.app.Flask
         @throws Exception
