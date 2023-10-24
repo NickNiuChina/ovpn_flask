@@ -45,12 +45,6 @@ def create_app(test_config=None):
     else:
         # load the test config if passed in
         app.config.update(test_config)
-
-    print("------APP config---------------------------------")
-    for key in app.config.keys():
-        print("{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))))
-    # print(app.config.keys())
-    print("------APP config---------------------------------")
         
     # i18n config   
     def get_locale():
@@ -182,6 +176,14 @@ def create_app(test_config=None):
         TAP_FILES_DIR = TAP_FILES_DIR,
         BASE_DIR = BASE_DIR
     )    
+
+
+    # print the config
+    print("------APP config---------------------------------")
+    for key in app.config.keys():
+        print("{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))))
+    # print(app.config.keys())
+    print("------APP config---------------------------------")
     
     # context processors
     @app.context_processor
@@ -240,10 +242,10 @@ def create_app(test_config=None):
 
 def getPlatformName() -> str:
     """
-        返回平台名称
-        @param None:
-        @return: str
-        @throws Exception
+    @summary: Return which platform this system is running on
+    @param None:
+    @return: str
+    @throws Exception
     """
     fqdn = socket.getfqdn()
     platformName = ''
