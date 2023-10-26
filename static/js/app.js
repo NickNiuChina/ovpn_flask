@@ -1218,6 +1218,7 @@ $(document).ready(function() {
         // });
     });
 
+	/**
     $('#addUser').on('shown.bs.modal', function(event) {
         var modal = $(this);
         $.ajax({
@@ -1238,6 +1239,7 @@ $(document).ready(function() {
             }
         })
     });
+    **/
 
     // $('#clientStatusModal').on('shown.bs.modal',
     //     function(e) {

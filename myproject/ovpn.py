@@ -1418,22 +1418,24 @@ def deleteUser():
 @bp.route("/admin/user/addStudent", methods=("POST",))
 @login_required
 def addUser():
-    """ add a student user account
+    """ add a new user account
         
     Returns:
-        result: redirect to user admin page with failure/sucess
+        result: redirect to user admin page with failure/success
     """
     # arguments
     if request.method == "POST":
-        username = request.values.get('student_username')
-        student_no = request.values.get('student_no')
+        username = request.values.get('username')
+        priv = request.values.get('priv')
         password = request.values.get('password')
-
+        displayName = request.values.get('display-name')
+        
     # get
     if request.method == "GET":
-        username = request.args.get('student_username') 
-        student_no = request.args.get('student_no') 
+        username = request.args.get('username') 
+        priv = request.args.get('priv') 
         password = request.args.get('password') 
+        displayName = request.args.get('display-name')
     
     db = get_db()
     cur = db.cursor()
