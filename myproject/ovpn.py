@@ -1436,24 +1436,20 @@ def addUser():
         priv = request.args.get('priv') 
         password = request.args.get('password') 
         displayName = request.args.get('display-name')
-    
-    db = get_db()
-    cur = db.cursor()
-    result = cur.execute(
-        "select * from tb_user where username=%s or student_no=%s",(username, student_no)
-    )
-    
-    if result > 0:
-        danger = "Duplicated username or student account has been created before: " + str([username, student_no])
+
+    if len(username) < 4 or len(password) < 4:
+        danger = "Username or password too short!"
         flash(danger, 'danger')    
         return redirect(url_for("ovpn.adminUser"))
     
-    result = cur.execute(
-        "select * from tb_student where student_no=%s",(student_no,)
+    db = get_db()
+    cur = db.cursor()
+    cur.execute(
+        "select * from tb_user where username=%s or display_name=%s",(username, displayName)
     )
     
-    if result < 1:
-        danger = "Student info has not been enrolled: " + str([student_no,username,password])
+    if cur.rowcount > 0:
+        danger = "Duplicated username or display name: " + str([username, displayName])
         flash(danger, 'danger')    
         return redirect(url_for("ovpn.adminUser"))
     
