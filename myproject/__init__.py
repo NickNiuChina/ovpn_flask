@@ -177,7 +177,6 @@ def create_app(test_config=None):
         BASE_DIR = BASE_DIR
     )    
 
-
     # print the config
     print("------APP config---------------------------------")
     for key in app.config.keys():
@@ -198,8 +197,6 @@ def create_app(test_config=None):
             now = datetime.datetime.now()
             )
 
-
-
     # onlineUsers, not in prod now
     app.onlineUsers = 0
     
@@ -213,6 +210,7 @@ def create_app(test_config=None):
         while True:
             try:
                 conn = db.get_db()
+                cur = db.get_cur()
                 print("--- conn object ---")
                 print(conn)
                 print("-------------------")
@@ -223,6 +221,12 @@ def create_app(test_config=None):
                 print("\t", error)
                 print("\tSleep 20s\n")
                 time.sleep(20)
+            finally:
+                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+                cur.execute("select * from sysconfig")
+                for item in cur.fetchall():
+                    print(item['item'], item['ivalue'])
+                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
     # apply the blueprints to the app
     from myproject import auth
