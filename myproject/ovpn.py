@@ -133,7 +133,7 @@ def refreshProxyConfig():
         cur.execute(sql)    
         # js console result
         result = "success"
-        message = "all good"
+        message = "All good"
     except Exception as e:
         result = "danger"
         message = "Error: " + str(e)
@@ -141,18 +141,12 @@ def refreshProxyConfig():
         return redirect(previousUrl)          
     urls = []
     
-    for row in cur.fetchall():
-        if row['item'] == "IP_REMOTE":
-            IP_REMOTE = row['ivalue']
-        if row['item'] == "IP_PORT":
-            IP_PORT = row['ivalue']
-        if row['item'] == "PROXY_PREFIX":
-            PROXY_PREFIX = row['ivalue']
-        if row['item'] == "APACHE_ROOT":
-            APACHE_ROOT = row['ivalue']
-        if row['item'] == "APACHE_SUB":
-            APACHE_SUB = row['ivalue'] 
-
+    IP_REMOTE = app.config['IP_REMOTE']
+    IP_PORT = app.config['IP_PORT']    
+    PROXY_PREFIX = app.config['PROXY_PREFIX']
+    APACHE_ROOT = app.config['APACHE_ROOT']
+    APACHE_SUB = app.config['APACHE_SUB']
+    
     # previous URL
     previousUrl = request.referrer
          
@@ -160,7 +154,7 @@ def refreshProxyConfig():
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
     proxyConfigTemplate = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
     
-    if not proxyConfigFile.exists() or proxyConfigTemplate.exists():
+    if not proxyConfigFile.exists() or not proxyConfigTemplate.exists():
         flash("Error: Apache config directory does not exist!!", "danger")
         return redirect(previousUrl)
 
@@ -447,17 +441,11 @@ def checkProxyConfig(mode):
         result = "danger"
         return {"result": result, 'message': message}
     
-    for row in cur.fetchall():
-        if row['item'] == "IP_REMOTE":
-            IP_REMOTE = row['ivalue']
-        if row['item'] == "IP_PORT":
-            IP_PORT = row['ivalue']
-        if row['item'] == "PROXY_PREFIX":
-            PROXY_PREFIX = row['ivalue']
-        if row['item'] == "APACHE_ROOT":
-            APACHE_ROOT = row['ivalue']
-        if row['item'] == "APACHE_SUB":
-            APACHE_SUB = row['ivalue'] 
+    IP_REMOTE = app.config['IP_REMOTE']
+    IP_PORT = app.config['IP_PORT']    
+    PROXY_PREFIX = app.config['PROXY_PREFIX']
+    APACHE_ROOT = app.config['APACHE_ROOT']
+    APACHE_SUB = app.config['APACHE_SUB']
     
     result='success'
     message='all good'
@@ -546,17 +534,11 @@ def showProxyConfig(mode,cn):
     sql = "select * from sysconfig"
     cur.execute(sql)
     
-    for row in cur.fetchall():
-        if row['item'] == "IP_REMOTE":
-            IP_REMOTE = row['ivalue']
-        if row['item'] == "IP_PORT":
-            IP_PORT = row['ivalue']
-        if row['item'] == "PROXY_PREFIX":
-            PROXY_PREFIX = row['ivalue']
-        if row['item'] == "APACHE_ROOT":
-            APACHE_ROOT = row['ivalue']
-        if row['item'] == "APACHE_SUB":
-            APACHE_SUB = row['ivalue']
+    IP_REMOTE = app.config['IP_REMOTE']
+    IP_PORT = app.config['IP_PORT']    
+    PROXY_PREFIX = app.config['PROXY_PREFIX']
+    APACHE_ROOT = app.config['APACHE_ROOT']
+    APACHE_SUB = app.config['APACHE_SUB']
     
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
 
@@ -601,11 +583,8 @@ def showAllProxyConfigs():
     except Exception as e:
         return "FATAL ERROR: " + str(e) 
     
-    for row in cur.fetchall():
-        if row['item'] == "APACHE_ROOT":
-            APACHE_ROOT = row['ivalue']
-        if row['item'] == "APACHE_SUB":
-            APACHE_SUB = row['ivalue']
+    APACHE_ROOT = app.config['APACHE_ROOT']
+    APACHE_SUB = app.config['APACHE_SUB']
     
     previousUrl = request.referrer
 
@@ -638,15 +617,12 @@ def showProxyConfigTempalte():
     except Exception as e:
         return "FATAL ERROR " + str(e)
     
-    for row in cur.fetchall():
-        if row['item'] == "APACHE_ROOT":
-            APACHE_ROOT = row['ivalue']
-        if row['item'] == "APACHE_SUB":
-            APACHE_SUB = row['ivalue']
+    APACHE_ROOT = app.config['APACHE_ROOT']
+    APACHE_SUB = app.config['APACHE_SUB']
 
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
     if not proxyConfigFile.exists():        
-        return 'Error: Apache config directory does not exist!!'
+        return 'Error: Apache config directory does not exist!!!!'
     
     proxyConfigTempalte = ''
     with open(proxyConfigFile, 'r') as fp:
@@ -1609,6 +1585,7 @@ def systemConfigsUpdate():
         for key in list(args.keys()):
             try:
                 cur.execute(sql, (args.get(key), key))
+                app.config.update({key: args.get(key)})
                 conn.commit()
             except Exception as e:
                 message = e

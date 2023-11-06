@@ -2,7 +2,7 @@
     {# Brand Logo #}
     <a href="javascript:void(0);" οnclick="method()" class="brand-link">
       <img src="{{ url_for('static', filename='img/AdminLogo.png') }}" alt="Admin Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light"> {{ config.PLATFORM_NAME }} </span>
+      <span class="brand-text font-weight-light"> {{ config.CUSTOMER_SITE }} </span>
     </a>
 
     {# Sidebar #}
@@ -21,7 +21,7 @@
           </li>
 
 		{# TUN mode menu #}
-		{% if config.CURRENT_OVPN_SETTING.TUN == 'enabled' %}
+		{% if config.TUN_MODE == 'enabled' %}
 	       <li class="nav-item menu-open">
 	        <a href="javascript:void(0);" class="nav-link">
 	          <i class="nav-icon fas fa-server"></i>
@@ -79,7 +79,7 @@
         {% endif %}
 
 		{# TAP mode menu #}
-		{% if config.CURRENT_OVPN_SETTING.TAP == 'enabled' %}
+		{% if config.TAP_MODE == 'enabled' %}
 	       <li class="nav-item menu-open">
 	        <a href="javascript:void(0);" class="nav-link">
 	          <i class="nav-icon fas fa-server"></i>

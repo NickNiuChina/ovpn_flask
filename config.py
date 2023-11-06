@@ -34,7 +34,9 @@ class ProductionConfig(Config):
     LOGFILE = 'stmt_flask.log'
     
     # ---------------------------------------------------------------------------------------------------------------------------
-    # All the followings, use DB configs
+    # All the followings, use DB sysconfig instead
+    
+    """
     OVPN = {
         'CAREL_OVPN':
             {
@@ -57,6 +59,7 @@ class ProductionConfig(Config):
                 'TAP': 'enabled', 
             }
     }
+    """
     
     # subdirs
     # TUN_DIR = 'tun-ovpn-files'

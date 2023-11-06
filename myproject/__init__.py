@@ -127,7 +127,7 @@ def create_app(test_config=None):
     # server starttime
     start_datetime = datetime.datetime.now()
     
-    
+    """    
     # update config for PLATFORM_NAME
     CURRENT_SERVSER = os.environ.get("CURRENT_SERVSER")
     PLATFORM_NAME = None
@@ -167,6 +167,7 @@ def create_app(test_config=None):
         CURRENT_OVPN_SETTING = CURRENT_OVPN_SETTING,
         SITE_NAME = SITE_NAME
     )
+    """
     # update config for tun/tap files dir
     PARENT_DIR = os.path.dirname(BASE_DIR)
     TUN_FILES_DIR = os.path.join(PARENT_DIR, 'tun-ovpn-files')
@@ -175,7 +176,7 @@ def create_app(test_config=None):
         TUN_FILES_DIR = TUN_FILES_DIR,
         TAP_FILES_DIR = TAP_FILES_DIR,
         BASE_DIR = BASE_DIR
-    )    
+    )
 
     # context processors
     @app.context_processor

@@ -5,20 +5,20 @@ $(document).ready(function() {
     var cn;
     var storename;
 
-	const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-	const appendAlert = (message, type) => {
-	  const wrapper = document.createElement('div');
-	  wrapper.innerHTML = [
-	    `<div class="alert alert-${type} alert-dismissible fade show " role="alert">`,
-	    `   <div>${message}</div>`,
-	    '   <button type="button" class="close" data-dismiss="alert" aria-label="Close">',
-	    '<span aria-hidden="true">&times;</span>',
-	    '</button>',
-	    '</div>'
-	  ].join('\n');
-	
-	  alertPlaceholder.append(wrapper);
-	};
+    const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+    const appendAlert = (message, type) => {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = [
+            `<div class="alert alert-${type} alert-dismissible fade show " role="alert">`,
+            `   <div>${message}</div>`,
+            '   <button type="button" class="close" data-dismiss="alert" aria-label="Close">',
+            '<span aria-hidden="true">&times;</span>',
+            '</button>',
+            '</div>'
+        ].join('\n');
+
+        alertPlaceholder.append(wrapper);
+    };
 
     function formatDate(date) {
         var d = new Date(date),
@@ -28,7 +28,25 @@ $(document).ready(function() {
         if (month.length < 2) month = '0' + month;
         if (day.length < 2) day = '0' + day;
         return [year, month, day].join('-');
-    }
+    };
+
+    function formatTime(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = '' + d.getHours(),
+            min = '' + d.getMinutes(),
+            sec = '' + d.getSeconds();
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        if (hour.length < 2) {
+            hour = '0' + hour;
+        }
+        if (min.length < 2) min = '0' + min;
+        if (sec.length < 2) sec = '0' + sec;
+        return [year, month, day].join('-') + "_" + [hour, min, sec].join(':');
+    };
 
     /*
        nav highlight when a.href == location.pathname
@@ -86,7 +104,7 @@ $(document).ready(function() {
             "colvis",
             "pageLength"
         ],
-        
+
         "lengthMenu": [100, 50, 20, "1000"],
         "processing": true,
         "serverSide": true,
@@ -101,8 +119,7 @@ $(document).ready(function() {
             'data': {},
             'dataType': 'json',
         },
-        "columnDefs": [
-			{
+        "columnDefs": [{
                 "targets": 0,
                 "data": null,
                 "render": function(data, type, row) {
@@ -131,7 +148,7 @@ $(document).ready(function() {
                 "render": function(data, type, row) {
                     var rdate = new Date(data["changedate"])
                         // console.log(formatDate(rdate));
-                    return formatDate(rdate);
+                    return formatTime(rdate);
                 }
             },
             {
@@ -161,7 +178,7 @@ $(document).ready(function() {
                     if (data["status"]) {
                         var reg = RegExp(/boss/);
                         if (data["cn"].length == 41 || reg.test(data["cn"])) {
-                            var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='far fa-arrow-alt-circle-right'></i> Mgmt</a>"                           
+                            var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='far fa-arrow-alt-circle-right'></i> Mgmt</a>"
                             html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-terminal'></i> SSH</a>"
                             return html;
                         } else {
@@ -179,29 +196,29 @@ $(document).ready(function() {
                 "orderable": false,
                 "data": null,
                 "render": function(data, type, row) {
-					if (data["status"]) {
-						var reg = RegExp(/boss/);
-						if (data["cn"].length == 41 || reg.test(data["cn"])) {
-							var html = "<a href='javascript:void(0);' class='checkProxyConfig btn btn-default btn-xs'><i class='fa fa-file'></i> proxy</a>"
-							return html;
-						} else {
-						    var html = 'NotApplied';
-                            return html;	
-						}
-					} else {
+                    if (data["status"]) {
+                        var reg = RegExp(/boss/);
+                        if (data["cn"].length == 41 || reg.test(data["cn"])) {
+                            var html = "<a href='javascript:void(0);' class='checkProxyConfig btn btn-default btn-xs'><i class='fa fa-file'></i> proxy</a>"
+                            return html;
+                        } else {
+                            var html = 'NotApplied';
+                            return html;
+                        }
+                    } else {
                         var html = 'Unreachable';
-                        return html;							
-					}
+                        return html;
+                    }
                 }
             },
         ],
         // hide the ProxyConfig check if it is not "super" or "admin"
-        "initComplete": function(settings, json) {         
-	        if (settings.jqXHR.responseJSON.privs != 'super' && settings.jqXHR.responseJSON.privs != 'admin'){
-				// alert(settings.jqXHR.responseJSON.privs  );
-	            tunTBclientStatus.columns([7]).visible(false);
-	        }
-   		}
+        "initComplete": function(settings, json) {
+            if (settings.jqXHR.responseJSON.privs != 'super' && settings.jqXHR.responseJSON.privs != 'admin') {
+                // alert(settings.jqXHR.responseJSON.privs  );
+                tunTBclientStatus.columns([7]).visible(false);
+            }
+        }
     });
 
 
@@ -222,13 +239,13 @@ $(document).ready(function() {
                         $('#tunclientStatusModal').modal('hide'); // hide modal
                     });
                 } else {
-					thismodal.find('.modal-body .error_info').html("<p class='text-danger'>Error: failed to update storename!</p>");
-				}
+                    thismodal.find('.modal-body .error_info').html("<p class='text-danger'>Error: failed to update storename!</p>");
+                }
             });
         });
 
-    $("#tunclientStatusModal").on("hidden.bs.modal", function(e) { 
-		// remove the actual elements from the DOM when fully hidden
+    $("#tunclientStatusModal").on("hidden.bs.modal", function(e) {
+        // remove the actual elements from the DOM when fully hidden
         $('#tunclientStatusModal').find("input[type=text], textarea").val("");
         $(this).find('form').trigger('reset');
     });
@@ -239,14 +256,14 @@ $(document).ready(function() {
         var cn = $(this).parent().parent().children().eq(1).text();
         // console.log(clientIp, cn);
         $.post("checkTunProxyConfig", { 'cn': cn }, function(result) {
-        	console.log(result);
-        	if (result['result'] == 'success') {
-            	var url = "/" + result['url'] + '/';
-		        var openNewLink = window.open(url);
-		        openNewLink.focus();
+            console.log(result);
+            if (result['result'] == 'success') {
+                var url = "/" + result['url'] + '/';
+                var openNewLink = window.open(url);
+                openNewLink.focus();
             } else {
-				appendAlert(result['message'], result['result']);
-			}
+                appendAlert(result['message'], result['result']);
+            }
         });
 
     });
@@ -267,22 +284,22 @@ $(document).ready(function() {
         openNewLink.focus();
     });
 
-	// checkProxyConfig button func
+    // checkProxyConfig button func
     $('#tuntbclientstatus tbody').on('click', '.checkProxyConfig', function(e) {
-            var reqFileName = $(this).parent().parent().children().eq(1).text();
-            var clientIp = $(this).parent().parent().children().eq(2).text();
-            //alert(reqFileName);
-            $.post("checkTunProxyConfig", { 'cn': reqFileName }, function(result) {
-            	console.log(result);
-            	if (result['result'] == 'success') {
-	            	var openNewLink = window.open("showTunProxyConfig/" + reqFileName);
-	        		openNewLink.focus();
-	            	// $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
-	            } else {
-					appendAlert(result['message'], result['result']);
-				}
-            });
+        var reqFileName = $(this).parent().parent().children().eq(1).text();
+        var clientIp = $(this).parent().parent().children().eq(2).text();
+        //alert(reqFileName);
+        $.post("checkTunProxyConfig", { 'cn': reqFileName }, function(result) {
+            console.log(result);
+            if (result['result'] == 'success') {
+                var openNewLink = window.open("showTunProxyConfig/" + reqFileName);
+                openNewLink.focus();
+                // $('#tuntbreqfiles').DataTable().ajax.reload(); // reload table data
+            } else {
+                appendAlert(result['message'], result['result']);
+            }
         });
+    });
 
     /* **********************************************
         tun upload req file page functions
@@ -343,7 +360,7 @@ $(document).ready(function() {
     });
 
 
-	// tun mode delete req file
+    // tun mode delete req file
     $('#tunreqDelModal').on('show.bs.modal',
         function(e) {
             var reqFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
@@ -446,7 +463,7 @@ $(document).ready(function() {
         }],
     });
 
-	// tun mode delete cert file
+    // tun mode delete cert file
     $('#tuncertDelModal').on('show.bs.modal',
         function(e) {
             var certFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
@@ -461,7 +478,7 @@ $(document).ready(function() {
         })
 
     // tun cert files download
-     $('#tuntbcertfiles tbody').on('click', '.certDownload', function() {
+    $('#tuntbcertfiles tbody').on('click', '.certDownload', function() {
         var certFileName = $(this).parent().parent().children(".dtr-control").text();
         //Set the File URL.
         var url = "tunCertFileList/download/" + certFileName;
@@ -502,7 +519,7 @@ $(document).ready(function() {
                 }
             }
         });
-    });   
+    });
 
     /* **********************************************
         tun mode generic cert file list page functions
@@ -561,7 +578,7 @@ $(document).ready(function() {
                 $('#tungenericcertDelModal').modal('hide'); // hide modal
             });
         });
-        
+
     $('#tuntbgenericcertfiles tbody').on('click', '.certDownload', function(e) {
         var certFileName = $(this).parent().parent().children(".dtr-control").text();
         e.preventDefault();
@@ -597,7 +614,7 @@ $(document).ready(function() {
             "colvis",
             "pageLength"
         ],
-        
+
         "lengthMenu": [100, 50, 20, "1000"],
         "processing": true,
         "serverSide": true,
@@ -640,8 +657,8 @@ $(document).ready(function() {
                 "data": null,
                 "render": function(data, type, row) {
                     var rdate = new Date(data["changedate"])
-                        // console.log(formatDate(rdate));
-                    return formatDate(rdate);
+                    console.log(formatTime(rdate));
+                    return formatTime(rdate);
                 }
             },
             {
@@ -705,13 +722,13 @@ $(document).ready(function() {
                         $('#tapclientStatusModal').modal('hide'); // hide modal
                     });
                 } else {
-					thismodal.find('.modal-body .error_info').html("<p class='text-danger'>Error: failed to update storename!</p>");
-				}
+                    thismodal.find('.modal-body .error_info').html("<p class='text-danger'>Error: failed to update storename!</p>");
+                }
             });
         });
 
-    $("#tapclientStatusModal").on("hidden.bs.modal", function(e) { 
-		// remove the actual elements from the DOM when fully hidden
+    $("#tapclientStatusModal").on("hidden.bs.modal", function(e) {
+        // remove the actual elements from the DOM when fully hidden
         $('#tapclientStatusModal').find("input[type=text], textarea").val("");
         $(this).find('form').trigger('reset');
     });
@@ -816,7 +833,7 @@ $(document).ready(function() {
     });
 
 
-	// tap mode delete req file
+    // tap mode delete req file
     $('#tapreqDelModal').on('show.bs.modal',
         function(e) {
             var reqFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
@@ -919,7 +936,7 @@ $(document).ready(function() {
         }],
     });
 
-	// tap mode delete cert file
+    // tap mode delete cert file
     $('#tapcertDelModal').on('show.bs.modal',
         function(e) {
             var certFileName = $(e.relatedTarget).parent().parent().children(".dtr-control").text();
@@ -934,7 +951,7 @@ $(document).ready(function() {
         })
 
     // tap cert files download
-     $('#taptbcertfiles tbody').on('click', '.certDownload', function() {
+    $('#taptbcertfiles tbody').on('click', '.certDownload', function() {
         var certFileName = $(this).parent().parent().children(".dtr-control").text();
         //Set the File URL.
         var url = "tapCertFileList/download/" + certFileName;
@@ -975,7 +992,7 @@ $(document).ready(function() {
                 }
             }
         });
-    });   
+    });
 
     /* **********************************************
         tap mode generic cert file list page functions
@@ -1034,7 +1051,7 @@ $(document).ready(function() {
                 $('#tapgenericcertDelModal').modal('hide'); // hide modal
             });
         });
-        
+
     $('#taptbgenericcertfiles tbody').on('click', '.certDownload', function(e) {
         var certFileName = $(this).parent().parent().children(".dtr-control").text();
         e.preventDefault();
@@ -1139,39 +1156,39 @@ $(document).ready(function() {
                 "render": function(data, type, row) {
                     // console.log(data[5]);
                     //if (data["status"] == '0' || data["status"] == '1') {
-                        //     <th>
-                        //     <button class="btn btn-default" data-user-id="${user.userId }"
-                        //         data-toggle="modal" data-target="#changeStatus">禁用</button>
-                        //     <button class="btn btn-danger" data-user-id="${user.userId }"
-                        //         data-toggle="modal" data-target="#deleteUser">删除</button>
-                        // </th>
-                        var status = null;
-                        var op = null;
-                        if (data["username"] != 'super') {
-                            if (data["status"] == '0') {
-                                status = "success";
-                                op = "Enabled";
-                            } else {
-                                status = "danger";
-                                op = "Disabled";
-                            }
-                            var html = "<button class='btn btn-" + status + "' data-username=";
-                            html += data["username"];
-                            html += " data-user-status=" + data["status"]
-                            html += " id='changeStatus'>" + op + "</button>"
-
-                            html += "<button class='btn btn-primary' data-user_id=";
-                            html += data["user_id"];
-                            html += " data-toggle='modal' data-target='#updateUser'>Edit</button>"
-
-                            html += "<button class='btn btn-danger' data-username=";
-                            html += data["username"];
-                            html += " data-toggle='modal' data-target='#deleteUser'>Delete</button>"
-                            return html;
+                    //     <th>
+                    //     <button class="btn btn-default" data-user-id="${user.userId }"
+                    //         data-toggle="modal" data-target="#changeStatus">禁用</button>
+                    //     <button class="btn btn-danger" data-user-id="${user.userId }"
+                    //         data-toggle="modal" data-target="#deleteUser">删除</button>
+                    // </th>
+                    var status = null;
+                    var op = null;
+                    if (data["username"] != 'super') {
+                        if (data["status"] == '0') {
+                            status = "success";
+                            op = "Enabled";
                         } else {
-                            return "HIDED!";
+                            status = "danger";
+                            op = "Disabled";
                         }
+                        var html = "<button class='btn btn-" + status + "' data-username=";
+                        html += data["username"];
+                        html += " data-user-status=" + data["status"]
+                        html += " id='changeStatus'>" + op + "</button>"
+
+                        html += "<button class='btn btn-primary' data-user_id=";
+                        html += data["user_id"];
+                        html += " data-toggle='modal' data-target='#updateUser'>Edit</button>"
+
+                        html += "<button class='btn btn-danger' data-username=";
+                        html += data["username"];
+                        html += " data-toggle='modal' data-target='#deleteUser'>Delete</button>"
+                        return html;
+                    } else {
+                        return "HIDED!";
                     }
+                }
             },
         ],
     });
@@ -1218,7 +1235,7 @@ $(document).ready(function() {
         // });
     });
 
-	/**
+    /**
     $('#addUser').on('shown.bs.modal', function(event) {
         var modal = $(this);
         $.ajax({
@@ -1279,8 +1296,8 @@ $(document).ready(function() {
     /* **********************************************
         management page functions
     ********************************************** */
-   
-	var tbSystemConfigTable = $("#tbSystemConfig").DataTable({
+
+    var tbSystemConfigTable = $("#tbSystemConfig").DataTable({
         "dom": 'lfrt',
         "responsive": false,
         "lengthChange": false,
@@ -1297,38 +1314,37 @@ $(document).ready(function() {
             'data': {},
             'dataType': 'json',
         },
-        "columnDefs": [
-			{
-	            "targets": 0,
-	            "data": null,
-	            "render": function(data, type, row) {
-					//console.log(data);
-	                return data['item'];
-	            }
-        	},
-			{
-	            "targets": 1,
-	            "data": null,
-	            "render": function(data, type, row) {
-					console.log(data);
-	                var html = '<input type="text" class="form-control" value=' + data['ivalue'] + ' name=' + data['item'] + ' required>';
-	                return html;
-	            }
-        	},
+        "columnDefs": [{
+                "targets": 0,
+                "data": null,
+                "render": function(data, type, row) {
+                    //console.log(data);
+                    return data['item'];
+                }
+            },
+            {
+                "targets": 1,
+                "data": null,
+                "render": function(data, type, row) {
+                    console.log(data);
+                    var html = '<input type="text" class="form-control" value=' + data['ivalue'] + ' name=' + data['item'] + ' required>';
+                    return html;
+                }
+            },
         ],
     });
 
-    $('#updateSystemConfig').click( function() {
+    $('#updateSystemConfig').click(function() {
         var data = tbSystemConfigTable.$('input, select').serialize();
         //alert(
         //    "The following data would have been submitted to the server: \n\n"+
         //    data.substr( 0, 120 )+'...'
-       // );
+        // );
         $.post("system/updateConfig", data, function(result) {
             console.log(result);
             appendAlert(result['message'], result['result']);
             $('#tbSystemConfig').DataTable().ajax.reload();
         });
-    } );
+    });
 
 });
