@@ -177,13 +177,6 @@ def create_app(test_config=None):
         BASE_DIR = BASE_DIR
     )    
 
-    # print the config
-    print("------APP config---------------------------------")
-    for key in app.config.keys():
-        print("{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))))
-    # print(app.config.keys())
-    print("------APP config---------------------------------")
-    
     # context processors
     @app.context_processor
     def context_processor_func():
@@ -211,9 +204,9 @@ def create_app(test_config=None):
             try:
                 conn = db.get_db()
                 cur = db.get_cur()
-                print("--- conn object ---")
+                print("------DEBUG: DB conn ----------------------------")
                 print(conn)
-                print("-------------------")
+                print("-------------------------------------------------")
                 if conn:
                     break
             except Exception as error:    
@@ -222,11 +215,21 @@ def create_app(test_config=None):
                 print("\tSleep 20s\n")
                 time.sleep(20)
             finally:
-                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-                cur.execute("select * from sysconfig")
+                print("------DEBUG: read config from db -----------------")
+                cur.execute("select item, ivalue from sysconfig")
+                items = {}
                 for item in cur.fetchall():
-                    print(item['item'], item['ivalue'])
-                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+                    print(item)
+                    items[item['item']] = item['ivalue']
+                app.config.update(items)
+                print("-------------------------------------------------")
+
+    # print the config
+    print("------DEBUG: APP config---------------------------------")
+    for key in app.config.keys():
+        print("{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))))
+    # print(app.config.keys())
+    print("------APP config---------------------------------")
 
     # apply the blueprints to the app
     from myproject import auth

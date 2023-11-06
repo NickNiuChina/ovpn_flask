@@ -1622,3 +1622,16 @@ def systemConfigsUpdate():
                           
     # return redirect (url_for("ovpn.systemConfig"))
     return {"result": result, 'message': str(message)}
+
+@bp.route("/showAppconfig", methods=("POST","GET"))
+@login_required
+def showAppConfig():
+    """
+    @return: Flask app config 
+    """
+
+    appConfig = ''
+    for key in app.config.keys():
+        appConfig += "{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))) + '<br>'
+    
+    return "Flask App current config as following: <br><br>" + appConfig.replace("\n", "<br>")

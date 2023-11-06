@@ -28,9 +28,13 @@ class ProductionConfig(Config):
     # version
     VERSION = 'v1.1.0'
     
+
     # Log file locations
     # LOGFILE = 'D:\stmt_flask.log'
     LOGFILE = 'stmt_flask.log'
+    
+    # ---------------------------------------------------------------------------------------------------------------------------
+    # All the followings, use DB configs
     OVPN = {
         'CAREL_OVPN':
             {
@@ -55,19 +59,19 @@ class ProductionConfig(Config):
     }
     
     # subdirs
-    TUN_DIR = 'tun-ovpn-files'
-    TAP_DIR = 'tap-ovpn-files'
-    EASYRSA = 'easyrsa'
-    GENERIC_CLIENT = 'generic-ovpn'
-    REQ = "reqs"
-    REQ_DONE = "reqs-done"
-    VALIDATED = "validated"
+    # TUN_DIR = 'tun-ovpn-files'
+    # TAP_DIR = 'tap-ovpn-files'
+    # EASYRSA = 'easyrsa'
+    # GENERIC_CLIENT = 'generic-ovpn'
+    # REQ = "reqs"
+    # REQ_DONE = "reqs-done"
+    # VALIDATED = "validated"
     
     # VPN_SCRIPT_DIR, in the same dir with this project, usually in /opt.
-    VPN_SCRIPT_DIR = 'vpntool'
+    # VPN_SCRIPT_DIR = 'vpntool'
     
     # servers dirs
-    APACHE_ROOT = "C:\\Users\\nick_\\Downloads\\Apache-RemotePRO\\Apache-RemotePRO"
-    IP_REMOTE = 'service.carel-remote.com'
-    IP_PORT = '443'
-    PROXY_PREFIX = 'PVP'
+    # APACHE_ROOT = "C:\\Users\\nick_\\Downloads\\Apache-RemotePRO\\Apache-RemotePRO" # DB
+    # IP_REMOTE = 'service.carel-remote.com' # DB
+    # IP_PORT = '443' # DB
+    # PROXY_PREFIX = 'PVP' # DB
