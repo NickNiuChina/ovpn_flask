@@ -140,12 +140,16 @@ def refreshProxyConfig():
         flash(message, result)
         return redirect(previousUrl)          
     urls = []
-    
-    IP_REMOTE = app.config['IP_REMOTE']
-    IP_PORT = app.config['IP_PORT']    
-    PROXY_PREFIX = app.config['PROXY_PREFIX']
-    APACHE_ROOT = app.config['APACHE_ROOT']
-    APACHE_SUB = app.config['APACHE_SUB']
+
+    try:
+        IP_REMOTE = app.config['IP_REMOTE']
+        IP_PORT = app.config['IP_PORT']    
+        PROXY_PREFIX = app.config['PROXY_PREFIX']
+        APACHE_ROOT = app.config['APACHE_ROOT']
+        APACHE_SUB = app.config['APACHE_SUB']
+    except Exception as e:
+        flash("Error: KeyError " + str(e), "danger")
+        return redirect(previousUrl)
     
     # previous URL
     previousUrl = request.referrer
@@ -441,11 +445,16 @@ def checkProxyConfig(mode):
         result = "danger"
         return {"result": result, 'message': message}
     
-    IP_REMOTE = app.config['IP_REMOTE']
-    IP_PORT = app.config['IP_PORT']    
-    PROXY_PREFIX = app.config['PROXY_PREFIX']
-    APACHE_ROOT = app.config['APACHE_ROOT']
-    APACHE_SUB = app.config['APACHE_SUB']
+    try:
+        IP_REMOTE = app.config['IP_REMOTE']
+        IP_PORT = app.config['IP_PORT']    
+        PROXY_PREFIX = app.config['PROXY_PREFIX']
+        APACHE_ROOT = app.config['APACHE_ROOT']
+        APACHE_SUB = app.config['APACHE_SUB']
+    except Exception as e:
+        message = "Error: KeyError " + str(e)
+        result = "danger"
+        return {"result": result, 'message': message}       
     
     result='success'
     message='all good'
@@ -534,11 +543,14 @@ def showProxyConfig(mode,cn):
     sql = "select * from sysconfig"
     cur.execute(sql)
     
-    IP_REMOTE = app.config['IP_REMOTE']
-    IP_PORT = app.config['IP_PORT']    
-    PROXY_PREFIX = app.config['PROXY_PREFIX']
-    APACHE_ROOT = app.config['APACHE_ROOT']
-    APACHE_SUB = app.config['APACHE_SUB']
+    try:
+        IP_REMOTE = app.config['IP_REMOTE']
+        IP_PORT = app.config['IP_PORT']    
+        PROXY_PREFIX = app.config['PROXY_PREFIX']
+        APACHE_ROOT = app.config['APACHE_ROOT']
+        APACHE_SUB = app.config['APACHE_SUB']
+    except Exception as e:
+        return "Error: KeyError " + str(e) 
     
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'reverse_proxy_local.conf')
 
