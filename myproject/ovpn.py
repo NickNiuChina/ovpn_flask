@@ -145,8 +145,8 @@ def refreshProxyConfig():
         IP_REMOTE = app.config['IP_REMOTE']
         IP_PORT = app.config['IP_PORT']    
         PROXY_PREFIX = app.config['PROXY_PREFIX']
-        APACHE_ROOT = app.config['APACHE_ROOT']
-        APACHE_SUB = app.config['APACHE_SUB']
+        APACHE_ROOT = app.config['APACHE_ROOT_DIR']
+        APACHE_SUB = app.config['APACHE_SUB_DIR']
     except Exception as e:
         flash("Error: KeyError " + str(e), "danger")
         return redirect(previousUrl)
@@ -449,8 +449,8 @@ def checkProxyConfig(mode):
         IP_REMOTE = app.config['IP_REMOTE']
         IP_PORT = app.config['IP_PORT']    
         PROXY_PREFIX = app.config['PROXY_PREFIX']
-        APACHE_ROOT = app.config['APACHE_ROOT']
-        APACHE_SUB = app.config['APACHE_SUB']
+        APACHE_ROOT = app.config['APACHE_ROOT_DIR']
+        APACHE_SUB = app.config['APACHE_SUB_DIR']
     except Exception as e:
         message = "Error: KeyError " + str(e)
         result = "danger"
@@ -547,8 +547,8 @@ def showProxyConfig(mode,cn):
         IP_REMOTE = app.config['IP_REMOTE']
         IP_PORT = app.config['IP_PORT']    
         PROXY_PREFIX = app.config['PROXY_PREFIX']
-        APACHE_ROOT = app.config['APACHE_ROOT']
-        APACHE_SUB = app.config['APACHE_SUB']
+        APACHE_ROOT = app.config['APACHE_ROOT_DIR']
+        APACHE_SUB = app.config['APACHE_SUB_DIR']
     except Exception as e:
         return "Error: KeyError " + str(e) 
     
@@ -595,8 +595,8 @@ def showAllProxyConfigs():
     except Exception as e:
         return "FATAL ERROR: " + str(e) 
     
-    APACHE_ROOT = app.config['APACHE_ROOT']
-    APACHE_SUB = app.config['APACHE_SUB']
+    APACHE_ROOT = app.config['APACHE_ROOT_DIR']
+    APACHE_SUB = app.config['APACHE_SUB_DIR']
     
     previousUrl = request.referrer
 
@@ -629,8 +629,8 @@ def showProxyConfigTempalte():
     except Exception as e:
         return "FATAL ERROR " + str(e)
     
-    APACHE_ROOT = app.config['APACHE_ROOT']
-    APACHE_SUB = app.config['APACHE_SUB']
+    APACHE_ROOT = app.config['APACHE_ROOT_DIR']
+    APACHE_SUB = app.config['APACHE_SUB_DIR']
 
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
     if not proxyConfigFile.exists():        
@@ -716,7 +716,7 @@ def uploadIssueCert(mode):
                    
         if allowed_file(file.filename):
             filename = secure_filename(file.filename)            
-            file.save(os.path.join(files_dir, app.config['REQ'] ,filename))
+            file.save(os.path.join(files_dir, app.config['REQ_DIR'] ,filename))
             # bash /opt/ovpn_flask/vpntool/generate-boss-client-cert.sh  carel tun-ovpn-files
             generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-boss-client-cert.sh')    
             result = subprocess.run(["bash", generate_script, files_dir, app.config['SITE_NAME'], subdir], capture_output=True, shell=False)
@@ -842,10 +842,10 @@ def reqFiles(mode):
     """
     if mode.lower() == 'tun':
         files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
-        reqs_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE']) 
+        reqs_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['REQ_DONE_DIR']) 
     else:
         files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
-        reqs_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['REQ_DONE']) 
+        reqs_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['REQ_DONE_DIR']) 
     
     
     draw = request.values.get('draw')
@@ -900,9 +900,9 @@ def reqFileDownload(mode,filename):
     """
 
     if mode.lower() == 'tun':
-        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'], filename)
+        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE_DIR'], filename)
     else:
-        file_path = os.path.join(app.config['TAP_FILES_DIR'],app.config['REQ_DONE'], filename)
+        file_path = os.path.join(app.config['TAP_FILES_DIR'],app.config['REQ_DONE_DIR'], filename)
  
     print("You are trying to download: " + file_path, 'success')
     
@@ -918,9 +918,9 @@ def reqFileDelete(mode):
     @return: success or fail
     """
     if mode.lower() == 'tun':
-        file_dir =  os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE'])
+        file_dir =  os.path.join(app.config['TUN_FILES_DIR'],app.config['REQ_DONE_DIR'])
     else:
-        file_dir =  os.path.join(app.config['TAP_FILES_DIR'],app.config['REQ_DONE']) 
+        file_dir =  os.path.join(app.config['TAP_FILES_DIR'],app.config['REQ_DONE_DIR']) 
     
     filename = request.values.get('filename')
     if filename:
@@ -967,10 +967,10 @@ def certFiles(mode):
     """
     if mode.lower() == 'tun':
         files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
-        cert_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['VALIDATED']) 
+        cert_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['VALIDATED_DIR']) 
     else:
         files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
-        cert_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['VALIDATED']) 
+        cert_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['VALIDATED_DIR']) 
     
     
     draw = request.values.get('draw')
@@ -1026,9 +1026,9 @@ def certFileDownload(mode,filename):
     """
     
     if mode.lower() == 'tun':
-        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED'], filename)
+        file_path = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED_DIR'], filename)
     else:
-        file_path = os.path.join(app.config['TAP_FILES_DIR'],app.config['VALIDATED'], filename)
+        file_path = os.path.join(app.config['TAP_FILES_DIR'],app.config['VALIDATED_DIR'], filename)
     
     print("You are trying to download: " + file_path, 'success')
     return send_file(file_path,as_attachment=True)
@@ -1044,9 +1044,9 @@ def certFileDelete(mode):
     """
     
     if mode.lower() == 'tun':
-        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED'])
+        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['VALIDATED_DIR'])
     else:
-        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['VALIDATED']) 
+        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['VALIDATED_DIR']) 
     
     filename = request.values.get('filename')
     if filename:
@@ -1094,10 +1094,10 @@ def genericCertFiles(mode):
     """
     if mode.lower() == 'tun':
         files_dir = pathlib.Path(app.config['TUN_FILES_DIR'])
-        generic_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['GENERIC_CLIENT']) 
+        generic_dir = pathlib.Path(app.config['TUN_FILES_DIR'], app.config['GENERIC_CLIENT_DIR']) 
     else:
         files_dir = pathlib.Path(app.config['TAP_FILES_DIR'])
-        generic_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['GENERIC_CLIENT']) 
+        generic_dir = pathlib.Path(app.config['TAP_FILES_DIR'], app.config['GENERIC_CLIENT_DIR']) 
     
     
     draw = request.values.get('draw')
@@ -1154,9 +1154,9 @@ def genericCertFileDownload(mode, filename):
     """
     
     if mode.lower() == 'tun':
-        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT'])
+        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT_DIR'])
     else:
-        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT'])
+        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT_DIR'])
     
     file_path = os.path.join(file_dir, filename)
     
@@ -1174,9 +1174,9 @@ def genericCertFileDelete(mode):
     """
     
     if mode.lower() == 'tun':
-        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT'])
+        file_dir = os.path.join(app.config['TUN_FILES_DIR'],app.config['GENERIC_CLIENT_DIR'])
     else:
-        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT'])  
+        file_dir = os.path.join(app.config['TAP_FILES_DIR'],app.config['GENERIC_CLIENT_DIR'])  
     
     filename = request.values.get('filename')
     if filename:
@@ -1387,15 +1387,14 @@ def deleteUser():
     cur.execute(
         "SELECT username FROM tb_user where username=%s", (username,)
     )
-    user = cur.fetchone()
-    if user is None:
+    if cur.rowcount < 1:
         error = "您尝试删除的用户不存在: " + username
         flash(error, 'danger')
         return redirect(url_for("ovpn.adminUser"))
 
-    result = cur.execute("delete from tb_user where username = %s", (username,))
+    cur.execute("delete from tb_user where username = %s", (username,))
     db.commit()
-    if result < 1:
+    if cur.rowcount < 1:
         error = "Failed during delete user. User: " + username
         flash(error, 'danger')
         return redirect(url_for("ovpn.adminUser"))
@@ -1406,7 +1405,7 @@ def deleteUser():
 @bp.route("/admin/user/addStudent", methods=("POST",))
 @login_required
 def addUser():
-    """ add a new user account
+    """ Add a new user account
         
     Returns:
         result: redirect to user admin page with failure/success
@@ -1441,18 +1440,18 @@ def addUser():
         flash(danger, 'danger')    
         return redirect(url_for("ovpn.adminUser"))
     
-    result = cur.execute(
+    cur.execute(
         "insert into tb_user"
-        " (user_type, username, password, student_no, status)"
-        " VALUES (%s, %s, %s, %s, %s)", (0, username, generate_password_hash(password), student_no, 1)
+        " (user_type, username, password, display_name, status)"
+        " VALUES (%s, %s, %s, %s, %s)", (int(priv), username, generate_password_hash(password), displayName, 1)
     )
     db.commit()
-    if result < 1:
-        danger = "Something wrong when add user. User: " + str([username, student_no])
+    if cur.rowcount < 1:
+        danger = "Something wrong when add user. User: " + str([username, displayName])
         flash(danger, 'danger')    
         return redirect(url_for("ovpn.adminUser"))   
     
-    success = "Add student user successfully. User: " + str([username, student_no, password, result])
+    success = "Add student user successfully. User: " + str([username, displayName, password])
     flash(success, 'success')
     return redirect(url_for("ovpn.adminUser"))
 
