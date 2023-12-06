@@ -18,6 +18,7 @@ from werkzeug.wrappers import Response
 import logging
 from flask_babel import Babel
 
+
 def create_app(test_config=None):
     """
         @summary: create Flask APP
@@ -48,7 +49,7 @@ def create_app(test_config=None):
         
     # i18n config   
     def get_locale():
-    # if a user is logged in, use the locale from the user settings
+        # if a user is logged in, use the locale from the user settings
         user = getattr(g, 'user', None)
         if user is not None:
             if user.get('locale'):
@@ -73,7 +74,6 @@ def create_app(test_config=None):
         user = getattr(g, 'user', None)
         if user is not None:
             return user.timezone
-
 
     # babel = Babel(app, locale_selector=get_locale, timezone_selector=get_timezone)
     babel = Babel(app, locale_selector=get_locale)
@@ -235,10 +235,8 @@ def create_app(test_config=None):
     # apply the blueprints to the app
     from myproject import auth
 
-
     app.register_blueprint(ovpn.bp)
     app.register_blueprint(auth.bp)
-
 
     # make url_for('index') == url_for('ovpn.index')
     # in another app, you might define a separate main index here with
@@ -248,10 +246,11 @@ def create_app(test_config=None):
 
     return app
 
+
 def getPlatformName() -> str:
     """
     @summary: Return which platform this system is running on
-    @param None:
+    @param: None
     @return: str
     @throws Exception
     """

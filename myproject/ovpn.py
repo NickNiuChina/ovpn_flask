@@ -30,13 +30,15 @@ from werkzeug.datastructures import ImmutableMultiDict
 
 from myproject.auth import login_required
 from myproject.db import get_cur, get_db
-#from MySQLdb._mysql import result
+# from MySQLdb._mysql import result
 
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
 ####################################################################################
 # test pages
 ####################################################################################
+
+
 @bp.route("/test", methods=('GET', 'POST'))
 def test():
     """
@@ -48,6 +50,8 @@ def test():
 ####################################################################################
 # Main page
 ####################################################################################
+
+
 @bp.route("/")
 @login_required
 def index():
@@ -85,7 +89,6 @@ def index():
     user_type = cur.fetchone()
     session["user_type"] = user_type["user_type"]
 
-    
     # top 5 scores
     # cur.execute( "select sc.id as id, sc.score as score, st.student_no as student_no,"
     #             " st.student_name as student_name, co.course_no as course_no, co.course_name as course_name"
@@ -100,6 +103,7 @@ def index():
 # introduction view
 ####################################################################################
 
+
 @bp.route("/introduction")
 @login_required
 def introduction():
@@ -112,6 +116,7 @@ def introduction():
 ####################################################################################
 # refresh proxy config button view
 ####################################################################################
+
 
 @bp.route("/refresh/proxyConfig", methods=("POST", "GET"))
 @login_required
@@ -1619,6 +1624,7 @@ def showAppConfig():
     """
 
     appConfig = ''
+    print((session))
     for key in app.config.keys():
         appConfig += "{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))) + '<br>'
     
