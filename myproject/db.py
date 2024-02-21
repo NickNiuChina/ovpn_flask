@@ -5,6 +5,7 @@ from flask import current_app
 from flask import g
 from flask.cli import with_appcontext
 
+
 def get_db():
     """Connect to the application's configured database. The connection
     is unique for each request and will be reused if this is called
@@ -21,22 +22,25 @@ def get_db():
         # g.db.row_factory = MySQL.Row
     return g.db
 
+
 def get_cur():
     """
-        return the cursor 
+        Return the cursor
     """
     db = get_db()
     cur = db.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
     return cur
 
+
 def close_db(e=None):
-    """If this request connected to the database, close the
-    connection.
+    """
+        If this request connected to the database, close the connection.
     """
     db = g.pop("db", None)
 
     if db is not None:
         db.close()
+
 
 def parse_sql(filename):
     """parse_sql
@@ -58,8 +62,7 @@ def parse_sql(filename):
     data = []
     for item in datas:
         data.append(bytes.decode(item, 'utf-8'))
-    
-    
+
     for lineno, line in enumerate(data):
         if not line.strip():
             continue
@@ -83,6 +86,7 @@ def parse_sql(filename):
             stmts.append(line.strip())
     return stmts
 
+
 def init_db():
     """Clear existing data and create new tables."""
     db = get_db()
@@ -94,7 +98,6 @@ def init_db():
         cursor.execute(stmt)
     db.commit()
     # http://adamlamers.com/post/GRBJUKCDMPOA
-
 
 
 @click.command("init-db")

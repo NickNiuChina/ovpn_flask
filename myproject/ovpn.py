@@ -1623,9 +1623,27 @@ def showAppConfig():
     @return: Flask app config 
     """
 
-    appConfig = ''
-    print((session))
+    print(session)
+    config_trs = ''
     for key in app.config.keys():
-        appConfig += "{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))) + '<br>'
-    
-    return "Flask App current config as following: <br><br>" + appConfig.replace("\n", "<br>")
+        # appConfig += "{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))) + '<br>'
+        config_trs += "<tr><th>{}</th>\n<th>{}</th></tr>".format(key, str(app.config.get(key)))
+
+
+    app_config = """
+<h1>Flask App current config as following</h1> <br>
+<table border="1px">
+    <thead>
+    <tr>
+        <th>Items</th>
+        <th>Values</th>
+    </tr>
+    </thead>
+    <tbody>
+    {}
+    </tbody>
+    </table>
+""".format(config_trs)
+
+    #return "<h1>Flask App current config as following</h1> <br><br>" + appConfig.replace("\n", "<br>")
+    return app_config
