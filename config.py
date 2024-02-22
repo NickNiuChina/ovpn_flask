@@ -7,6 +7,7 @@ class Config(object):
     # FLASK_SECRET = SECRET_KEY
     # DB_HOST = 'database' # a docker link
 
+
 class ProductionConfig(Config):
     DEVELOPMENT = False
     DEBUG = False
@@ -27,7 +28,6 @@ class ProductionConfig(Config):
     
     # version
     VERSION = 'v1.1.0'
-    
 
     # Log file locations
     # LOGFILE = 'D:\stmt_flask.log'
@@ -61,7 +61,7 @@ class ProductionConfig(Config):
     }
     """
     
-    # subdirs
+    # sub_dirs
     # TUN_DIR = 'tun-ovpn-files'
     # TAP_DIR = 'tap-ovpn-files'
     # EASYRSA = 'easyrsa'
