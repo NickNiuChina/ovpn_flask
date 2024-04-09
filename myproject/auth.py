@@ -96,7 +96,7 @@ def login():
         password = request.form["password"]
         
         # if username or password is null or all spaces
-        if len(str.strip(username)) ==0 or len(str.strip(password)) == 0:
+        if len(str.strip(username)) == 0 or len(str.strip(password)) == 0:
             return render_template("auth/login.html")           
         
         cur = get_cur()

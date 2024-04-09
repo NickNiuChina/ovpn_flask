@@ -35,8 +35,7 @@ class ProductionConfig(Config):
     
     # ---------------------------------------------------------------------------------------------------------------------------
     # All the followings, use DB sysconfig instead
-    
-    """
+
     OVPN = {
         'CAREL_OVPN':
             {
@@ -59,19 +58,18 @@ class ProductionConfig(Config):
                 'TAP': 'enabled', 
             }
     }
-    """
     
     # sub_dirs
-    # TUN_DIR = 'tun-ovpn-files'
-    # TAP_DIR = 'tap-ovpn-files'
-    # EASYRSA = 'easyrsa'
-    # GENERIC_CLIENT = 'generic-ovpn'
-    # REQ = "reqs"
-    # REQ_DONE = "reqs-done"
-    # VALIDATED = "validated"
+    # DIR_TUN = 'tun-ovpn-files'
+    # DIR_TAP = 'tap-ovpn-files'
+    # DIR_EASYRSA = 'easyrsa'
+    # DIR_GENERIC_CLIENT = 'generic-ovpn'
+    # DIR_REQ = "reqs"
+    # DIR_REQ_DONE = "reqs-done"
+    # DIR_VALIDATED = "validated"
     
     # VPN_SCRIPT_DIR, in the same dir with this project, usually in /opt.
-    # VPN_SCRIPT_DIR = 'vpntool'
+    # VPN_SCRIPT_DIR = 'vpntool' #
     
     # servers dirs
     # APACHE_ROOT = "C:\\Users\\nick_\\Downloads\\Apache-RemotePRO\\Apache-RemotePRO" # DB

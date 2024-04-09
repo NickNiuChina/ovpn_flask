@@ -223,14 +223,21 @@ def create_app(test_config=None):
                     print(item)
                     items[item['item']] = item['ivalue']
                 app.config.update(items)
+
+                items = {}
+                for k, v in app.config['OVPN'].items():
+                    if k == app.config['CUSTOMER_SITE']:
+                        items['TUN_MODE'] = v['TUN']
+                        items['TAP_MODE'] = v['TAP']
+                        app.config.update(items)
                 print("-------------------------------------------------")
 
     # print the config
-    print("------DEBUG: APP config---------------------------------")
-    for key in app.config.keys():
-        print("{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))))
-    # print(app.config.keys())
-    print("------APP config---------------------------------")
+    # print("------DEBUG: APP config---------------------------------")
+    # for key in app.config.keys():
+    #     print("{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))))
+    # # print(app.config.keys())
+    # print("------APP config---------------------------------")
 
     # apply the blueprints to the app
     from myproject import auth

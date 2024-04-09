@@ -37,8 +37,6 @@ bp = Blueprint("ovpn", __name__, url_prefix='/')
 ####################################################################################
 # test pages
 ####################################################################################
-
-
 @bp.route("/test", methods=('GET', 'POST'))
 def test():
     """
@@ -150,8 +148,8 @@ def refreshProxyConfig():
         IP_REMOTE = app.config['IP_REMOTE']
         IP_PORT = app.config['IP_PORT']    
         PROXY_PREFIX = app.config['PROXY_PREFIX']
-        APACHE_ROOT = app.config['APACHE_ROOT_DIR']
-        APACHE_SUB = app.config['APACHE_SUB_DIR']
+        APACHE_ROOT = app.config['DIR_APACHE_ROOT']
+        APACHE_SUB = app.config['DIR_APACHE_SUB']
     except Exception as e:
         flash("Error: KeyError " + str(e), "danger")
         return redirect(previousUrl)
@@ -166,7 +164,6 @@ def refreshProxyConfig():
     if not proxyConfigFile.exists() or not proxyConfigTemplate.exists():
         flash("Error: Apache config directory does not exist!!", "danger")
         return redirect(previousUrl)
-
 
     # erease config file
     with open(proxyConfigFile, 'w') as fp:
@@ -190,13 +187,13 @@ def refreshProxyConfig():
             if len(ovpnClient['url']) < 10:
                 # need to setup proxyConfig, set url to: len("RVRP@9801456451909-0xc0a8788a@") - 30 // len(9801456451909) - 13
                 sql = "update {table} set url=%s where cn=%s".format(table=table)
-                IP_CODED = generateUrl(PROXY_PREFIX,ip)
-                url = PROXY_PREFIX + '@' + IP_CODED +'@'
+                IP_CODED = generateUrl(PROXY_PREFIX, ip)
+                url = PROXY_PREFIX + '@' + IP_CODED + '@'
                 try:
-                    cur.execute(sql,(IP_CODED, ovpnClient['cn']))
+                    cur.execute(sql, (IP_CODED, ovpnClient['cn']))
                     conn.commit()
-                    result='success'
-                    update='yes'
+                    result = 'success'
+                    update = 'yes'
                 except Exception as e:
                     message=str(e)
                     result = "danger"   
@@ -258,7 +255,8 @@ def clientsStatus(mode):
         MODE = 'tap'        
     
     return render_template("ovpn/{}ClientsStatus.html".format(MODE))
- 
+
+
 @bp.route("/list/<any(tun,tap):mode>ClientsStatus", methods=("GET", "POST"))
 @login_required
 def listClientsStatus(mode):
@@ -351,6 +349,7 @@ def listClientsStatus(mode):
     print (data)
     return data
 
+
 @bp.route("/<any(tun,tap):mode>ClientsStatus/update/storename", methods=("GET", "POST"))
 @login_required
 def updateStoreName(mode):
@@ -390,6 +389,7 @@ def updateStoreName(mode):
        
     return {"result": result}
 
+
 def ip2hex(ip):
     """
         @summary: turn ip to hex
@@ -398,6 +398,7 @@ def ip2hex(ip):
     """
     l = ip.split('.')
     return '0x{:02x}{:02x}{:02x}{:02x}'.format(*map(int, l))
+
 
 def generateUrl(PROXY_PREFIX, ip):
     """
@@ -454,8 +455,8 @@ def checkProxyConfig(mode):
         IP_REMOTE = app.config['IP_REMOTE']
         IP_PORT = app.config['IP_PORT']    
         PROXY_PREFIX = app.config['PROXY_PREFIX']
-        APACHE_ROOT = app.config['APACHE_ROOT_DIR']
-        APACHE_SUB = app.config['APACHE_SUB_DIR']
+        APACHE_ROOT = app.config['DIR_APACHE_ROOT']
+        APACHE_SUB = app.config['DIR_APACHE_SUB']
     except Exception as e:
         message = "Error: KeyError " + str(e)
         result = "danger"
@@ -516,6 +517,7 @@ def checkProxyConfig(mode):
             fp.write("\n")
     return {"result": result, 'url': url, 'message': message, 'update': update}
 
+
 @bp.route("/show<any(Tun,Tap):mode>ProxyConfig/<cn>", methods=("POST","GET"))
 @login_required
 def showProxyConfig(mode,cn):
@@ -552,8 +554,8 @@ def showProxyConfig(mode,cn):
         IP_REMOTE = app.config['IP_REMOTE']
         IP_PORT = app.config['IP_PORT']    
         PROXY_PREFIX = app.config['PROXY_PREFIX']
-        APACHE_ROOT = app.config['APACHE_ROOT_DIR']
-        APACHE_SUB = app.config['APACHE_SUB_DIR']
+        APACHE_ROOT = app.config['DIR_APACHE_ROOT']
+        APACHE_SUB = app.config['DIR_APACHE_SUB']
     except Exception as e:
         return "Error: KeyError " + str(e) 
     
@@ -583,6 +585,7 @@ def showProxyConfig(mode,cn):
         apacheResult = "Apache restarted successfully!<br>"
     return apacheResult + configResult.replace("\n", "<br>")
 
+
 @bp.route("/showAllProxyConfig", methods=("POST","GET"))
 @login_required
 def showAllProxyConfigs():
@@ -600,8 +603,8 @@ def showAllProxyConfigs():
     except Exception as e:
         return "FATAL ERROR: " + str(e) 
     
-    APACHE_ROOT = app.config['APACHE_ROOT_DIR']
-    APACHE_SUB = app.config['APACHE_SUB_DIR']
+    APACHE_ROOT = app.config['DIR_APACHE_ROOT']
+    APACHE_SUB = app.config['DIR_APACHE_SUB']
     
     previousUrl = request.referrer
 
@@ -617,6 +620,7 @@ def showAllProxyConfigs():
             allProxyConfigs += line.replace("\n", "<br>")
     
     return "All the current Apache Proxy configs as following: <br><br>" + allProxyConfigs.replace("\n", "<br>")
+
 
 @bp.route("/showProxyConfigTempalte", methods=("POST","GET"))
 @login_required
@@ -634,8 +638,8 @@ def showProxyConfigTempalte():
     except Exception as e:
         return "FATAL ERROR " + str(e)
     
-    APACHE_ROOT = app.config['APACHE_ROOT_DIR']
-    APACHE_SUB = app.config['APACHE_SUB_DIR']
+    APACHE_ROOT = app.config['DIR_APACHE_ROOT']
+    APACHE_SUB = app.config['DIR_APACHE_SUB']
 
     proxyConfigFile = pathlib.Path(APACHE_ROOT, APACHE_SUB, 'boss.template')
     if not proxyConfigFile.exists():        
@@ -651,6 +655,7 @@ def showProxyConfigTempalte():
 ####################################################################################
 # OVPN tun/tap mode generate boss clients cert
 ####################################################################################
+
 
 @bp.route("/generate/boss<any(Tun,Tap):mode>Client")
 @login_required
@@ -669,7 +674,9 @@ def generateBossClient(mode):
     
     return render_template("ovpn/{mode}IssueCert.html".format(mode=MODE))
 
+
 ALLOWED_EXTENSIONS = {'req',}
+
 
 def allowed_file(filename):
     """
@@ -692,11 +699,11 @@ def uploadIssueCert(mode):
     """
     
     if mode.lower() == 'tun':
-        files_dir = app.config['TUN_FILES_DIR']
+        files_dir = app.config['DIR_TUN_FILES']
         mode = 'Tun'
         subdir = "tun-ovpn-files"
     else:
-        files_dir = app.config['TAP_FILES_DIR']
+        files_dir = app.config['DIR_TAP_FILES']
         mode = 'Tap'
         subdir = "tap-ovpn-files"
     
@@ -721,7 +728,7 @@ def uploadIssueCert(mode):
                    
         if allowed_file(file.filename):
             filename = secure_filename(file.filename)            
-            file.save(os.path.join(files_dir, app.config['REQ_DIR'] ,filename))
+            file.save(os.path.join(files_dir, app.config['DIR_REQ'] ,filename))
             # bash /opt/ovpn_flask/vpntool/generate-boss-client-cert.sh  carel tun-ovpn-files
             generate_script = os.path.join(app.config["BASE_DIR"], 'vpntool', 'generate-boss-client-cert.sh')    
             result = subprocess.run(["bash", generate_script, files_dir, app.config['SITE_NAME'], subdir], capture_output=True, shell=False)
@@ -1460,6 +1467,7 @@ def addUser():
     flash(success, 'success')
     return redirect(url_for("ovpn.adminUser"))
 
+
 @bp.route("/admin/user/toggle", methods=("GET", "POST"))
 @login_required
 def toggleUser():
@@ -1530,6 +1538,7 @@ def systemConfig():
     """
     return render_template("ovpn/systemConfig.html")
 
+
 @bp.route("/system/config", methods=("GET", "POST"))
 @login_required
 def systemConfigs():
@@ -1547,7 +1556,7 @@ def systemConfigs():
     # sysconfig object
     try:
         cur.execute("select * from sysconfig order by id asc")
-        ftotal =  cur.rowcount
+        ftotal = cur.rowcount
         configs = cur.fetchall()
     except Exception as e:
         ftotal = 0
@@ -1561,6 +1570,7 @@ def systemConfigs():
     }
 
     return jsonify(data)
+
 
 @bp.route("/system/updateConfig", methods=("POST",))
 @login_required
@@ -1616,6 +1626,7 @@ def systemConfigsUpdate():
     # return redirect (url_for("ovpn.systemConfig"))
     return {"result": result, 'message': str(message)}
 
+
 @bp.route("/showAppconfig", methods=("POST","GET"))
 @login_required
 def showAppConfig():
@@ -1645,5 +1656,5 @@ def showAppConfig():
     </table>
 """.format(config_trs)
 
-    #return "<h1>Flask App current config as following</h1> <br><br>" + appConfig.replace("\n", "<br>")
+    # return "<h1>Flask App current config as following</h1> <br><br>" + appConfig.replace("\n", "<br>")
     return app_config
