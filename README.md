@@ -36,4 +36,9 @@ OVPN Management private project. Based on Python Flask.
     ALTER TABLE IF EXISTS public.tunovpnclients
     ADD COLUMN url character varying(30) NOT NULL DEFAULT 0;
 
+  4. Database
+    1. backup to plain files
+    2. Restore:
+    psql -U mgmt mgmtdb < schema.sql
+
   
