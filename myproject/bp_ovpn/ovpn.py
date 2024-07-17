@@ -28,36 +28,20 @@ from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import ImmutableMultiDict
 
-from myproject.auth import login_required
+from myproject.bp_auth.auth import login_required
 from myproject.db import get_cur, get_db
 # from MySQLdb._mysql import result
 
 from myproject.context import logger
 
-bp = Blueprint("ovpn", __name__, url_prefix='/')
-
-####################################################################################
-# test pages
-####################################################################################
-@bp.route("/test", methods=('GET', 'POST'))
-def test():
-    """
-    @summary: test page for test purpose only.
-    @return: flask will take the list or dict and turns to jason automatically.
-    """
-    logger.debug("Log TEST, debug")
-    logger.info("Log TEST, info")
-    logger.warning("Log TEST, warning")
-    logger.error("LOG TEST, error")
-    logger.critical("Log test, fatal")
-    return "Hello 世界！", 200
+ovpn_bp = Blueprint("ovpn", __name__)
 
 ####################################################################################
 # Main page
 ####################################################################################
 
 
-@bp.route("/")
+@ovpn_bp.route("/")
 @login_required
 def index():
     """ 
@@ -109,7 +93,7 @@ def index():
 ####################################################################################
 
 
-@bp.route("/introduction")
+@ovpn_bp.route("/introduction")
 @login_required
 def introduction():
     """
@@ -123,7 +107,7 @@ def introduction():
 ####################################################################################
 
 
-@bp.route("/refresh/proxyConfig", methods=("POST", "GET"))
+@ovpn_bp.route("/refresh/proxyConfig", methods=("POST", "GET"))
 @login_required
 def refreshProxyConfig():
     """
@@ -233,7 +217,7 @@ def refreshProxyConfig():
 # tips view
 ####################################################################################
 
-@bp.route("/tips")
+@ovpn_bp.route("/tips")
 @login_required
 def tips():
     """
@@ -247,7 +231,7 @@ def tips():
 # OVPN status views
 ####################################################################################
  
-@bp.route("/<any(tun,tap):mode>ClientsStatus")
+@ovpn_bp.route("/<any(tun,tap):mode>ClientsStatus")
 @login_required
 def clientsStatus(mode):
     """
@@ -264,7 +248,7 @@ def clientsStatus(mode):
     return render_template("ovpn/{}ClientsStatus.html".format(MODE))
 
 
-@bp.route("/list/<any(tun,tap):mode>ClientsStatus", methods=("GET", "POST"))
+@ovpn_bp.route("/list/<any(tun,tap):mode>ClientsStatus", methods=("GET", "POST"))
 @login_required
 def listClientsStatus(mode):
     """
@@ -357,7 +341,7 @@ def listClientsStatus(mode):
     return data
 
 
-@bp.route("/<any(tun,tap):mode>ClientsStatus/update/storename", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>ClientsStatus/update/storename", methods=("GET", "POST"))
 @login_required
 def updateStoreName(mode):
     """
@@ -419,7 +403,7 @@ def generateUrl(PROXY_PREFIX, ip):
     randomIntAddress = ''.join(["{}".format(randint(0, 9)) for num in range(0, n)])    
     return '{}-{}'.format(randomIntAddress, hexIp)
 
-@bp.route("/check<any(Tun,Tap):mode>ProxyConfig", methods=("POST",))
+@ovpn_bp.route("/check<any(Tun,Tap):mode>ProxyConfig", methods=("POST",))
 @login_required
 def checkProxyConfig(mode):
     """
@@ -525,7 +509,7 @@ def checkProxyConfig(mode):
     return {"result": result, 'url': url, 'message': message, 'update': update}
 
 
-@bp.route("/show<any(Tun,Tap):mode>ProxyConfig/<cn>", methods=("POST","GET"))
+@ovpn_bp.route("/show<any(Tun,Tap):mode>ProxyConfig/<cn>", methods=("POST","GET"))
 @login_required
 def showProxyConfig(mode,cn):
     """
@@ -593,7 +577,7 @@ def showProxyConfig(mode,cn):
     return apacheResult + configResult.replace("\n", "<br>")
 
 
-@bp.route("/showAllProxyConfig", methods=("POST","GET"))
+@ovpn_bp.route("/showAllProxyConfig", methods=("POST","GET"))
 @login_required
 def showAllProxyConfigs():
     """
@@ -629,7 +613,7 @@ def showAllProxyConfigs():
     return "All the current Apache Proxy configs as following: <br><br>" + allProxyConfigs.replace("\n", "<br>")
 
 
-@bp.route("/showProxyConfigTempalte", methods=("POST","GET"))
+@ovpn_bp.route("/showProxyConfigTempalte", methods=("POST","GET"))
 @login_required
 def showProxyConfigTempalte():
     """
@@ -664,7 +648,7 @@ def showProxyConfigTempalte():
 ####################################################################################
 
 
-@bp.route("/generate/boss<any(Tun,Tap):mode>Client")
+@ovpn_bp.route("/generate/boss<any(Tun,Tap):mode>Client")
 @login_required
 def generateBossClient(mode):
     """
@@ -695,7 +679,7 @@ def allowed_file(filename):
     split_filename = filename.rsplit('.', 1)
     return '.' in filename and len(split_filename[0]) == 36 and split_filename[1].lower() in ALLOWED_EXTENSIONS
 
-@bp.route("/generate/<any(tun,tap):mode>Issue/upload", methods=("GET", "POST"))
+@ovpn_bp.route("/generate/<any(tun,tap):mode>Issue/upload", methods=("GET", "POST"))
 @login_required
 def uploadIssueCert(mode):
     """
@@ -757,7 +741,7 @@ def uploadIssueCert(mode):
 # OVPN tun generate generic certifications
 ####################################################################################
 
-@bp.route("/generate/generic<any(Tun,Tap):mode>Client")
+@ovpn_bp.route("/generate/generic<any(Tun,Tap):mode>Client")
 @login_required
 def generateGenericClient(mode):
     """
@@ -774,7 +758,7 @@ def generateGenericClient(mode):
     
     return render_template("ovpn/{mode}GenericIssueCert.html".format(mode=MODE))
 
-@bp.route("/generate/generic<any(Tun,Tap):mode>Client/create", methods=("GET", "POST"))
+@ovpn_bp.route("/generate/generic<any(Tun,Tap):mode>Client/create", methods=("GET", "POST"))
 @login_required
 def generateGenericClientCert(mode):
     """
@@ -827,7 +811,7 @@ def generateGenericClientCert(mode):
 # OVPN tun mode list reqs files
 ####################################################################################
 
-@bp.route("/<any(tun,tap):mode>ReqFileList", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>ReqFileList", methods=("GET", "POST"))
 @login_required
 def reqFileList(mode):
     """
@@ -845,7 +829,7 @@ def reqFileList(mode):
     
     return render_template("ovpn/{mode}ReqFileList.html".format(mode=MODE))
 
-@bp.route("/<any(tun,tap):mode>ReqFiles/list", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>ReqFiles/list", methods=("GET", "POST"))
 @login_required
 def reqFiles(mode):
     """
@@ -909,7 +893,7 @@ def reqFiles(mode):
         }
     return result
 
-@bp.route("/<any(tun,tap):mode>ReqFileList/download/<filename>", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>ReqFileList/download/<filename>", methods=("GET", "POST"))
 @login_required
 def reqFileDownload(mode,filename):
     """
@@ -928,7 +912,7 @@ def reqFileDownload(mode,filename):
     return send_file(file_path, as_attachment=True)
 
 
-@bp.route("/<any(tun,tap):mode>ReqFileList/delete", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>ReqFileList/delete", methods=("GET", "POST"))
 @login_required
 def reqFileDelete(mode):
     """
@@ -957,7 +941,7 @@ def reqFileDelete(mode):
 # OVPN tun/tap mode list certs files
 ####################################################################################
 
-@bp.route("/<any(tun,tap):mode>CertFileList", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>CertFileList", methods=("GET", "POST"))
 @login_required
 def certFileList(mode):
     """
@@ -975,7 +959,7 @@ def certFileList(mode):
     return render_template("ovpn/{mode}CertFileList.html".format(mode=MODE))
 
 
-@bp.route("/<any(tun,tap):mode>CertFiles/list", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>CertFiles/list", methods=("GET", "POST"))
 @login_required
 def certFiles(mode):
     """
@@ -1035,7 +1019,7 @@ def certFiles(mode):
         }
     return result
 
-@bp.route("/<any(tun,tap):mode>CertFileList/download/<filename>", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>CertFileList/download/<filename>", methods=("GET", "POST"))
 @login_required
 def certFileDownload(mode,filename):
     """
@@ -1053,7 +1037,7 @@ def certFileDownload(mode,filename):
     return send_file(file_path,as_attachment=True)
 
 
-@bp.route("/<any(tun,tap):mode>CertFileList/delete", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>CertFileList/delete", methods=("GET", "POST"))
 @login_required
 def certFileDelete(mode):
     """
@@ -1084,7 +1068,7 @@ def certFileDelete(mode):
 # OVPN tun mode generic clients files
 ####################################################################################
 
-@bp.route("/<any(tun,tap):mode>GenericCertFileList", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>GenericCertFileList", methods=("GET", "POST"))
 @login_required
 def genericCertFileList(mode):
     """
@@ -1102,7 +1086,7 @@ def genericCertFileList(mode):
     return render_template("ovpn/{mode}GenericCertFileList.html".format(mode=MODE))
 
 
-@bp.route("/<any(tun,tap):mode>GenericCertFiles/list", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>GenericCertFiles/list", methods=("GET", "POST"))
 @login_required
 def genericCertFiles(mode):
     """
@@ -1162,7 +1146,7 @@ def genericCertFiles(mode):
         }
     return result
 
-@bp.route("/<any(tun,tap):mode>GenericCertFileList/download/<filename>", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>GenericCertFileList/download/<filename>", methods=("GET", "POST"))
 @login_required
 def genericCertFileDownload(mode, filename):
     """
@@ -1183,7 +1167,7 @@ def genericCertFileDownload(mode, filename):
     return send_file(file_path,as_attachment=True)
 
 
-@bp.route("/<any(tun,tap):mode>GenericCertFileList/delete", methods=("GET", "POST"))
+@ovpn_bp.route("/<any(tun,tap):mode>GenericCertFileList/delete", methods=("GET", "POST"))
 @login_required
 def genericCertFileDelete(mode):
     """
@@ -1213,7 +1197,7 @@ def genericCertFileDelete(mode):
 # user management views
 ####################################################################################
 
-@bp.route("/list/users", methods=("GET", "POST"))
+@ovpn_bp.route("/list/users", methods=("GET", "POST"))
 @login_required
 def listUsers():
     """
@@ -1297,7 +1281,7 @@ def listUsers():
     return data
 
 
-@bp.route("/users")
+@ovpn_bp.route("/users")
 @login_required
 def adminUser():
     """user admin page
@@ -1307,7 +1291,7 @@ def adminUser():
     """
     return render_template("ovpn/users.html")
 
-@bp.route("/admin/updateUser", methods=("POST",))
+@ovpn_bp.route("/admin/updateUser", methods=("POST",))
 @login_required
 def updateUser():
     """update-user url
@@ -1354,7 +1338,7 @@ def updateUser():
     flash(success, 'success')
     return redirect(url_for("ovpn.adminUser"))
 
-@bp.route("/admin/getUser", methods=("GET", "POST"))
+@ovpn_bp.route("/admin/getUser", methods=("GET", "POST"))
 @login_required
 def getUser():
     """admin-user get a user by user_id
@@ -1378,7 +1362,7 @@ def getUser():
     print(user)
     return jsonify(user)
 
-@bp.route("/admin/delete/user", methods=("GET", "POST"))
+@ovpn_bp.route("/admin/delete/user", methods=("GET", "POST"))
 @login_required
 def deleteUser():
     """ delete a user by user info
@@ -1421,7 +1405,7 @@ def deleteUser():
     flash(success, 'success')    
     return redirect(url_for("ovpn.adminUser"))
 
-@bp.route("/admin/user/addStudent", methods=("POST",))
+@ovpn_bp.route("/admin/user/addStudent", methods=("POST",))
 @login_required
 def addUser():
     """ Add a new user account
@@ -1475,7 +1459,7 @@ def addUser():
     return redirect(url_for("ovpn.adminUser"))
 
 
-@bp.route("/admin/user/toggle", methods=("GET", "POST"))
+@ovpn_bp.route("/admin/user/toggle", methods=("GET", "POST"))
 @login_required
 def toggleUser():
     """ toggle a user status
@@ -1535,7 +1519,7 @@ def toggleUser():
 # System management views
 ####################################################################################
 
-@bp.route("/system", methods=("GET", "POST"))
+@ovpn_bp.route("/system", methods=("GET", "POST"))
 @login_required
 def systemConfig():
     """system config page
@@ -1546,7 +1530,7 @@ def systemConfig():
     return render_template("ovpn/systemConfig.html")
 
 
-@bp.route("/system/config", methods=("GET", "POST"))
+@ovpn_bp.route("/system/config", methods=("GET", "POST"))
 @login_required
 def systemConfigs():
     """system config API
@@ -1579,7 +1563,7 @@ def systemConfigs():
     return jsonify(data)
 
 
-@bp.route("/system/updateConfig", methods=("POST",))
+@ovpn_bp.route("/system/updateConfig", methods=("POST",))
 @login_required
 def systemConfigsUpdate():
     """system config update API
@@ -1634,7 +1618,7 @@ def systemConfigsUpdate():
     return {"result": result, 'message': str(message)}
 
 
-@bp.route("/showAppconfig", methods=("POST","GET"))
+@ovpn_bp.route("/showAppconfig", methods=("POST","GET"))
 @login_required
 def showAppConfig():
     """

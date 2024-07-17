@@ -1,7 +1,6 @@
 '''
 Flask 的工厂模式
 Created on 2023年8月10日
-@author: nick_niu
 '''
 import os
 import socket, re
@@ -19,11 +18,12 @@ from flask_babel import Babel
 
 
 def create_app(test_config=None):
-    """
-        @summary: create Flask APP
-        @param test_config:
-        @return: flask.app.Flask
-        @throws Exception
+    """ create Flask APP
+    Args:
+        test_config (class, optional): test config object. Defaults to None.
+
+    Returns:
+        flask.app.Flask: app
     """
 
     # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -83,17 +83,12 @@ def create_app(test_config=None):
     # except OSError:
     #     pass
 
-    # for reverse proxy
+    # for reverse proxy, prefix every url with /ovpn include /static/*
     app.wsgi_app = DispatcherMiddleware(
         Response('Not Found', status=404),
         {'/ovpn': app.wsgi_app}
     )
-
-    # hello test page
-    @app.route("/hello")
-    def hello():
-        return "Hello, 中文!"
-    
+   
     # logging settings to file
     log_level = logging.INFO
     for handler in app.logger.handlers:
@@ -242,12 +237,14 @@ def create_app(test_config=None):
     """
         VIEW BLUEPRINTS
     """
-    from myproject import auth
-    from myproject import ovpn
+    from myproject.bp_auth.auth import auth_bp
+    from myproject.bp_ovpn.ovpn import ovpn_bp
+    from myproject.bp_test.test import test_bp
     
 
-    app.register_blueprint(ovpn.bp)
-    app.register_blueprint(auth.bp)
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(ovpn_bp, url_prefix='')
+    app.register_blueprint(test_bp, url_prefix='')
 
     # make url_for('index') == url_for('ovpn.index')
     # in another app, you might define a separate main index here with

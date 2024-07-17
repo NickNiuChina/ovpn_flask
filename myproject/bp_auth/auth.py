@@ -16,7 +16,7 @@ import psycopg2.extras
 
 from myproject.db import get_db, get_cur
 
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+auth_bp = Blueprint("auth", __name__)
 
 
 def login_required(view):
@@ -32,7 +32,7 @@ def login_required(view):
     return wrapped_view
 
 
-@bp.before_app_request
+@auth_bp.before_app_request
 def load_logged_in_user():
     """If a user id is stored in the session, load the user object from
     the database into ``g.user``."""
@@ -48,7 +48,7 @@ def load_logged_in_user():
         )
 
 
-@bp.route("/register", methods=("GET", "POST"))
+@auth_bp.route("/register", methods=("GET", "POST"))
 def register():
     """Register a new user.
 
@@ -86,7 +86,7 @@ def register():
     return render_template("auth/register.html")
 
 
-@bp.route("/login", methods=("GET", "POST"))
+@auth_bp.route("/login", methods=("GET", "POST"))
 def login():
     """
         Log in a registered user by adding the user id to the session.
@@ -138,7 +138,7 @@ def login():
     return render_template("auth/login.html")
 
 
-@bp.route("/logout")
+@auth_bp.route("/logout")
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
