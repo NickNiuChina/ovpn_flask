@@ -1,4 +1,7 @@
 import os
+import platform
+from pathlib import Path
+from config import ProductionConfig
 
 """
     LOGGING
@@ -6,24 +9,28 @@ import os
 
 import common.logging.logutil as logutil
 logutil.remove_log_handlers()
-logger = logutil.get_logger(log_name='tableau_embedding_server', log_path='/var/log/temb', loglevel=logutil.DEBUG,
-                            options={'dd_enabled': os.environ.get('DATADOG_TRACE_ENABLED', '').lower() == 'true',
-                                     'dd_clean': True})
+
+system_type = platform.system()
+if system_type.startswith("Window"):
+    log_path = str(Path(os.path.realpath(__file__)).parents[1]) + "\\logs"
+else:
+    log_path = ProductionConfig.LOG_DIR
+logger = logutil.get_logger(log_name= ProductionConfig.LOG_FILE or 'ovpn_flask_mgmt', log_path=log_path, loglevel=logutil.DEBUG)
 
 
 """
     DATABASE
 """
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from carelds.temb.app.config import config_object, tableauAuth, assert_tableau_authed
-engine = create_engine(config_object.SQLALCHEMY_DATABASE_URI, pool_size=20, pool_recycle=600, pool_pre_ping=True, pool_reset_on_return='rollback', pool_timeout=15)
-DBSession = scoped_session(sessionmaker(bind=engine, autocommit=False, autoflush=False))
+# from sqlalchemy import create_engine
+# from sqlalchemy.orm import sessionmaker, scoped_session
+# from carelds.temb.app.config import config_object, tableauAuth, assert_tableau_authed
+# engine = create_engine(config_object.SQLALCHEMY_DATABASE_URI, pool_size=20, pool_recycle=600, pool_pre_ping=True, pool_reset_on_return='rollback', pool_timeout=15)
+# DBSession = scoped_session(sessionmaker(bind=engine, autocommit=False, autoflush=False))
 
 
 """
     SINGLETONS
 """
-from carelds.temb.app.common.auth import Auth, Tableau
-auth_ = Auth(config_object.SECRET_KEY, DBSession, 'auth.login_get')
-tableau_ = Tableau(tableauAuth, assert_authed=assert_tableau_authed)
+# from carelds.temb.app.common.auth import Auth, Tableau
+# auth_ = Auth(config_object.SECRET_KEY, DBSession, 'auth.login_get')
+# tableau_ = Tableau(tableauAuth, assert_authed=assert_tableau_authed)

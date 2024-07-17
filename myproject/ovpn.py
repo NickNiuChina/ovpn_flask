@@ -32,6 +32,8 @@ from myproject.auth import login_required
 from myproject.db import get_cur, get_db
 # from MySQLdb._mysql import result
 
+from myproject.context import logger
+
 bp = Blueprint("ovpn", __name__, url_prefix='/')
 
 ####################################################################################
@@ -43,6 +45,11 @@ def test():
     @summary: test page for test purpose only.
     @return: flask will take the list or dict and turns to jason automatically.
     """
+    logger.debug("Log TEST, debug")
+    logger.info("Log TEST, info")
+    logger.warning("Log TEST, warning")
+    logger.error("LOG TEST, error")
+    logger.critical("Log test, fatal")
     return "Hello 世界！", 200
 
 ####################################################################################

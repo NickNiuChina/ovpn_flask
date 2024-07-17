@@ -1,5 +1,5 @@
 import psycopg2
-
+import psycopg2.extras
 import click
 from flask import current_app
 from flask import g

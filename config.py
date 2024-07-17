@@ -8,6 +8,10 @@ class Config(object):
     # DB_HOST = 'database' # a docker link
 
 
+class TestConfig(Config):
+    pass
+
+
 class ProductionConfig(Config):
     DEVELOPMENT = False
     DEBUG = False
@@ -27,11 +31,13 @@ class ProductionConfig(Config):
     SQL_FILE = 'schema.sql'
     
     # version
-    VERSION = 'v1.1.0'
+    VERSION = 'v2.0.0'
 
     # Log file locations
     # LOGFILE = 'D:\stmt_flask.log'
     LOGFILE = 'stmt_flask.log'
+    LOG_FILE = 'ovpn_flask_mgmt.log'
+    LOG_DIR = '/var/log'
     
     # ---------------------------------------------------------------------------------------------------------------------------
     # All the followings, use DB sysconfig instead

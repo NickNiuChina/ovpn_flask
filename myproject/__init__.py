@@ -8,7 +8,6 @@ import socket, re
 
 from flask import Flask
 import datetime, time
-from myproject import ovpn
 from flask import session
 from flask import g, request
 import config
@@ -239,8 +238,13 @@ def create_app(test_config=None):
     # # print(app.config.keys())
     # print("------APP config---------------------------------")
 
-    # apply the blueprints to the app
+
+    """
+        VIEW BLUEPRINTS
+    """
     from myproject import auth
+    from myproject import ovpn
+    
 
     app.register_blueprint(ovpn.bp)
     app.register_blueprint(auth.bp)
