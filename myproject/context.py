@@ -21,11 +21,11 @@ logger = logutil.get_logger(log_name= ProductionConfig.LOG_FILE or 'ovpn_flask_m
 """
     DATABASE
 """
-# from sqlalchemy import create_engine
-# from sqlalchemy.orm import sessionmaker, scoped_session
-# from carelds.temb.app.config import config_object, tableauAuth, assert_tableau_authed
-# engine = create_engine(config_object.SQLALCHEMY_DATABASE_URI, pool_size=20, pool_recycle=600, pool_pre_ping=True, pool_reset_on_return='rollback', pool_timeout=15)
-# DBSession = scoped_session(sessionmaker(bind=engine, autocommit=False, autoflush=False))
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
+from config import ProductionConfig
+engine = create_engine(ProductionConfig.SQLALCHEMY_DATABASE_URI, pool_size=20, pool_recycle=600, pool_pre_ping=True, pool_reset_on_return='rollback', pool_timeout=15)
+DBSession = scoped_session(sessionmaker(bind=engine, autocommit=False, autoflush=False))
 
 
 """

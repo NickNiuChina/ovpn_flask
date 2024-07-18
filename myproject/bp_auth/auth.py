@@ -122,7 +122,6 @@ def login():
                 session["display_name"] = user["display_name"]
                 session["username"] = user["username"]
                 session["user_type"] = user["user_type"]
-                
                 # online user number +1
                 # current_app.onlineUsers += 1 # session scope not correct
                 return redirect(url_for("index"))

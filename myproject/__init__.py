@@ -15,7 +15,7 @@ from werkzeug.wrappers import Response
 
 import logging
 from flask_babel import Babel
-
+from .context import logger
 
 def create_app(test_config=None):
     """ create Flask APP
@@ -89,6 +89,7 @@ def create_app(test_config=None):
         {'/ovpn': app.wsgi_app}
     )
    
+    """
     # logging settings to file
     log_level = logging.INFO
     for handler in app.logger.handlers:
@@ -110,7 +111,8 @@ def create_app(test_config=None):
     handler.setFormatter(formatter)
     app.logger.addHandler(handler)
     app.logger.setLevel(log_level)
-        
+    """  
+
     # session expiration time
     @app.before_request
     def make_session_permanent():
@@ -188,10 +190,14 @@ def create_app(test_config=None):
     # onlineUsers, not in prod now
     app.onlineUsers = 0
     
-    # register the database commands
+    # register the database command: init-db
     from myproject import db
-
     db.init_app(app)
+
+    # register the flask command: initialize-db
+    from myproject import flask_command
+    flask_command.init_app(app)
+
     
     # test db connect and wait for successful connection
     with app.app_context():
@@ -199,22 +205,22 @@ def create_app(test_config=None):
             try:
                 conn = db.get_db()
                 cur = db.get_cur()
-                print("------DEBUG: DB conn ----------------------------")
-                print(conn)
-                print("-------------------------------------------------")
+                logger.debug("------DEBUG: DB conn ----------------------------")
+                logger.debug(conn)
+                logger.debug("-------------------------------------------------")
                 if conn:
                     break
             except Exception as error:    
-                print("Error: Please check the database connections!!")
-                print("\t", error)
-                print("\tSleep 20s\n")
+                logger.debug("Error: Please check the database connections!!")
+                logger.debug("\t", error)
+                logger.debug("\tSleep 20s\n")
                 time.sleep(20)
             finally:
-                print("------DEBUG: read config from db -----------------")
+                logger.debug("------DEBUG: read config from db -----------------")
                 cur.execute("select item, ivalue from sysconfig")
                 items = {}
                 for item in cur.fetchall():
-                    print(item)
+                    logger.debug(item)
                     items[item['item']] = item['ivalue']
                 app.config.update(items)
 
@@ -224,7 +230,7 @@ def create_app(test_config=None):
                         items['TUN_MODE'] = v['TUN']
                         items['TAP_MODE'] = v['TAP']
                         app.config.update(items)
-                print("-------------------------------------------------")
+                logger.debug("-------------------------------------------------")
 
     # print the config
     # print("------DEBUG: APP config---------------------------------")
@@ -253,6 +259,7 @@ def create_app(test_config=None):
     app.add_url_rule("/", endpoint="index")
 
     return app
+
 
 
 def getPlatformName() -> str:

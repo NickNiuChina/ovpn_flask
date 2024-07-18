@@ -1,4 +1,12 @@
-# coding: utf-8
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+from sqlalchemy import String
+from typing import Optional
+from typing import List
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
+
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, ForeignKeyConstraint, Integer, \
     SmallInteger, Text, UniqueConstraint, text, Numeric, Date, Time
 from sqlalchemy.dialects.postgresql import JSONB
@@ -6,19 +14,31 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
-metadata = Base.metadata
 
+class User(Base):
+    __tablename__ = "users"
 
-class DsDevice(Base):
-    __tablename__ = 'ds_device'
+    id: Mapped[int] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    username: Mapped[str] = mapped_column(String(50))
+    password: Mapped[str] = mapped_column(String(120))
+    name: Mapped[str] = mapped_column(String(40))
+    email: Mapped[str] = mapped_column(String(100))
+    group: Mapped[List["Address"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+    log_size: Mapped[int] = mapped_column(Integer)
+    page_size: Mapped[int] = mapped_column(Integer)
+    status: Mapped[int] = mapped_column(Integer)
+    
+    def __repr__(self) -> str:
+        return f"User(id={self.id!r}, name={self.name!r})"
+    
 
-    device_uid = Column(Text, primary_key=True)
-    source_system_id = Column(SmallInteger, nullable=False)
-    tenant_id = Column(Text, nullable=False)
-    plant_id = Column(Text, nullable=False)
-    line_id = Column(Integer)
-    model_id = Column(Integer, nullable=False)
-    device_id = Column(Integer, nullable=False)
-    device_code_name = Column(Text)
-    device_lang_description_en = Column(Text)
-    is_deleted = Column(Boolean, server_default=text("false"))
+# class UserGroup(Base):
+#     __tablename__ = "address"
+#     id: Mapped[int] = mapped_column(primary_key=True)
+#     email_address: Mapped[str]
+#     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
+#     user: Mapped["User"] = relationship(back_populates="addresses")
+#     def __repr__(self) -> str:
+#         return f"Address(id={self.id!r}, email_address={self.email_address!r})"

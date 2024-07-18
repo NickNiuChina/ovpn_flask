@@ -26,6 +26,8 @@ class ProductionConfig(Config):
     PG_DATABASE_DB = 'mgmtdb'
     PG_DATABASE_HOST = '127.0.0.1'
     PG_DATABASE_PORT = 5432
+    # sqlalchemy URI
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://mgmt:rootroot@localhost:5432/ovpn_mgmt'
     
     # data
     SQL_FILE = 'schema.sql'
