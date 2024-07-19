@@ -65,10 +65,10 @@ def get_logger(log_name,
     format_string = ""
     if log_time:
         format_string += "%(asctime)s "
-    format_string += "%(module)s:%(lineno)d %(threadName)s %(levelname)s "
+    format_string += "%(module)s:%(lineno)d %(threadName)s %(levelname)s"
     sl_format_dd = UTCFormatter(
         f'{format_string}[%(asctime)s] : %(message)s')
-    sl_format = logging.Formatter(f'{format_string}: %(message)s')
+    sl_format = logging.Formatter(f'{format_string} > %(message)s')
     
     if not _logger.hasHandlers():  # do not duplicate handlers for already existing loggers
         if log_path:  # write to file too

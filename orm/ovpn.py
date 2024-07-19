@@ -6,6 +6,7 @@ from typing import Optional
 from typing import List
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
+from sqlalchemy import UniqueConstraint
 
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, ForeignKeyConstraint, Integer, \
     SmallInteger, Text, UniqueConstraint, text, Numeric, Date, Time
@@ -23,9 +24,9 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(120))
     name: Mapped[str] = mapped_column(String(40))
     email: Mapped[str] = mapped_column(String(100))
-    group: Mapped[List["Address"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
-    )
+    # group: Mapped[List["UserGroup"]] = relationship(
+    #     back_populates="user", cascade="all, delete-orphan"
+    # )
     log_size: Mapped[int] = mapped_column(Integer)
     page_size: Mapped[int] = mapped_column(Integer)
     status: Mapped[int] = mapped_column(Integer)
@@ -36,6 +37,10 @@ class User(Base):
 
 class UserGroup(Base):
     __tablename__ = "user_group"
+    __table_args__ = (
+        UniqueConstraint('group'),
+    )
+    
     id: Mapped[int] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     group: Mapped[str] = mapped_column(String(50))
     
