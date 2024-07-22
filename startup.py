@@ -4,11 +4,13 @@
 from pathlib import Path
 import os
 import sys
-import logging
+import config
+from myproject.context import logger
+# import logging
 
-logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger('wsgi')
-logger.setLevel(logging.DEBUG)
+# logging.basicConfig(level=logging.WARNING)
+# logger = logging.getLogger('wsgi')
+# logger.setLevel(logging.DEBUG)
 
 parent_folder = str(Path(__file__).parents[0])
 base_folder = os.environ.get('SSO_VENV_BASE', os.path.join(str(Path(__file__).parents[0]), '.venv/'))

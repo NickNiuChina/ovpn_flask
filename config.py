@@ -1,3 +1,6 @@
+import logging
+
+
 class Config(object):
     pass
     # DEBUG = True
@@ -13,6 +16,10 @@ class TestConfig(Config):
 
 
 class ProductionConfig(Config):
+    
+    HOST='0.0.0.0'
+    PORT=5000
+    
     DEVELOPMENT = False
     DEBUG = False
     SECRET_KEY = "96f8bcfb789054901969a5f406ea6a97"
@@ -37,6 +44,7 @@ class ProductionConfig(Config):
 
     # Log file locations
     # LOGFILE = 'D:\stmt_flask.log'
+    LOG_LEVEL = logging.DEBUG
     LOGFILE = 'stmt_flask.log'
     LOG_FILE = 'ovpn_flask_mgmt.log'
     LOG_DIR = '/var/log'

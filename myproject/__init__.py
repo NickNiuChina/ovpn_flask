@@ -8,14 +8,17 @@ import socket, re
 from flask import Flask
 import datetime, time
 from flask import session
-from flask import g, request
+from flask import g, request, send_from_directory
 import config
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.wrappers import Response
+import flask
+from werkzeug.exceptions import InternalServerError
 
 import logging
 from flask_babel import Babel
 from .context import logger
+from .context import DBSession as dbsession
 
 def create_app(test_config=None):
     """ create Flask APP
@@ -199,6 +202,7 @@ def create_app(test_config=None):
     flask_command.init_app(app)
 
     
+    """
     # test db connect and wait for successful connection
     with app.app_context():
         while True:
@@ -231,6 +235,7 @@ def create_app(test_config=None):
                         items['TAP_MODE'] = v['TAP']
                         app.config.update(items)
                 logger.debug("-------------------------------------------------")
+    """
 
     # print the config
     # print("------DEBUG: APP config---------------------------------")
@@ -257,6 +262,87 @@ def create_app(test_config=None):
     # app.route, while giving the ovpn blueprint a url_prefix, but for
     # the app the ovpn will be the main index
     app.add_url_rule("/", endpoint="index")
+
+
+    """
+        GENERAL ENDPOINTS AND REQUEST/RESPONSE HANDLING
+    """
+
+    @app.errorhandler(InternalServerError)
+    def error_handler(error: InternalServerError) -> None:
+        """
+        Handle the error: log the exception and return a 500 response
+        Args:
+            error: the error object
+
+        """
+        if hasattr(sys, 'exception'):
+            exc = sys.exception() # Python >= 3.11
+        else:
+            exc = sys.exc_info()[1]
+            
+        exc_summary = traceback.extract_tb(exc.__traceback__)
+        g.logger.error(exc)
+        for line in traceback.format_list(exc_summary[-1:-6:-1]):
+            g.logger.error(line)
+        return Response('Internal Server Error', 500)
+
+
+    @app.route('/static/<path:path>')
+    def send_static(path: str) -> flask.Response:
+        """
+        Send static file to web client
+        Args:
+            path: path to static file
+
+        Returns: Response
+
+        """
+        return send_from_directory('static', path)
+
+
+    @app.teardown_appcontext
+    def shutdown_session(exception = None) -> None:
+        """
+        Rollback and remove database session to avoid pending sessions
+        Args:
+            exception:
+            
+        """
+        dbsession.rollback() #Rollback any uncommitted database transations
+        dbsession.remove() #Remove the current session
+
+
+    @app.after_request
+    def add_header(response: flask.Response) -> flask.Response:
+        """
+        Perform operations on response headers
+        Args:
+            response: the original response from endpoint
+
+        Returns: the updated response
+
+        """
+        response.cache_control.max_age = 30
+        response.cache_control.no_cache = True
+        
+        return response
+
+
+    @app.after_request
+    def response_details(response: flask.Response) -> flask.Response:
+        """
+        Log (debug) response status
+        Args:
+            response: the response object
+
+        Returns: the response (unchanged)
+
+        """
+        if 'static/' not in request.url and 'favicon' not in request.url:
+            g.logger.debug(f'{request.method} {response.status}')
+        return response
+
 
     return app
 
