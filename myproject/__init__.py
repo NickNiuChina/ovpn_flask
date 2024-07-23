@@ -4,6 +4,8 @@ Created on 2023年8月10日
 '''
 import os
 import socket, re
+import sys
+import traceback
 
 from flask import Flask
 import datetime, time
@@ -15,7 +17,7 @@ from werkzeug.wrappers import Response
 import flask
 from werkzeug.exceptions import InternalServerError
 
-import logging
+
 from flask_babel import Babel
 from .context import logger
 from .context import DBSession as dbsession
@@ -282,9 +284,9 @@ def create_app(test_config=None):
             exc = sys.exc_info()[1]
             
         exc_summary = traceback.extract_tb(exc.__traceback__)
-        g.logger.error(exc)
+        logger.error(exc)
         for line in traceback.format_list(exc_summary[-1:-6:-1]):
-            g.logger.error(line)
+            logger.error(line)
         return Response('Internal Server Error', 500)
 
 
@@ -340,7 +342,7 @@ def create_app(test_config=None):
 
         """
         if 'static/' not in request.url and 'favicon' not in request.url:
-            g.logger.debug(f'{request.method} {response.status}')
+            logger.debug(f'{request.method} {response.status} {request.url}')
         return response
 
 

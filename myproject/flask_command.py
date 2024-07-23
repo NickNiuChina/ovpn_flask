@@ -19,8 +19,9 @@ def init_db():
     new_groups = []
     for group in ['ADMIN', 'SUPER', 'USER', "GUEST" ]:
         result = dbsession.scalar(select(UserGroup).where(UserGroup.group == group))
-        print("Select result: {} {}".format(group, str(result)))
+        logger.debug("Check group: {} {}".format(group, str(result)))
         if not result:
+            logger.debug(f"Add group to db {group}")
             new_groups.append(UserGroup(group=group))
     if new_groups:
         dbsession.add_all(new_groups)

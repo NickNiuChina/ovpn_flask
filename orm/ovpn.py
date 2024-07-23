@@ -19,14 +19,14 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username: Mapped[str] = mapped_column(String(50))
     password: Mapped[str] = mapped_column(String(120))
     name: Mapped[str] = mapped_column(String(40))
     email: Mapped[str] = mapped_column(String(100))
-    # group: Mapped[List["UserGroup"]] = relationship(
-    #     back_populates="user", cascade="all, delete-orphan"
-    # )
+    group_id: Mapped[UUID] = mapped_column(
+        ForeignKey("user_group.id")
+    )
     log_size: Mapped[int] = mapped_column(Integer)
     page_size: Mapped[int] = mapped_column(Integer)
     status: Mapped[int] = mapped_column(Integer)
