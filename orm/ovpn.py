@@ -58,7 +58,7 @@ class User(Base):
     )
     log_size: Mapped[int] = mapped_column(Integer)
     page_size: Mapped[int] = mapped_column(Integer)
-    status: Mapped[int] = mapped_column(StatusType(status_choice))
+    status: Mapped[int] = mapped_column(ChoiceType(status_choice))
     
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r})"
@@ -84,8 +84,7 @@ class OvpnServers(Base):
     """
     OpenVPN servers table ORM
     """    
-    STATUS_CHOICE = [(0, "disabled"), (1, "enabled")]
-    STARTUP_CHOICE = [(0, "sysv"), (1, "systemd")]
+    STATUS_CHOICE = {0: "disabled", 1: "enabled"}
     
     __tablename__ = "ovpn_servers"
     __table_args__ = (
@@ -99,19 +98,14 @@ class OvpnServers(Base):
     status_file: Mapped[str] = mapped_column(String(200))
     log_file_dir: Mapped[str] = mapped_column(String(200))
     log_file: Mapped[str] = mapped_column(String(200))
-    startup_type = models.IntegerField(choices=STARTUP_CHOICE, default=1, db_comment="1: systemd, 0: sysv")
+    startup_type: Mapped[int] = mapped_column(ChoiceType({0: "sysv", 1: "systemd"}))
     startup_service: Mapped[str] = mapped_column(String(200))
     certs_dir: Mapped[str] = mapped_column(String(200))
-    learn_address_script = models.IntegerField(choices=STATUS_CHOICE, default=1)
-    managed = models.IntegerField(choices=STATUS_CHOICE, default=1)
-    management_port = models.IntegerField(
-        null=True,
-        blank=True,
-        unique=True,
-        validators=[MinValueValidator(1025), MaxValueValidator(65536)]
-    )
-    management_password = models.CharField(max_length=100, null=True, blank=True, default='')
-    comment = models.TextField(null=True, blank=True, default='')
+    learn_address_script: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}))
+    managed: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}))
+    management_port: Mapped[int] = mapped_column(Integer)
+    management_password: Mapped[str] = mapped_column(String(100))
+    comment: Mapped[str] = mapped_column(Text(1024))
     creation_time = models.DateTimeField(default=datetime.datetime.now, null=False, blank=False)
     update_time = models.DateTimeField(auto_now=True, null=False, blank=False)
 
