@@ -180,16 +180,17 @@ class ClientListConfig(Base):
     
     
 class SystemCommonConfig(Base):
-    """System wide common config model"""
-    PROXY_SERVER_CHOICE = [(0, "nginx"), (1, "apache")]
+    """
+    System wide common config model
+    """
     
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    proxy_server = models.IntegerField(choices=PROXY_SERVER_CHOICE, default=1, null=True, blank=True)
-    plain_req_file_dir = models.CharField(max_length=200, null=False, blank=False, default="plain_reqs")
-    encrypt_req_file_dir = models.CharField(max_length=200, null=False, blank=False, default="encrypt_reqs")
-    plain_cert_file_dir = models.CharField(max_length=200, null=True, blank=False, default='plain_certs')
-    encrypt_cert_file_dir = models.CharField(max_length=200, null=False, blank=False, default="encrypt_certs")
-    zip_cert_dir = models.CharField(max_length=200, null=False, blank=False, default="zip_certs")
+    proxy_server: Mapped[int] = ChoiceType({0: "nginx", 1: "apache"})
+    plain_req_file_dir: Mapped[str] = mapped_column(String(200)) # default="plain_reqs")
+    encrypt_req_file_dir: Mapped[str] = mapped_column(String(200)) #  default="encrypt_reqs")
+    plain_cert_file_dir: Mapped[str] = mapped_column(String(200)) # default='plain_certs')
+    encrypt_cert_file_dir: Mapped[str] = mapped_column(String(200)) # default="encrypt_certs")
+    zip_cert_dir: Mapped[str] = mapped_column(String(200)) # default="zip_certs")
     
     # Use this method to initial
     @classmethod
