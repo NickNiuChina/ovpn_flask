@@ -1,5 +1,5 @@
 Flask==3.0.3
-psycopg2==2.9.7
+psycopg2==2.9.9
 flask-babel == 4.0.0
 SQLAlchemy == 2.0.31
 # mysql driver

@@ -22,6 +22,7 @@ from flask_babel import Babel
 from .context import logger
 from .context import DBSession as dbsession
 
+
 def create_app(test_config=None):
     """ create Flask APP
     Args:

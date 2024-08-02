@@ -13,7 +13,7 @@ from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, ForeignKeyC
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.types import types
+import sqlalchemy.types as types
 from sqlalchemy.sql import func
 
 import datetime
@@ -155,12 +155,13 @@ class ClientListConfig(Base):
     """
     OpenVPN client proxy config model
     """
+    __tablename__ = "ovpn_clients_config"
 
     OS_TYPE_CHOICE = [(0, "Linux"), (1, "Windows"), (2, "MacOS"), (3, "Others")]
     PROXY_CHOICE = [(0, "disabled"), (1, "enabled")]
     
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    ovpn_client = Mapped[UUID] = mapped_column(
+    ovpn_client: Mapped[UUID] = mapped_column(
         ForeignKey("ovpn_servers.id")
     )
     os_type: Mapped[int] = ChoiceType({0: "Linux", 1: "Windows", 2: "MacOS", 3: "Others"})
@@ -183,7 +184,8 @@ class SystemCommonConfig(Base):
     """
     System wide common config model
     """
-    
+    __tablename__ = "systemc_config"
+       
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     proxy_server: Mapped[int] = ChoiceType({0: "nginx", 1: "apache"})
     plain_req_file_dir: Mapped[str] = mapped_column(String(200)) # default="plain_reqs")
