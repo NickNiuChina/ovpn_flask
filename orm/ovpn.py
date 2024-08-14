@@ -108,7 +108,7 @@ class OvpnServers(Base):
     managed: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}))
     management_port: Mapped[int] = mapped_column(Integer)
     management_password: Mapped[str] = mapped_column(String(100))
-    comment: Mapped[str] = mapped_column(Text(1024))
+    comment: Mapped[str] = mapped_column(String(1024))
     creation_time: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -169,7 +169,7 @@ class ClientListConfig(Base):
     https_proxy: Mapped[int] = ChoiceType({0: "Disabled", 1: "Enabled"})
     http_port: Mapped[str] = mapped_column(String(100))
     https_port: Mapped[str] = mapped_column(String(100))
-    http_proxy_template: Mapped[text] = mapped_column(Text(1024))
+    http_proxy_template: Mapped[str] = mapped_column(String(1024))
     ssh_proxy: Mapped[int] = ChoiceType({0: "Disabled", 1: "Enabled"})
     ssh_proxy_port: Mapped[int] = mapped_column(Integer)
     create_time: Mapped[datetime.datetime] = mapped_column(
