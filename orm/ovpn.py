@@ -213,10 +213,4 @@ class SystemCommonConfig(Base):
     """
     __tablename__ = "system_config"
        
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    proxy_server: Mapped[int] = ChoiceType({0: "nginx", 1: "apache"})
-    plain_req_file_dir: Mapped[str] = mapped_column(String(200)) # default="plain_reqs")
-    encrypt_req_file_dir: Mapped[str] = mapped_column(String(200)) #  default="encrypt_reqs")
-    plain_cert_file_dir: Mapped[str] = mapped_column(String(200)) # default='plain_certs')
-    encrypt_cert_file_dir: Mapped[str] = mapped_column(String(200)) # default="encrypt_certs")
-    zip_cert_dir: Mapped[str] = mapped_column(String(200)) # default="zip_certs")
+    site_name: Mapped[str] = mapped_column(String(200), default='Unnamed')
