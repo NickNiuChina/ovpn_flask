@@ -212,5 +212,6 @@ class SystemCommonConfig(Base):
     System wide common config model
     """
     __tablename__ = "system_config"
-       
+    
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)   
     site_name: Mapped[str] = mapped_column(String(200), default='Unnamed')
