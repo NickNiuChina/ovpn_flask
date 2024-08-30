@@ -37,16 +37,75 @@ from myproject.context import logger
 ovpn_bp = Blueprint("ovpn", __name__)
 
 ####################################################################################
-# Main page
+# Main dashboard
 ####################################################################################
-
-
 @ovpn_bp.route("/")
 @login_required
 def index():
+    
     """ 
-    @summary: Main page
-    @return: Main page templates and recently 5 launched clients
+    @summary: Main dashboard page
+    @return: Main page templates
+    """
+    system_type = platform.system()
+    # log = logging.getLogger()
+    # log.debug("Request to ovpn:index")
+    # log.info("Request to ovpn:index")
+    system_info = {
+        "system_type": system_type,
+        "system_version": platform.release(),
+        "system_time": datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"),
+        "cpu_cores": psutil.cpu_count(),
+    }
+
+    boot_time_timestamp = psutil.boot_time()
+    current_time_timestamp = time.time()
+    uptime_seconds = current_time_timestamp - boot_time_timestamp
+    uptime_minutes = uptime_seconds // 60
+    uptime_hours = uptime_minutes // 60
+    uptime_days = uptime_hours // 24
+    uptime_str = f"{int(uptime_days)} days,{int(uptime_hours % 24)}:{int(uptime_minutes % 60)}:{int(uptime_seconds % 60)}"
+
+    load_avg = psutil.getloadavg()
+    memory_total = round(psutil.virtual_memory().total/1024/1024, 1)
+    memory_used = round(psutil.virtual_memory().used/1024/1024, 1)
+    memory_percent = psutil.virtual_memory().percent
+    swap_total = round(psutil.swap_memory().total/1024/1024, 1)
+    swap_used = round(psutil.swap_memory().used/1024/1024, 1)
+    swap_percent = round(psutil.swap_memory().percent, 1)
+
+    if system_type.startswith("Linux"):
+        openvpn_version = OpenVPNParser.get_openvpn_version()
+    else:
+        openvpn_version = "NA"
+    system_information = platform.platform()
+
+    system_info.update(
+        {
+            "system_uptime": uptime_str,
+            "load_avg": load_avg,
+            "memory_total": memory_total,
+            "memory_used": memory_used,
+            "memory_percent": memory_percent,
+            "swap_total": swap_total,
+            "swap_used": swap_used,
+            "swap_percent": swap_percent,
+            "openvpn_version": openvpn_version,
+            "system_information": system_information
+        }
+    )
+    context = {'system_info': system_info}
+    if request.method == "POST":
+        if request.POST.get('action', '') == "db_refresh":
+            return JsonResponse(context)
+    return render_template("ovpn/dashboard.html", system_info=system_info)
+
+@ovpn_bp.route("/XXXXXXXXXXXXX")
+@login_required
+def index1():
+    """ 
+    @summary: Main dashboard page
+    @return: Main page templates
     """
     cur = get_cur()
     
@@ -86,7 +145,7 @@ def index():
     cur.execute('select * from tunovpnclients where status = 1 order by changedate desc limit 5')
     topOnline = cur.fetchall()
     
-    return render_template("ovpn/main.html", topOnline=topOnline)
+    return render_template("ovpn/dashboard.html", topOnline=topOnline)
 
 ####################################################################################
 # introduction view
