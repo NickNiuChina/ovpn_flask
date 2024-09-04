@@ -3,7 +3,7 @@ from flask.cli import with_appcontext
 from myproject.context import logger
 from orm.ovpn import User, UserGroup
 from sqlalchemy import select
-
+from werkzeug.security import generate_password_hash
 
 def init_db():
     """Clear existing data and create new tables."""
@@ -14,9 +14,10 @@ def init_db():
     logger.info("Sqlalchemy tables initialize started")
     # Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
-    logger.info("Sqlalchemy tables initialize done")
+    
     
     new_groups = []
+    logger.info("Check the user_group table now.")
     for group in ['ADMIN', 'SUPER', 'USER', "GUEST" ]:
         result = dbsession.scalar(select(UserGroup).where(UserGroup.group == group))
         logger.debug("Check group: {} {}".format(group, str(result)))
@@ -25,8 +26,20 @@ def init_db():
             new_groups.append(UserGroup(group=group))
     if new_groups:
         dbsession.add_all(new_groups)
-        dbsession.commit() 
-    
+        dbsession.commit()
+    logger.info("Check the user table now")
+    result = dbsession.scalar(select(User).where(User.username == 'super'))
+    if not result:
+        logger.debug(f"Add super user to db")
+        dbsession.add(User(
+            username='super', 
+            password=generate_password_hash('super'), 
+            name='super', 
+            email='super@example.com', 
+            group_id=dbsession.scalar(select(UserGroup).where(UserGroup.group == 'SUPER')).id
+            ))
+        dbsession.commit()
+    logger.info("Sqlalchemy tables initialize done")
 @click.command("initialize-db")
 @with_appcontext
 def init_db_command():

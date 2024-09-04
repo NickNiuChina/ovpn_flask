@@ -34,13 +34,13 @@ class ProductionConfig(Config):
     PG_DATABASE_HOST = '127.0.0.1'
     PG_DATABASE_PORT = 5432
     # sqlalchemy URI
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://mgmt:rootroot@localhost:5432/ovpn_mgmt'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:postgres@localhost:5432/ovpn_flask'
     
     # data
     SQL_FILE = 'schema.sql'
     
     # version
-    VERSION = 'v2.0.0'
+    VERSION = 'v0.0.1'
 
     # Log file locations
     # LOGFILE = 'D:\stmt_flask.log'

@@ -18,7 +18,6 @@ from sqlalchemy.sql import func
 
 import datetime
 
-
 Base = declarative_base()
 
 # https://stackoverflow.com/questions/6262943/sqlalchemy-how-to-make-django-choices-using-sqlalchemy
@@ -59,9 +58,9 @@ class User(Base):
     group_id: Mapped[UUID] = mapped_column(
         ForeignKey("user_group.id")
     )
-    log_size: Mapped[int] = mapped_column(Integer)
-    page_size: Mapped[int] = mapped_column(Integer)
-    status: Mapped[int] = mapped_column(ChoiceType(status_choice))
+    log_size: Mapped[int] = mapped_column(Integer, nullable=True)
+    page_size: Mapped[int] = mapped_column(Integer, nullable=True)
+    status: Mapped[int] = mapped_column(ChoiceType({1: "enabled", 0: "diabled"}), default=1)
     
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r})"
@@ -214,4 +213,26 @@ class SystemCommonConfig(Base):
     __tablename__ = "system_config"
     
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)   
-    site_name: Mapped[str] = mapped_column(String(200), default='Unnamed')
+    item: Mapped[str] = mapped_column(String(50))
+    ivalue: Mapped[str] = mapped_column(String(200), nullable=True)
+    category: Mapped[str] = mapped_column(String(50), default='dedicated')
+    
+    @classmethod
+    def initial(cls):
+        pass
+        """
+        CUSTOMER_SIT
+DIR_APACHE_R
+DIR_APACHE_S
+DIR_EASYRSA 
+DIR_GENERIC_
+DIR_REQ     
+DIR_REQ_DONE
+DIR_TAP     
+DIR_TUN     
+DIR_VALIDATE
+DIR_VPN_SCRI
+IP_PORT     
+IP_REMOTE   
+PROXY_PREFIX
+        """
