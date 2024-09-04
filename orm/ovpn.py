@@ -21,6 +21,7 @@ import datetime
 Base = declarative_base()
 
 # https://stackoverflow.com/questions/6262943/sqlalchemy-how-to-make-django-choices-using-sqlalchemy
+# https://docs.sqlalchemy.org/en/20/core/custom_types.html
 class ChoiceType(types.TypeDecorator):
     """
     Self-defined the status type
@@ -32,10 +33,17 @@ class ChoiceType(types.TypeDecorator):
         super(ChoiceType, self).__init__(**kw)
 
     def process_bind_param(self, value, dialect):
-        return [k for k, v in self.choices.items() if v == value][0]
+        if [k for k, v in self.choices.items() if k == value]:
+            return value
+        else:
+            return 0
 
     def process_result_value(self, value, dialect):
-        return self.choices[value]
+        # return self.choices[value]
+        if [k for k, v in self.choices.items() if k == value]:
+            return self.choices[value]
+        else:
+            return 'disabled'
 
 
 class User(Base):
@@ -52,7 +60,7 @@ class User(Base):
 
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username: Mapped[str] = mapped_column(String(50))
-    password: Mapped[str] = mapped_column(String(120))
+    password: Mapped[str] = mapped_column(String(200))
     name: Mapped[str] = mapped_column(String(40))
     email: Mapped[str] = mapped_column(String(100))
     group_id: Mapped[UUID] = mapped_column(
@@ -212,27 +220,7 @@ class SystemCommonConfig(Base):
     """
     __tablename__ = "system_config"
     
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)   
-    item: Mapped[str] = mapped_column(String(50))
+    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)   
+    item: Mapped[str] = mapped_column(String(50), primary_key=True)
     ivalue: Mapped[str] = mapped_column(String(200), nullable=True)
     category: Mapped[str] = mapped_column(String(50), default='dedicated')
-    
-    @classmethod
-    def initial(cls):
-        pass
-        """
-        CUSTOMER_SIT
-DIR_APACHE_R
-DIR_APACHE_S
-DIR_EASYRSA 
-DIR_GENERIC_
-DIR_REQ     
-DIR_REQ_DONE
-DIR_TAP     
-DIR_TUN     
-DIR_VALIDATE
-DIR_VPN_SCRI
-IP_PORT     
-IP_REMOTE   
-PROXY_PREFIX
-        """

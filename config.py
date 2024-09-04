@@ -28,11 +28,11 @@ class ProductionConfig(Config):
     SESSION_COOKIE_AGE = 120
     
     # postgres configurations 
-    PG_DATABASE_USER="mgmt"
-    PG_DATABASE_PASSWORD = 'rootroot'
-    PG_DATABASE_DB = 'mgmtdb'
-    PG_DATABASE_HOST = '127.0.0.1'
-    PG_DATABASE_PORT = 5432
+    # PG_DATABASE_USER="mgmt"
+    # PG_DATABASE_PASSWORD = 'rootroot'
+    # PG_DATABASE_DB = 'mgmtdb'
+    # PG_DATABASE_HOST = '127.0.0.1'
+    # PG_DATABASE_PORT = 5432
     # sqlalchemy URI
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:postgres@localhost:5432/ovpn_flask'
     
