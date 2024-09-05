@@ -5,7 +5,18 @@ from flask import current_app
 from flask import g
 from flask.cli import with_appcontext
 
+"""
+the get_db and some other functions are for traditional db connections
 
+from myproject.db import get_db, get_cur
+
+cur = get_cur()
+error = None
+cur.execute(
+    "SELECT * FROM tb_user WHERE username = %s", (username,)
+)
+
+"""
 def get_db():
     """Connect to the application's configured database. The connection
     is unique for each request and will be reused if this is called

@@ -40,7 +40,7 @@ ovpn_bp = Blueprint("ovpn", __name__)
 ####################################################################################
 # Main dashboard
 ####################################################################################
-@ovpn_bp.route("/")
+@ovpn_bp.route("/", methods=("POST", "GET"))
 @login_required
 def index():
     
@@ -50,9 +50,9 @@ def index():
     """
     sys_info = OvpnUtils.get_system_info()
     context = {'system_info': sys_info}
-    # if request.method == "POST":
-    #     if request.POST.get('action', '') == "db_refresh":
-    #         return JsonResponse(context)
+    if request.method == "POST":
+        if request.POST.get('action', '') == "db_refresh":
+            return jsonify(context)
     return render_template("ovpn/dashboard.html", system_info=sys_info)
 
 @ovpn_bp.route("/XXXXXXXXXXXXX")
@@ -115,6 +115,19 @@ def introduction():
     @return: template: introduction template
     """
     return render_template("ovpn/introduction.html")
+
+####################################################################################
+# ovpn services view
+####################################################################################
+
+@ovpn_bp.route("/servers")
+@login_required
+def servers():
+    """
+    @summary: ovpn service page
+    @return: template: introduction template
+    """
+    return render_template("ovpn/servers.html")
 
 ####################################################################################
 # refresh proxy config button view
@@ -1632,14 +1645,12 @@ def systemConfigsUpdate():
     return {"result": result, 'message': str(message)}
 
 
-@ovpn_bp.route("/showAppconfig", methods=("POST","GET"))
+@ovpn_bp.route("/showAppConfig", methods=("POST","GET"))
 @login_required
 def showAppConfig():
     """
     @return: Flask app config 
     """
-
-    print(session)
     config_trs = ''
     for key in app.config.keys():
         # appConfig += "{key: <35}{val: <}".format(key=key + ":", val = str(app.config.get(key))) + '<br>'
@@ -1663,3 +1674,12 @@ def showAppConfig():
 
     # return "<h1>Flask App current config as following</h1> <br><br>" + appConfig.replace("\n", "<br>")
     return app_config
+
+@ovpn_bp.route("/showAppSession", methods=("POST","GET"))
+@login_required
+def showAppSession():
+    """
+    @return: Flask app session 
+    """
+    from flask import jsonify
+    return jsonify(session)

@@ -14,9 +14,7 @@ from flask_babel import _
 from flask_babel import gettext, ngettext
 import psycopg2.extras
 
-from myproject.context import DBSession as dbs
-from orm.ovpn import User
-from sqlalchemy import select
+from myproject.db import get_db, get_cur
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -43,9 +41,10 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        user = dbs.scalar(select(User).where(User.id == user_id))
+        cur = get_db().cursor()
+        cur.execute("SELECT * FROM tb_user WHERE user_id = %s", (user_id,))
         g.user = (
-            user,
+            cur.fetchone()
         )
 
 
@@ -100,24 +99,29 @@ def login():
         if len(str.strip(username)) == 0 or len(str.strip(password)) == 0:
             return render_template("auth/login.html")           
         
+        cur = get_cur()
         error = None
-        user = dbs.scalar(select(User).where(User.username == username))
+        cur.execute(
+            "SELECT * FROM tb_user WHERE username = %s", (username,)
+        )
+        
+        user = cur.fetchone()
         if user is None:
             error = "Username or password is not correct, please check!"
-        elif not (check_password_hash(user.password, password) or user.password == password):
+        elif not (check_password_hash(user["password"], password) or user["password"] == password):
             error = "Username or password is not correct, please check!"
 
         if error is None:
-            if int(user.status) == 0:
+            if int(user["status"]) == 0:
                 # user has been disabled
                 error = "You have been disabled for this site!!"
             else:
                 # store the user id in a new session and return to the index
                 session.clear()
-                session["user_id"] = user.id
-                session["display_name"] = user.name
-                session["username"] = user.username
-                session["user_type"] = user.group_id
+                session["user_id"] = user["user_id"]
+                session["display_name"] = user["display_name"]
+                session["username"] = user["username"]
+                session["user_type"] = user["user_type"]
                 # online user number +1
                 # current_app.onlineUsers += 1 # session scope not correct
                 return redirect(url_for("index"))

@@ -20,6 +20,13 @@
             </a>
           </li>
 
+		  <li class="nav-item">
+            <a href="{{ url_for('ovpn.servers') }}" class="nav-link">
+              <i class="nav-icon fa-regular fa-rectangle-list"></i>
+              <p>OpenVPN services</p>
+            </a>
+          </li>
+
 		{# TUN mode menu #}
 		{% if config.TUN_MODE == 'enabled' %}
 	       <li class="nav-item menu-open">
@@ -185,7 +192,12 @@
 	              <p>Flask App config</p>
 	            </a>
 	          </li>
-	          
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.showAppSession') }}" target="_blank" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>Flask App Session</p>
+	            </a>
+	          </li>	          
 	        </ul>
 	      </li>
         {% endif %}

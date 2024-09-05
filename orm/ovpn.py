@@ -40,17 +40,36 @@ class ChoiceType(types.TypeDecorator):
 
     def process_result_value(self, value, dialect):
         # return self.choices[value]
-        if [k for k, v in self.choices.items() if k == value]:
-            return self.choices[value]
-        else:
-            return 'disabled'
+        # if [k for k, v in self.choices.items() if k == value]:
+        #     return self.choices[value]
+        # else:
+        #     return 'disabled'
+        return value
 
+class UserGroup(Base):
+    """ 
+    Group table ORM
+    """
+    __tablename__ = "user_group"
+    __table_args__ = (
+        UniqueConstraint('group'),
+    )
+    
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    group: Mapped[str] = mapped_column(String(50))
+    # users: Mapped[list["User"]] = relationship(
+    #     "User",
+    #     back_populates="group",
+    #     cascade="all, delete",
+    # )    
+    def __repr__(self) -> str:
+        return f"Group(id={self.id!r}, group={self.group!r})"
 
 class User(Base):
     """ 
     User table ORM
     """
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     # https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html#module-sqlalchemy_utils.types.choice
     status_choice = [
@@ -66,28 +85,16 @@ class User(Base):
     group_id: Mapped[UUID] = mapped_column(
         ForeignKey("user_group.id")
     )
+    # group: Mapped[UserGroup] = relationship(
+    #     "UserGroup",
+    #     back_populates="users",
+    # )
     log_size: Mapped[int] = mapped_column(Integer, nullable=True)
     page_size: Mapped[int] = mapped_column(Integer, nullable=True)
     status: Mapped[int] = mapped_column(ChoiceType({1: "enabled", 0: "diabled"}), default=1)
     
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r})"
-    
-
-class UserGroup(Base):
-    """ 
-    Group table ORM
-    """
-    __tablename__ = "user_group"
-    __table_args__ = (
-        UniqueConstraint('group'),
-    )
-    
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    group: Mapped[str] = mapped_column(String(50))
-    
-    def __repr__(self) -> str:
-        return f"Group(id={self.id!r}, group={self.group!r})"
 
 
 class OvpnServers(Base):

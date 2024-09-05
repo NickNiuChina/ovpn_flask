@@ -21,7 +21,11 @@ from werkzeug.exceptions import InternalServerError
 from flask_babel import Babel
 from .context import logger
 from .context import DBSession as dbsession
+from .context import engine
 
+from orm.ovpn import SystemCommonConfig
+from sqlalchemy import select
+from myproject.context import DBSession as dbs
 
 def create_app(test_config=None):
     """ create Flask APP
@@ -179,6 +183,11 @@ def create_app(test_config=None):
         TAP_FILES_DIR = TAP_FILES_DIR,
         BASE_DIR = BASE_DIR
     )
+
+    # update config CUSTOMER_SITE from db
+    if engine.dialect.has_table(engine, SystemCommonConfig.__tablename__):
+        cs = dbs.scalar(select(SystemCommonConfig).where(SystemCommonConfig.item == 'CUSTOMER_SITE'))
+        app.config.update(CUSTOMER_SITE = cs.ivalue.strip(),)
 
     # context processors
     @app.context_processor
