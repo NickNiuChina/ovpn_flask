@@ -185,10 +185,14 @@ def create_app(test_config=None):
     )
 
     # update config CUSTOMER_SITE from db
-    if engine.dialect.has_table(engine, SystemCommonConfig.__tablename__):
+    if engine.dialect.has_table(engine.connect(), SystemCommonConfig.__tablename__):
         cs = dbs.scalar(select(SystemCommonConfig).where(SystemCommonConfig.item == 'CUSTOMER_SITE'))
         app.config.update(CUSTOMER_SITE = cs.ivalue.strip(),)
-
+    else:
+        logger.info("Database has not been initialized, initial database now...")
+        from .flask_command import init_db
+        init_db()
+        logger.info("Database init done.")
     # context processors
     @app.context_processor
     def context_processor_func():

@@ -125,9 +125,41 @@ def introduction():
 def servers():
     """
     @summary: ovpn service page
-    @return: template: introduction template
+    @return: template: template ovpn/servers.html
     """
     return render_template("ovpn/servers.html")
+
+@ovpn_bp.route("/server/delete")
+@login_required
+def server_delete():
+    """
+    @summary: ovpn service page
+    @return: template: template ovpn/servers.html
+    """
+    if request.method != 'POST':
+        return HttpResponse("Page not found", status=404)
+    else:
+        service_uuid = request.POST.get('service_uuid').strip()
+        if uuid:
+            try:
+                sid = uuid.UUID(service_uuid)
+            except:
+                sid = ''
+            if sid:
+                server = Servers.objects.filter(id=sid)
+                if not server:
+                    messages.error(request, "This uuid has not been found in record!")
+                    return redirect("ovpn:servers")
+                else:
+                    Servers.objects.filter(id=sid).delete()
+                    messages.success(request, "OpenVPN deleted successfully!")
+                    return redirect("ovpn:servers")
+            else:
+                messages.error(request, "Please provide a valid uuid!")
+                return redirect("ovpn:servers")
+        else:
+            messages.error(request, "UUID is required for this request")
+            return redirect("ovpn:servers")
 
 ####################################################################################
 # refresh proxy config button view

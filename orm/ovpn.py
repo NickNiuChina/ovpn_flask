@@ -57,11 +57,11 @@ class UserGroup(Base):
     
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     group: Mapped[str] = mapped_column(String(50))
-    # users: Mapped[list["User"]] = relationship(
-    #     "User",
-    #     back_populates="group",
-    #     cascade="all, delete",
-    # )    
+    users: Mapped[list["User"]] = relationship(
+        "User",
+        back_populates="group",
+        cascade="all, delete",
+    )    
     def __repr__(self) -> str:
         return f"Group(id={self.id!r}, group={self.group!r})"
 
@@ -85,10 +85,10 @@ class User(Base):
     group_id: Mapped[UUID] = mapped_column(
         ForeignKey("user_group.id")
     )
-    # group: Mapped[UserGroup] = relationship(
-    #     "UserGroup",
-    #     back_populates="users",
-    # )
+    group: Mapped[UserGroup] = relationship(
+        "UserGroup",
+        back_populates="users",
+    )
     log_size: Mapped[int] = mapped_column(Integer, nullable=True)
     page_size: Mapped[int] = mapped_column(Integer, nullable=True)
     status: Mapped[int] = mapped_column(ChoiceType({1: "enabled", 0: "diabled"}), default=1)

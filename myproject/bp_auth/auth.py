@@ -115,9 +115,10 @@ def login():
                 # store the user id in a new session and return to the index
                 session.clear()
                 session["user_id"] = user.id
-                session["display_name"] = user.name
+                session["name"] = user.name
                 session["username"] = user.username
-                session["user_type"] = user.group_id
+                session["group"] = user.group.group
+                print(dir(user))
                 # online user number +1
                 # current_app.onlineUsers += 1 # session scope not correct
                 return redirect(url_for("index"))
