@@ -121,7 +121,7 @@ def login():
                 print(dir(user))
                 # online user number +1
                 # current_app.onlineUsers += 1 # session scope not correct
-                return redirect(url_for("index"))
+                return redirect(url_for("ovpn.index"))
 
         flash(error)
     # current_app.logger.debug("------sdfsfsfsf-sdfsdfsd")
@@ -139,4 +139,4 @@ def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     # current_app.onlineUsers -= 1 # session scope not correct
-    return redirect(url_for("index"))
+    return redirect(url_for("auth.login"))

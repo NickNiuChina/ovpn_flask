@@ -43,6 +43,7 @@
               </label>
             </div>
           </div>
+
           {% with messages = get_flashed_messages() %}
               {% if messages %}
                   {% for message in messages %}
@@ -50,6 +51,7 @@
                   {% endfor %}
               {% endif %}
           {% endwith %}
+	     
           <div class="col-4">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
