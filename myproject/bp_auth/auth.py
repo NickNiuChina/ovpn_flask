@@ -118,7 +118,7 @@ def login():
                 session["name"] = user.name
                 session["username"] = user.username
                 session["group"] = user.group.group
-                print(dir(user))
+                # print(dir(user))
                 # online user number +1
                 # current_app.onlineUsers += 1 # session scope not correct
                 return redirect(url_for("ovpn.index"))

@@ -1334,17 +1334,18 @@ $(document).ready(function() {
         ],
     });
 
-    $('#updateSystemConfig').click(function() {
-        var data = tbSystemConfigTable.$('input, select').serialize();
-        //alert(
-        //    "The following data would have been submitted to the server: \n\n"+
-        //    data.substr( 0, 120 )+'...'
-        // );
-        $.post("system/updateConfig", data, function(result) {
-            console.log(result);
-            appendAlert(result['message'], result['result']);
-            $('#tbSystemConfig').DataTable().ajax.reload();
-        });
-    });
+    // System config table update function
+    // $('#updateSystemConfig').click(function() {
+    //     var data = tbSystemConfigTable.$('input, select').serialize();
+    //     //alert(
+    //     //    "The following data would have been submitted to the server: \n\n"+
+    //     //    data.substr( 0, 120 )+'...'
+    //     // );
+    //     $.post("system/updateConfig", data, function(result) {
+    //         console.log(result);
+    //         appendAlert(result['message'], result['result']);
+    //         $('#tbSystemConfig').DataTable().ajax.reload();
+    //     });
+    // });
 
 });

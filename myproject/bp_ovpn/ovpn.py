@@ -34,6 +34,9 @@ from myproject.db import get_cur, get_db
 
 from myproject.context import logger
 from common.utils.bp_ovpn import OvpnUtils
+from myproject.context import DBSession as dbs
+from sqlalchemy import select
+from orm.ovpn import SystemCommonConfig
 
 ovpn_bp = Blueprint("ovpn", __name__)
 
@@ -106,7 +109,6 @@ def index1():
 # introduction view
 ####################################################################################
 
-
 @ovpn_bp.route("/introduction")
 @login_required
 def introduction():
@@ -127,6 +129,7 @@ def servers():
     @summary: ovpn service page
     @return: template: template ovpn/servers.html
     """
+    
     return render_template("ovpn/servers.html")
 
 @ovpn_bp.route("/server/delete")
@@ -1580,46 +1583,18 @@ def toggleUser():
 
 @ovpn_bp.route("/system", methods=("GET", "POST"))
 @login_required
-def systemConfig():
+def system_config():
     """system config page
 
     Returns:
         template: system config template
     """
-    return render_template("ovpn/systemConfig.html")
-
-
-@ovpn_bp.route("/system/config", methods=("GET", "POST"))
-@login_required
-def systemConfigs():
-    """system config API
-
-    Returns:
-        template: system config object from db
-    """
-    # post
     if request.method == "POST":
-        draw = request.values.get('draw')
-        
-    cur = get_db().cursor(cursor_factory = psycopg2.extras.RealDictCursor)
-    
-    # sysconfig object
-    try:
-        cur.execute("select * from sysconfig order by id asc")
-        ftotal = cur.rowcount
-        configs = cur.fetchall()
-    except Exception as e:
-        ftotal = 0
-        configs = []
-    
-    data = {
-        'recordsFiltered': ftotal,
-        'recordsTotal': ftotal,
-        'draw': draw,
-        'data': configs
-    }
-
-    return jsonify(data)
+        args = request.form
+        print(args)
+        return redirect(url_for("ovpn.system_config"))
+    scs = dbs.scalars(select(SystemCommonConfig))
+    return render_template("ovpn/system_config.html", scs=scs)
 
 
 @ovpn_bp.route("/system/updateConfig", methods=("POST",))

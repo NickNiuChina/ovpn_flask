@@ -43,7 +43,7 @@
 
 		<div class="col-md-8">
 			<div class="card card-secondary">
-				
+			<form method="post">	
 			{# <div class="alert alert-danger alert-dismissible fade show" role="alert">
 			  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
 			  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -57,22 +57,31 @@
 				</div>
 			
 				<div class="card-body">
-		            <table id="tbSystemConfig" class="table table-bordered table-striped table-hover">
+		            <table id="tbSystemConfigG" class="table table-bordered table-striped table-hover">
 		              <thead>
 		              <tr>
 		                <th>Items</th>
 		                <th>Values</th>
-
 		              </tr>
-		              </thead>
-		 
-		            </table>	
+					  </thead>
+					  <tbody>
+					  {% for sc in scs %}
+					  <tr>
+					    <th>{{ sc.item }}</th>
+						<th>
+					    	<input type="text" name="{{ sc.item }}" value="{{ sc.ivalue }}" maxlength="200" class="form-control"  id="id_{{ sc.item }}">
+					    </th>
+					  </tr>
+					  {% endfor %}	
+		              </tbody>
+		            </table>
+
 				</div>
 					
 				<div class="card-footer">
-					<button type="submit" id='updateSystemConfig' class="btn btn-info float-right">Update</button>
+					<button type="submit" class="btn btn-info float-right">Update</button>
 				</div>			
-
+			</form>
 		</div>
 
 	  </div>

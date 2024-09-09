@@ -15,6 +15,7 @@ import config
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.wrappers import Response
 import flask
+from flask import redirect, url_for
 from werkzeug.exceptions import InternalServerError
 
 
@@ -270,19 +271,26 @@ def create_app(test_config=None):
     
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(ovpn_bp, url_prefix='')
-    app.register_blueprint(test_bp, url_prefix='')
+    app.register_blueprint(ovpn_bp, url_prefix='/ovpn')
+    app.register_blueprint(test_bp, url_prefix='/test')
 
     # make url_for('index') == url_for('ovpn.index')
     # in another app, you might define a separate main index here with
     # app.route, while giving the ovpn blueprint a url_prefix, but for
     # the app the ovpn will be the main index
-    app.add_url_rule("/", endpoint="index")
+    # app.add_url_rule("/", endpoint="index")
 
 
     """
         GENERAL ENDPOINTS AND REQUEST/RESPONSE HANDLING
     """
+    @app.route('/')
+    def redict_root():
+        """
+        Redict "/" to "/ovpn"
+        """
+        return redirect(url_for("ovpn.index"))
+    
 
     @app.errorhandler(InternalServerError)
     def error_handler(error: InternalServerError) -> None:
