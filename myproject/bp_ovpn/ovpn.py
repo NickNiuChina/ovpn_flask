@@ -36,6 +36,7 @@ from myproject.context import logger
 from common.utils.bp_ovpn import OvpnUtils
 from myproject.context import DBSession as dbs
 from sqlalchemy import select
+from sqlalchemy import update
 from orm.ovpn import SystemCommonConfig
 
 ovpn_bp = Blueprint("ovpn", __name__)
@@ -1587,70 +1588,57 @@ def system_config():
     """system config page
 
     Returns:
-        template: system config template
+          GET: template, system config template
+          POST: redirect to get page with the result
     """
+    # POST
     if request.method == "POST":
         args = request.form
         print(args)
+        
+        result = "success"
+        # UPDATE table_name SET column_name1= value1, column_name2= value2
+        sql = "UPDATE sysconfig SET"
+        
+        flag=0
+        
+        message = ''
+        
+        if len(list(args.keys())) < 1:
+                message = "Error: no value submited!"
+                result = "danger"
+                flash(message, result)
+                return redirect(url_for("ovpn.system_config"))
+        
+        # for key in list(args.keys()):
+        #     if not args.get(key):
+        #         message = "Error: null value submited!"
+        #         result = "danger"
+        #         flash(message, result)
+        #         return redirect(url_for("ovpn.system_config"))
+
+        if result == "success":
+            for key in list(args.keys()):
+                try:
+                    dbs.execute(
+                        update(SystemCommonConfig).where(SystemCommonConfig.item == key).values(ivalue=args.get(key))
+                        )
+                    app.config.update({key: args.get(key)})
+                    dbs.commit()
+                except Exception as e:
+                    message = e
+                    result = "danger"
+                finally:
+                    pass
+        
+        if not message:
+            message = "Update successfully!!"
+        flash(message, result)      
         return redirect(url_for("ovpn.system_config"))
+    
+    # GET request
     scs = dbs.scalars(select(SystemCommonConfig))
     return render_template("ovpn/system_config.html", scs=scs)
-
-
-@ovpn_bp.route("/system/updateConfig", methods=("POST",))
-@login_required
-def systemConfigsUpdate():
-    """system config update API
-
-    Returns:
-        redict: systemConfig with flash result
-    """
-    # post
-    if request.method == "POST":
-        args = request.form
-    
-    conn = get_db()    
-    cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
-
-    result = "success"
-    # UPDATE table_name SET column_name1= value1, column_name2= value2
-    sql = "UPDATE sysconfig SET"
-    
-    flag=0
-    
-    message = ''
-    
-    if len(list(args.keys())) < 1:
-            message = "Error: no value submited!"
-            result = "danger"
-            return {"result": result, 'message': str(message)}
-    
-    for key in list(args.keys()):
-        if not args.get(key):
-            message = "Error: null value submited!"
-            result = "danger"
-            return {"result": result, 'message': str(message)}
-
-    sql = "update sysconfig set ivalue=%s where item=%s"  
-    if result == "success":
-        for key in list(args.keys()):
-            try:
-                cur.execute(sql, (args.get(key), key))
-                app.config.update({key: args.get(key)})
-                conn.commit()
-            except Exception as e:
-                message = e
-                result = "danger"
-                return {"result": result, 'message': str(message)}
-            finally:
-                pass
-    
-    if not message:
-        message = "Update successfully!!"
-                          
-    # return redirect (url_for("ovpn.systemConfig"))
-    return {"result": result, 'message': str(message)}
-
 
 @ovpn_bp.route("/showAppConfig", methods=("POST","GET"))
 @login_required
