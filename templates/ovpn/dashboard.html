@@ -69,9 +69,9 @@
 						</span>
 					  </span><br>
 					  <span class="info-box-number">
-						1m: <b  id="db_load_avg0">{# system_info.load_avg.0 | round(2) #}</b> &nbsp; &nbsp;
-						5m: <b id="db_load_avg1">{# system_info.load_avg.1 | round(2) #}</b> &nbsp; &nbsp;
-						15m: <b id="db_load_avg2">{# system_info.load_avg.2 | round(2) #}</b><br/>
+						1m: <b  id="db_load_avg0">{{system_info.load_avg.0 | round(2)}}</b> &nbsp; &nbsp;
+						5m: <b id="db_load_avg1">{{ system_info.load_avg.1 | round(2) }}</b> &nbsp; &nbsp;
+						15m: <b id="db_load_avg2">{{ system_info.load_avg.2 | round(2) }}</b><br/>
 					  </span>
 					</div>
 				  </div>
