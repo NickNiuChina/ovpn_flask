@@ -125,37 +125,86 @@
 						<div class="modal-body">
 
 							<div class="form-group"></div>
-							<!--
-							<div class="form-group">
-								<label for="user-username" class="control-label">Username:</label>
-								<input type="text" class="form-control" name="username" id="user-username" required
-								oninvalid="this.setCustomValidity('Please Enter valid username')"
-                       			oninput="setCustomValidity('')">
+							<div>
+								<label for="id_server_name">Server name:</label>
+								<input type="text" name="server_name" maxlength="100" required="" id="id_server_name">
 							</div>
 
-							<div class="form-group">
-								<label for="user-priv" class="control-label">User Type:</label>
-								<select class="form-control" name="priv" id="user-priv">
-									<option value="2">User</option>
-									<option value="1">Admin</option>
+							<div>
+								<label for="id_configuration_dir">Configuration dir:</label>
+								<input type="text" name="configuration_dir" maxlength="200" required="" id="id_configuration_dir">
+							</div>
+
+							<div>
+								<label for="id_configuration_file">Configuration file:</label>
+								<input type="text" name="configuration_file" maxlength="200" required="" id="id_configuration_file">
+							</div>
+
+							<div>
+								<label for="id_status_file">Status file:</label>
+								<input type="text" name="status_file" maxlength="200" id="id_status_file">
+							</div>
+
+							<div>
+								<label for="id_log_file_dir">Log file dir:</label>
+								<input type="text" name="log_file_dir" maxlength="200" id="id_log_file_dir">
+							</div>
+									
+							<div>
+								<label for="id_log_file">Log file:</label>
+								<input type="text" name="log_file" maxlength="200" id="id_log_file">
+							</div>
+
+							<div>
+								<label for="id_startup_type">Startup type:</label>
+								<select name="startup_type" id="id_startup_type">
+									<option value="0">sysv</option>
+									<option value="1" selected="">systemd</option>
 								</select>
 							</div>
 
-							<div class="form-group">
-								<label for="user-student-password" class="control-label">Password:</label>
-								<input type="password" class="form-control" name="password" id="user-student-password" required
-								oninvalid="this.setCustomValidity('Please Enter valid password')"
-                       			oninput="setCustomValidity('')">
+							<div>
+								<label for="id_startup_service">Startup service:</label>
+								<input type="text" name="startup_service" maxlength="200" required="" id="id_startup_service">
 							</div>
 
-							<div class="form-group">
-								<label for="user-display-name" class="control-label">Display Name:</label>
-								<input type="text" class="form-control" name="display-name" id="user-display-name" required
-								oninvalid="this.setCustomValidity('Please Enter valid dispalay name')"
-                       			oninput="setCustomValidity('')">
-							</div> -->
-							{{ form }}
+							<div>
+								<label for="id_certs_dir">Certs dir:</label>
+								<input type="text" name="certs_dir" maxlength="200" required="" id="id_certs_dir">
+							</div>
+
+							<div>
+									<label for="id_learn_address_script">Learn address script:</label>
+								<select name="learn_address_script" id="id_learn_address_script">
+									<option value="0">disabled</option>
+									<option value="1" selected="">enabled</option>
+								</select>
+							</div>
+
+							<div>
+									<label for="id_managed">Managed:</label>
+								<select name="managed" id="id_managed">
+									<option value="0">disabled</option>
+									<option value="1" selected="">enabled</option>
+								</select>
+							</div>
+
+							<div>
+								<label for="id_management_port">Management port:</label>
+								<input type="number" name="management_port" id="id_management_port">
+							</div>
+									
+							<div>
+									<label for="id_management_password">Management password:</label>
+								<input type="text" name="management_password" maxlength="100" id="id_management_password">
+							</div>
+
+							<div>
+								<label for="id_comment">Comment:</label>
+								<textarea name="comment" cols="40" rows="2" id="id_comment"></textarea>
+							</div>
 						</div>
+
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Concel</button>
 							<button type="submit" class="btn btn-primary">Confirm</button>
