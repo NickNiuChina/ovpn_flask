@@ -124,7 +124,7 @@ def introduction():
 # ovpn services view
 ####################################################################################
 
-@ovpn_bp.route("/servers")
+@ovpn_bp.route("/servers", methods=("POST", "GET"))
 @login_required
 def servers():
     """
