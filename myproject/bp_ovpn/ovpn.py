@@ -55,9 +55,10 @@ def index():
     sys_info = OvpnUtils.get_system_info()
     context = {'system_info': sys_info}
     if request.method == "POST":
-        if request.POST.get('action', '') == "db_refresh":
+        if request.form.get('action', '') == "db_refresh":
             return jsonify(context)
-    return render_template("ovpn/dashboard.html", system_info=sys_info)
+    else:
+        return render_template("ovpn/dashboard.html", system_info=sys_info)
 
 @ovpn_bp.route("/XXXXXXXXXXXXX")
 @login_required
