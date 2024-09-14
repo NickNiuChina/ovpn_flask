@@ -131,8 +131,11 @@ def servers():
     @summary: ovpn service page
     @return: template: template ovpn/servers.html
     """
-    
-    return render_template("ovpn/servers.html")
+    if request.method == "POST":
+        flash(str(request.form), 'danger')
+        return redirect(url_for("ovpn.servers"))
+    else:
+        return render_template("ovpn/servers.html")
 
 @ovpn_bp.route("/server/delete")
 @login_required
