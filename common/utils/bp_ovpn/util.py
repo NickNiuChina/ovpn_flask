@@ -5,6 +5,10 @@ import subprocess
 import time
 
 
+from myproject.context import logger
+from orm.ovpn import OvpnServers
+
+
 class OvpnUtils(object):
     """Ovpn utils
         
@@ -90,3 +94,21 @@ class OvpnUtils(object):
                 return ""
         except:
             return ""
+        
+
+    @classmethod
+    def add_openvpn_service(cls, new_ovpn_server=None) -> str:
+        """ Add OpenVPN server
+
+        Args:
+            new_ovpn_server (dict): New openvpn server info in a dict
+
+        Returns:
+            tuple: result and flask flash message
+        """
+        category = None
+        if not new_ovpn_server:
+            category = 'danger'
+            return ("Error: {}".format("No new config posted!"), category)
+        # OvpnServers.https://stackoverflow.com/questions/26141183/insert-a-list-of-dictionary-using-sqlalchemy-efficiently
+        return ("Failed to add new openvpn server: {}".format(None), 'danger')

@@ -131,8 +131,10 @@ def servers():
     @summary: ovpn service page
     @return: template: template ovpn/servers.html
     """
-    if request.method == "POST":
-        flash(str(request.form), 'danger')
+    if request.method == "POST" and request.form.get('action', None) == 'action_add_ovpn_server':        
+        form_args = request.form.to_dict()
+        result = OvpnUtils.add_openvpn_service(form_args)
+        flash(result[0], result[1])
         return redirect(url_for("ovpn.servers"))
     else:
         return render_template("ovpn/servers.html")
