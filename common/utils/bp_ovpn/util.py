@@ -7,6 +7,7 @@ import time
 
 from myproject.context import logger
 from orm.ovpn import OvpnServers
+from myproject.context import DBSession as dbs
 
 
 class OvpnUtils(object):
@@ -106,9 +107,22 @@ class OvpnUtils(object):
         Returns:
             tuple: result and flask flash message
         """
+        logger.info("Add new openvpn service now...")
         category = None
         if not new_ovpn_server:
+            logger.error("Did not receive the new openvpn service config, POST argrs error.")
             category = 'danger'
             return ("Error: {}".format("No new config posted!"), category)
-        # OvpnServers.https://stackoverflow.com/questions/26141183/insert-a-list-of-dictionary-using-sqlalchemy-efficiently
-        return ("Failed to add new openvpn server: {}".format(None), 'danger')
+        # remove the action from dict
+        new_ovpn_server.pop('action', None)
+        try:
+            logger.info("Try to write new ovpn service to db.")
+            dbs.add(OvpnServers(**new_ovpn_server))
+            dbs.commit()
+            logger.error("Failed to save the openvpn to database.")
+            category = 'success'
+            return ("New openvpn service has beed added successfully.", category)
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return ("Failed to add new openvpn server: {}".format(e.__dict__['orig']), 'danger')
