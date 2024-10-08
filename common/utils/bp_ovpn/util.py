@@ -8,6 +8,7 @@ import time
 from myproject.context import logger
 from orm.ovpn import OvpnServers
 from myproject.context import DBSession as dbs
+from sqlalchemy import select
 
 
 class OvpnUtils(object):
@@ -126,3 +127,19 @@ class OvpnUtils(object):
             dbs.rollback()
             logger.error(e)
             return ("Failed to add new openvpn server: {}".format(e.__dict__['orig']), 'danger')
+
+
+    @classmethod
+    def get_all_openvpn_services(cls, filter_ovpn_server=None) -> str:
+        """
+        Get all OpenVPN services
+        """
+        logger.info("Retrieve all openvpn services from database now.")
+        try:
+            logger.info("Try to write new ovpn service to db.")
+            servers = dbs.query(OvpnServers).all()
+            return servers
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return e

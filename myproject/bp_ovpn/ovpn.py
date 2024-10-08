@@ -138,7 +138,8 @@ def servers():
         flash(result[0], result[1])
         return redirect(url_for("ovpn.servers"))
     else:
-        return render_template("ovpn/servers.html")
+        servers = OvpnUtils.get_all_openvpn_services()
+        return render_template("ovpn/servers.html", servers=servers)
 
 @ovpn_bp.route("/server/delete")
 @login_required

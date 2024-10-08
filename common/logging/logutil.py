@@ -1,3 +1,4 @@
+import logging.handlers
 import os
 import logging
 from time import gmtime
@@ -75,7 +76,7 @@ def get_logger(log_name,
             # Make destination dir
             Path(log_path).mkdir(parents = True, exist_ok = True)
             # Define formats
-            sl_handler = logging.FileHandler(os.path.join(log_path, log_name + log_file_suffix), encoding = 'utf8')
+            sl_handler = logging.handlers.TimedRotatingFileHandler(filename=os.path.join(log_path, log_name + log_file_suffix), when='midnight', interval=1, encoding = 'utf8')
             sl_handler.setFormatter(sl_format)
             _logger.addHandler(sl_handler)
         
