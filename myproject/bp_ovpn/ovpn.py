@@ -141,6 +141,42 @@ def servers():
         servers = OvpnUtils.get_all_openvpn_services()
         return render_template("ovpn/servers.html", servers=servers)
 
+@ovpn_bp.route("/server_update", methods=("POST", "GET"))
+@login_required
+def server_update():
+    """
+    @summary: ovpn service update page
+    @return: template: template ovpn/servers.html
+    """
+    if request.method == "POST" and request.form.get('action', None) == 'action_add_ovpn_server':        
+        form_args = request.form.to_dict()
+        logger.info("Get the add new openvpn server from POST, call to add new service.")
+        result = OvpnUtils.add_openvpn_service(form_args)
+        flash(result[0], result[1])
+        return redirect(url_for("ovpn.servers"))
+    else:
+        servers = OvpnUtils.get_all_openvpn_services()
+        return render_template("ovpn/server_update.html", servers=servers)
+
+
+@ovpn_bp.route("/server_config", methods=("POST", "GET"))
+@login_required
+def server_config():
+    """
+    @summary: ovpn service page
+    @return: template: template ovpn/servers.html
+    """
+    if request.method == "POST" and request.form.get('action', None) == 'action_add_ovpn_server':        
+        form_args = request.form.to_dict()
+        logger.info("Get the add new openvpn server from POST, call to add new service.")
+        result = OvpnUtils.add_openvpn_service(form_args)
+        flash(result[0], result[1])
+        return redirect(url_for("ovpn.servers"))
+    else:
+        servers = OvpnUtils.get_all_openvpn_services()
+        return render_template("ovpn/servers.html", servers=servers)
+
+
 @ovpn_bp.route("/server/delete")
 @login_required
 def server_delete():
