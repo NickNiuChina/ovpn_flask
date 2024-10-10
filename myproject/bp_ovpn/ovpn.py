@@ -30,7 +30,6 @@ from werkzeug.datastructures import ImmutableMultiDict
 
 from myproject.bp_auth.auth import login_required
 from myproject.db import get_cur, get_db
-# from MySQLdb._mysql import result
 
 from myproject.context import logger
 from common.utils.bp_ovpn import OvpnUtils
@@ -141,22 +140,26 @@ def servers():
         servers = OvpnUtils.get_all_openvpn_services()
         return render_template("ovpn/servers.html", servers=servers)
 
-@ovpn_bp.route("/server_update", methods=("POST", "GET"))
+@ovpn_bp.route("/server/<server_id>/update", methods=("POST", "GET"))
 @login_required
-def server_update():
+def server_update(server_id):
     """
     @summary: ovpn service update page
     @return: template: template ovpn/servers.html
     """
-    if request.method == "POST" and request.form.get('action', None) == 'action_add_ovpn_server':        
-        form_args = request.form.to_dict()
-        logger.info("Get the add new openvpn server from POST, call to add new service.")
-        result = OvpnUtils.add_openvpn_service(form_args)
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
+    
+    if request.method == "POST":        
+        form_args = request.form.to_dict().update({"id": server_id})
+        logger.info("Update the ovpn service by the post args: " + str(form_args))
+        result = OvpnUtils.update_openvpn_service(form_args)
         flash(result[0], result[1])
         return redirect(url_for("ovpn.servers"))
     else:
         servers = OvpnUtils.get_all_openvpn_services()
-        return render_template("ovpn/server_update.html", servers=servers)
+        return render_template("ovpn/server_update.html", server=ovpn_service)
 
 
 @ovpn_bp.route("/server_config", methods=("POST", "GET"))

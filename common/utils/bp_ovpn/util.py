@@ -8,7 +8,7 @@ import time
 from myproject.context import logger
 from orm.ovpn import OvpnServers
 from myproject.context import DBSession as dbs
-from sqlalchemy import select
+from sqlalchemy import select, update, delete
 
 
 class OvpnUtils(object):
@@ -97,9 +97,8 @@ class OvpnUtils(object):
         except:
             return ""
         
-
     @classmethod
-    def add_openvpn_service(cls, new_ovpn_server=None) -> str:
+    def add_openvpn_service(cls, new_ovpn_server=None) -> tuple:
         """ Add OpenVPN server
 
         Args:
@@ -113,7 +112,7 @@ class OvpnUtils(object):
         if not new_ovpn_server:
             logger.error("Did not receive the new openvpn service config, POST argrs error.")
             category = 'danger'
-            return ("Error: {}".format("No new config posted!"), category)
+            return "Error: {}".format("No new config posted!"), category
         # remove the action from dict
         new_ovpn_server.pop('action', None)
         try:
@@ -122,12 +121,50 @@ class OvpnUtils(object):
             dbs.commit()
             logger.error("Failed to save the openvpn to database.")
             category = 'success'
-            return ("New openvpn service has beed added successfully.", category)
+            return "New openvpn service has beed added successfully.", category
         except Exception as e:
             dbs.rollback()
             logger.error(e)
-            return ("Failed to add new openvpn server: {}".format(e.__dict__['orig']), 'danger')
+            return "Failed to add new openvpn server: {}".format(e.__dict__['orig']), 'danger'
 
+    @classmethod
+    def update_openvpn_service(cls, updated_ovpn_server=None) -> tuple:
+        """ Update OpenVPN server
+
+        Args:
+            updated_ovpn_server (dict): New openvpn server config from a dict
+
+        Returns:
+            tuple: result and flask flash message
+        """
+        logger.info("Update openvpn service ...")
+        category = None
+        if not updated_ovpn_server:
+            logger.error("Did not receive the new openvpn service config, POST args error.")
+            category = 'danger'
+            return "Error: {}".format("No new config posted!"), category
+
+        # remove the action from dict
+        updated_ovpn_server.pop('action', None)
+
+        try:
+            logger.info("Try to update the ovpn service config.")
+            target_id = updated_ovpn_server.pop('id', None)
+            stmt = (
+                update(OvpnServers).
+                where(OvpnServers.id == target_id).
+                values(**updated_ovpn_server)
+            )
+            dbs.execute(stmt)
+            dbs.commit()
+            logger.info("Successfully update the ovpn service config, id: " + str(target_id))
+            category = 'success'
+            return ("Openvpn service has beed updated successfully.", category)
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return ("Failed to add new openvpn server: {}".format(e), 'danger')
+        
 
     @classmethod
     def get_all_openvpn_services(cls, filter_ovpn_server=None) -> str:
@@ -143,3 +180,17 @@ class OvpnUtils(object):
             dbs.rollback()
             logger.error(e)
             return e
+        
+    @classmethod
+    def get_openvpn_service_by_id(cls, id=None) -> str:
+        """
+        Get OpenVPN service by id
+        """
+        logger.info("Get the ovpnserice by id: " + id)
+        try:
+            server = dbs.scalars(select(OvpnServers).where(OvpnServers.id == id)).first()
+            return server
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return None
