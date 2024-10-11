@@ -27,7 +27,8 @@ class ChoiceType(types.TypeDecorator):
     Self-defined the status type
     """
     impl = types.String
-
+    # cache_ok = True
+    
     def __init__(self, choices, **kw):
         self.choices = dict(choices)
         super(ChoiceType, self).__init__(**kw)

@@ -129,7 +129,7 @@ class OvpnUtils(object):
 
     @classmethod
     def update_openvpn_service(cls, updated_ovpn_server=None) -> tuple:
-        """ Update OpenVPN server
+        """ Update OpenVPN service
 
         Args:
             updated_ovpn_server (dict): New openvpn server config from a dict
@@ -149,13 +149,14 @@ class OvpnUtils(object):
 
         try:
             logger.info("Try to update the ovpn service config.")
-            target_id = updated_ovpn_server.pop('id', None)
-            stmt = (
-                update(OvpnServers).
-                where(OvpnServers.id == target_id).
-                values(**updated_ovpn_server)
-            )
-            dbs.execute(stmt)
+            target_id = updated_ovpn_server.pop('uuid', None)
+            # stmt = (
+            #     update(OvpnServers).where(OvpnServers.id == target_id).values(**updated_ovpn_server)
+            # )
+            service_query = dbs.query(OvpnServers).filter_by(id=target_id)
+            # dbs.execute(stmt)
+            service_query.update(updated_ovpn_server)
+            logger.info("###############################################$$$$$$$$$$$$$$$$$$$$")
             dbs.commit()
             logger.info("Successfully update the ovpn service config, id: " + str(target_id))
             category = 'success'

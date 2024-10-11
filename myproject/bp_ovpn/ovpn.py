@@ -152,11 +152,13 @@ def server_update(server_id):
         return render_template('404.html'), 404
     
     if request.method == "POST":        
-        form_args = request.form.to_dict().update({"id": server_id})
+        form_args = request.form.to_dict()
+        form_args.update({"uuid": server_id})
         logger.info("Update the ovpn service by the post args: " + str(form_args))
         result = OvpnUtils.update_openvpn_service(form_args)
         flash(result[0], result[1])
-        return redirect(url_for("ovpn.servers"))
+        # return redirect(url_for("ovpn.servers"))
+        return redirect(request.referrer)
     else:
         servers = OvpnUtils.get_all_openvpn_services()
         return render_template("ovpn/server_update.html", server=ovpn_service)
