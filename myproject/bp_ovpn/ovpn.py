@@ -127,15 +127,22 @@ def introduction():
 @login_required
 def servers():
     """
-    @summary: ovpn service page
+    @summary: ovpn service page, get -> list ovpn servce, post -> add or delete ovpn service
     @return: template: template ovpn/servers.html
     """
-    if request.method == "POST" and request.form.get('action', None) == 'action_add_ovpn_server':        
+    if request.method == "POST":
+        
         form_args = request.form.to_dict()
-        logger.info("Get the add new openvpn server from POST, call to add new service.")
-        result = OvpnUtils.add_openvpn_service(form_args)
-        flash(result[0], result[1])
-        return redirect(url_for("ovpn.servers"))
+        
+        if request.form.get('action', None) == 'action_add_ovpn_server':
+            logger.info("Get the add new openvpn server from POST, call to add new service.")
+            result = OvpnUtils.add_openvpn_service(form_args)
+            flash(result[0], result[1])
+            return redirect(url_for("ovpn.servers"))
+        if request.form.get('action', None) == 'action_delete_ovpn_server':
+            result = OvpnUtils.delete_openvpn_service(form_args)
+            flash(result[0], result[1])
+            return redirect(url_for("ovpn.servers"))
     else:
         servers = OvpnUtils.get_all_openvpn_services()
         return render_template("ovpn/servers.html", servers=servers)

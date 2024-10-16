@@ -16,6 +16,8 @@ class OvpnUtils(object):
         
     """
     
+    OVPN_SERVER_INT_COL = ['startup_type', 'learn_address_script', 'managed', 'learn_address_script', 'management_port']
+    
     @classmethod
     def get_system_info(cls) -> dict:
         """Get system info
@@ -115,8 +117,13 @@ class OvpnUtils(object):
             return "Error: {}".format("No new config posted!"), category
         # remove the action from dict
         new_ovpn_server.pop('action', None)
+        
+        for key in OvpnUtils.OVPN_SERVER_INT_COL:
+            new_ovpn_server[key] = int(new_ovpn_server[key])
+                
         try:
             logger.info("Try to write new ovpn service to db.")
+            
             dbs.add(OvpnServers(**new_ovpn_server))
             dbs.commit()
             logger.error("Failed to save the openvpn to database.")
@@ -126,6 +133,42 @@ class OvpnUtils(object):
             dbs.rollback()
             logger.error(e)
             return "Failed to add new openvpn server: {}".format(e.__dict__['orig']), 'danger'
+
+    @classmethod
+    def delete_openvpn_service(cls, form_args=None) -> tuple:
+        """ Delete OpenVPN server
+
+        Args:
+            form_args (dict): Posted openvpn service uuid
+
+        Returns:
+            tuple: result and flask flash message
+        """
+        logger.info("Delete openvpn service now...")
+        category = None
+        if not form_args:
+            logger.error("Did not receive the openvpn service uuid, POST argrs error.")
+            category = 'danger'
+            return "Error: {}".format("No new config posted!"), category
+        # remove the action from dict
+        form_args.pop('action', None)
+        uuid = form_args.pop('service_uuid', None).strip()
+        
+        ovpn_service = OvpnUtils.get_openvpn_service_by_id(uuid)
+        if not ovpn_service:
+            return "UUID not found", 'danger'
+        
+        try:
+            logger.info("Try to delete ovpn service uuid: {}".format(uuid))
+            dbs.delete(ovpn_service)
+            dbs.commit()
+            logger.error("Successfully delete ovpn service: {}".format(uuid))
+            category = 'success'
+            return "New openvpn service has beed added successfully.", category
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return "Failed to delete new openvpn server: {}".format(e), 'danger'
 
     @classmethod
     def update_openvpn_service(cls, updated_ovpn_server=None) -> tuple:
@@ -146,7 +189,10 @@ class OvpnUtils(object):
 
         # remove the action from dict
         updated_ovpn_server.pop('action', None)
-
+        
+        for key in OvpnUtils.OVPN_SERVER_INT_COL:
+            updated_ovpn_server[key] = int(updated_ovpn_server[key])
+            
         try:
             logger.info("Try to update the ovpn service config.")
             target_id = updated_ovpn_server.pop('uuid', None)
@@ -195,3 +241,47 @@ class OvpnUtils(object):
             dbs.rollback()
             logger.error(e)
             return None
+
+    @classmethod
+    def get_openvpn_running_status(cls, server=None) -> dict:
+        """ Get OpenVPN running status
+
+        Args:
+            server (server, optional): A server instance which has an openvpn server information.
+
+        Returns:
+            dict: Running status info, dict format.
+        """
+        results = {}
+        if not platform.system().startswith("Linux"):
+            logger.info("This app is not running on linux platform now. Skip get openvpn running status.")
+            return results
+        if not server:
+            return results
+        startup_service = server.startup_service
+        if not startup_service:
+            return results       
+        if str(server.startup_type) == "1":
+            try:
+                res = subprocess.run(["systemctl", "is-active", "--quiet", startup_service], capture_output = True)
+                if res.returncode == 0:
+                    results.update({"status": 1})
+                    return results
+                else:
+                    results.update ({"status": 0})
+            except Exception as e:
+                logger.error("Failed to get openvpn running status: {}".format(str(e)))
+                results.update({"status": 0})
+                return results
+            
+        else:
+            try:
+                res = subprocess.run([startup_service, "status"], capture_output = True)
+                if res.returncode == 0:
+                    results.update({"status": 1})
+                    return results
+                else:
+                    results.update ({"status": 0})
+            except:
+                results.update({"status": 0})
+                return results

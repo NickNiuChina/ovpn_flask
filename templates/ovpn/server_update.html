@@ -90,7 +90,7 @@
 					<div class="form-group">
 						<label for="startup_type.id_for_label">Service startup type:</label>
 						<select class='custom-select' name="startup_type" id="startup_type.id_for_label">
-						  {% if server.startup_type == 1 %}
+						  {% if server.startup_type | int == 1 %}
 							<option value="0">sysv</option>
 							<option value="1" selected>Systemd</option>
 						  {% else %}
@@ -113,7 +113,7 @@
 					<div class="form-group">
 						<label for="learn_address_script.id_for_label">Learn address script:</label>
 						<select class='custom-select' name="learn_address_script" id="learn_address_script.id_for_label">
-						  {% if server.learn_address_script == 1 %}
+						  {% if server.learn_address_script | int == 1 %}
 							<option value="0">disabled</option>
 							<option value="1" selected>enabled</option>
 						  {% else %}
@@ -126,7 +126,7 @@
 					<div class="form-group">
 						<label for="managed.id_for_label">If managed by this APP:</label>
 						<select class='custom-select' name="managed" id="managed.id_for_label">
-						  {% if server.managed == 1 %}
+						  {% if server.managed | int == 1 %}
 							<option value="0">disabled</option>
 							<option value="1" selected>enabled</option>
 						  {% else %}

@@ -80,7 +80,7 @@
 									<th>{{ server.id }}</th>
 									<th> {{server.server_name}}</th>
 									<th>
-										{% if server.managed == 1 %}
+										{% if server.managed | int == 1 %}
 											managed
 										{% else %}
 											unmanaged
@@ -271,7 +271,7 @@
 			aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form action="{{ url_for ('ovpn.server_delete') }}" method="post">
+					<form action="{{ url_for ('ovpn.servers') }}" method="post">
 						<div class="modal-header">
 							<h4 class="modal-title" id="udpate-myModalLabel">Delete an openvpn service</h4>
 							<button type="button" class="close" data-dismiss="modal"
@@ -281,6 +281,7 @@
 						</div>
 						<div class="modal-body">
 							Are you sure to delete a OpenVPN service(This is irreversible)?
+							<input type="hidden" name="action" value="action_delete_ovpn_server" />
 							<div class="form-group hidden">
 								<label for="service_uuid" class="control-label">Insert OpenVPN service uuid:</label>
 								<input type="text" class="form-control" name="service_uuid" id="service_uuid" required>
