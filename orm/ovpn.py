@@ -90,8 +90,8 @@ class User(Base):
         "UserGroup",
         back_populates="users",
     )
-    log_size: Mapped[int] = mapped_column(Integer, nullable=True)
-    page_size: Mapped[int] = mapped_column(Integer, nullable=True)
+    log_size: Mapped[int] = mapped_column(ChoiceType({300: 300, 1000: 1000, 3000: 3000, -1: 'All'}), default=300)
+    page_size: Mapped[int] = mapped_column(ChoiceType({50: 50, 100: 100, 200: 200, 500: 500, -1: 'All'}), default=50)
     status: Mapped[int] = mapped_column(ChoiceType({1: "enabled", 0: "diabled"}), default=1)
     
     def __repr__(self) -> str:

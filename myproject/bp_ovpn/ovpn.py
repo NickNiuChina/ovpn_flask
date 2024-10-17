@@ -135,17 +135,63 @@ def servers():
         form_args = request.form.to_dict()
         
         if request.form.get('action', None) == 'action_add_ovpn_server':
-            logger.info("Get the add new openvpn server from POST, call to add new service.")
+            logger.info("Get the new openvpn server from POST, call to add new service.")
             result = OvpnUtils.add_openvpn_service(form_args)
             flash(result[0], result[1])
             return redirect(url_for("ovpn.servers"))
+        
         if request.form.get('action', None) == 'action_delete_ovpn_server':
             result = OvpnUtils.delete_openvpn_service(form_args)
             flash(result[0], result[1])
             return redirect(url_for("ovpn.servers"))
+        
+        if request.form.get('action', None) in ('stop_ovpn_service', "start_ovpn_service"):
+            server_id = request.form.get('s_uuid', None)
+            op = request.form.get("action", None)
+            if server_id:
+                server = OvpnUtils.get_openvpn_service_by_id(server_id)
+                if not server:
+                    message = "UUID has not been found in record!"
+                    return {"result": "danger", 'message': message}
+                
+                if op.startswith("start"):
+                    action = 'start'
+                elif op.startswith("stop"):
+                    action = 'stop'
+                
+                if action in ["start", "stop", "restart"]:
+                    res = OvpnUtils.change_openvpn_running_status(server=server, op=action)
+                    if res:
+                        message = 'OpenVPN service {} successfully.'.format(action)
+                        result = "success"
+                    else:
+                        message = 'OpenVPN service failed to {}!'.format(action)
+                        result = "danger"
+                else:
+                    message = "Operation not allowed."
+                    result = "danger"
+                return {"result": result, 'message': message}
+            else:
+                message = "Please provide a valid uuid!"
+                return {"result": "danger", 'message': message}
+        
+        return "Not found", 400
     else:
         servers = OvpnUtils.get_all_openvpn_services()
-        return render_template("ovpn/servers.html", servers=servers)
+        return_servers = []
+        if not platform.system().startswith("Linux"):
+            for server in servers:
+                server.running_status = 0
+                return_servers.append(server)
+        else:
+            for server in servers:            
+                status = OvpnUtils.get_openvpn_running_status(server)
+                if status:
+                    server.running_status = status["status"]
+                else:
+                    server.running_status = 0
+            
+        return render_template("ovpn/servers.html", servers=return_servers)
 
 @ovpn_bp.route("/server/<server_id>/update", methods=("POST", "GET"))
 @login_required
@@ -171,12 +217,12 @@ def server_update(server_id):
         return render_template("ovpn/server_update.html", server=ovpn_service)
 
 
-@ovpn_bp.route("/server_config", methods=("POST", "GET"))
+@ovpn_bp.route("/server/<server_id>/config", methods=("POST", "GET"))
 @login_required
-def server_config():
+def server_config(server_id):
     """
-    @summary: ovpn service page
-    @return: template: template ovpn/servers.html
+    @summary: ovpn service config page
+    @return: template: template ovpn/server_config.html
     """
     if request.method == "POST" and request.form.get('action', None) == 'action_add_ovpn_server':        
         form_args = request.form.to_dict()
@@ -186,46 +232,13 @@ def server_config():
         return redirect(url_for("ovpn.servers"))
     else:
         servers = OvpnUtils.get_all_openvpn_services()
-        return render_template("ovpn/servers.html", servers=servers)
-
-
-@ovpn_bp.route("/server/delete")
-@login_required
-def server_delete():
-    """
-    @summary: ovpn service page
-    @return: template: template ovpn/servers.html
-    """
-    if request.method != 'POST':
-        return HttpResponse("Page not found", status=404)
-    else:
-        service_uuid = request.POST.get('service_uuid').strip()
-        if uuid:
-            try:
-                sid = uuid.UUID(service_uuid)
-            except:
-                sid = ''
-            if sid:
-                server = Servers.objects.filter(id=sid)
-                if not server:
-                    messages.error(request, "This uuid has not been found in record!")
-                    return redirect("ovpn:servers")
-                else:
-                    Servers.objects.filter(id=sid).delete()
-                    messages.success(request, "OpenVPN deleted successfully!")
-                    return redirect("ovpn:servers")
-            else:
-                messages.error(request, "Please provide a valid uuid!")
-                return redirect("ovpn:servers")
-        else:
-            messages.error(request, "UUID is required for this request")
-            return redirect("ovpn:servers")
+        user_id = session.get("user_id", None)
+        # OvpnUtils.get_user_by_id
+        return render_template("ovpn/server_config.html", servers=servers)
 
 ####################################################################################
 # refresh proxy config button view
 ####################################################################################
-
-
 @ovpn_bp.route("/refresh/proxyConfig", methods=("POST", "GET"))
 @login_required
 def refreshProxyConfig():

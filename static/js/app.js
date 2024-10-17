@@ -77,6 +77,56 @@ $(document).ready(function() {
     });
 
     /* **********************************************
+        OpenVPN serivces page
+    ********************************************** */
+    // Post to stop an OpenVPN service
+    $('tbody').on('click', '.stop_ovpn_service', function() {
+        // alert("debug");
+        $tr = $(this).closest('tr');
+        var data = $tr.children("th").map(function() {
+            return $(this).text();
+        }).get();
+
+        var current_ob = $(this).closest('tr').find(".server_running_status");
+
+        var s_uuid = data[0];
+        // alert(sid);
+        $.post("", { 'csrfmiddlewaretoken': window.csrftoken, 'action': "stop_ovpn_service", "s_uuid": s_uuid }, function(result) {
+            // alert("debug in jQuery post");
+            // window.location.reload();
+            // $tr.find(".server_running_status").addClass("text-green").removeClass("text-red");
+            if (result['result'] == 'success') {
+                current_ob.removeClass("text-green").addClass("text-red");
+            }
+            appendAlert(result['message'], result['result']);
+        });
+    });
+
+    // Post to stop an OpenVPN service
+    $('tbody').on('click', '.start_ovpn_service', function() {
+        // alert("debug");
+        $tr = $(this).closest('tr');
+        var data = $tr.children("th").map(function() {
+            return $(this).text();
+        }).get();
+
+        var current_ob = $(this).closest('tr').find(".server_running_status");
+
+        var s_uuid = data[0];
+        // alert(sid);
+        $.post("", { 'csrfmiddlewaretoken': window.csrftoken, 'action': "start_ovpn_service", "s_uuid": s_uuid }, function(result) {
+            // alert("debug in jQuery post");
+            // window.location.reload();
+            // $tr.find(".server_running_status").addClass("text-red").removeClass("text-green");
+            if (result['result'] == 'success') {
+                current_ob.removeClass("text-red").addClass("text-green");
+            }
+            appendAlert(result['message'], result['result']);
+        });
+    });
+
+
+    /* **********************************************
     Ovpn tun clients status page functions
     ********************************************** */
 

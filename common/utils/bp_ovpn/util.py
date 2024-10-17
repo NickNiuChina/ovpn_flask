@@ -242,6 +242,7 @@ class OvpnUtils(object):
             logger.error(e)
             return None
 
+    
     @classmethod
     def get_openvpn_running_status(cls, server=None) -> dict:
         """ Get OpenVPN running status
@@ -285,3 +286,48 @@ class OvpnUtils(object):
             except:
                 results.update({"status": 0})
                 return results
+
+    @classmethod
+    def change_openvpn_running_status(cls, server=None, op=None) -> bool:
+        """ Change OpenVPN running status
+
+        Args:
+            server (server, optional): _description_. Defaults to None.
+            op (str, optional): the operation type, start, restart, stop. Defaults to None.
+
+        Returns:
+            bool: Bool
+        """
+        if not platform.system().startswith("Linux"):
+            logger.info("This app is not running on linux platform now. Skip start/stop openvpn service.")
+            return False
+        if not server or not op:
+            return False
+        startup_service = server.startup_service
+        if not startup_service:
+            return False
+        if not op in ['start', 'stop', 'restart']:
+            return False   
+        if str(server.startup_type) == "1":
+            try:
+                res = subprocess.run(["systemctl", op, startup_service], capture_output = True)
+                logger.info("Run system command now: {} {} {}".format("systemctl", op, startup_service))
+                if res.returncode == 0:
+                    logger.info("Successfully {} the openvpn service.".format(op))
+                    return True
+                else:
+                    logger.info("Failed to {} the openvpn service.".format(op))
+                    return False
+            except Exception as e:
+                logger.error("Failed to {} ovpn service: {}".format(op, str(e)) )
+                return False
+            
+        else:
+            try:
+                res = subprocess.run([startup_service, op], capture_output = True)
+                if res.returncode == 0:
+                    return True
+                else:
+                    return False
+            except:
+                return False
