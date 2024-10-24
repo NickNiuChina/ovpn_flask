@@ -224,6 +224,10 @@ def server_config(server_id):
     @summary: ovpn service config page
     @return: template: template ovpn/server_config.html
     """
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
+    
     if request.method == "POST" and request.form.get('action', None) == 'action_add_ovpn_server':        
         form_args = request.form.to_dict()
         logger.info("Get the add new openvpn server from POST, call to add new service.")
@@ -233,8 +237,8 @@ def server_config(server_id):
     else:
         servers = OvpnUtils.get_all_openvpn_services()
         user_id = session.get("user_id", None)
-        # OvpnUtils.get_user_by_id
-        return render_template("ovpn/server_config.html", servers=servers)
+        user = OvpnUtils.get_user_by_id(user_id)
+        return render_template("ovpn/server_config.html", servers=servers, log_size=user.log_size)
 
 ####################################################################################
 # refresh proxy config button view

@@ -6,7 +6,7 @@ import time
 
 
 from myproject.context import logger
-from orm.ovpn import OvpnServers
+from orm.ovpn import OvpnServers, User
 from myproject.context import DBSession as dbs
 from sqlalchemy import select, update, delete
 
@@ -331,3 +331,18 @@ class OvpnUtils(object):
                     return False
             except:
                 return False
+            
+
+    @classmethod
+    def get_user_by_id(cls, id=None) -> str:
+        """
+        Get OpenVPN service by id
+        """
+        logger.info("Get the user by uuid: " + str(id))
+        try:
+            user = dbs.scalars(select(User).where(User.id == id)).first()
+            return user
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return None
