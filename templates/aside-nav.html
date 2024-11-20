@@ -27,64 +27,82 @@
             </a>
           </li>
 
-		{# TUN mode menu #}
-		{% if config.TUN_MODE == 'enabled' %}
+
+		{# OpenVPN Server detail #}
+		{% if OPENVPN_SERVER_LIST %}
+		{% for service_name, service_uuid in OPENVPN_SERVER_LIST.items %}
 	       <li class="nav-item menu-open">
 	        <a href="javascript:void(0);" class="nav-link">
-	          <i class="nav-icon fas fa-server"></i>
+	          <i class="nav-icon fa-solid fa-server"></i>
 	          <p>
-	            OVPN-tcp-443-tun
+	            {{service_name}}
 	            <i class="right fas fa-angle-left"></i>
 	          </p>
 	        </a>
 	        <ul class="nav nav-treeview">
 						
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.clientsStatus', mode='tun') }}" class="nav-link">
+	            <a href="{{ url_for('ovpn.clients', ovpn_service=service_name) }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
 	              <p>OVPN clients status</p>
 	            </a>
 	          </li>
 	
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.generateBossClient', mode='Tun') }}" class="nav-link">
+	            <a href="{{ url_for('ovpn.generate_cert', ovpn_service=service_name) }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
-	              <p>Generate boss cert</p>
+	              <p>Generate cert</p>
 	            </a>
 	          </li>
 	
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.generateGenericClient', mode='Tun') }}" class="nav-link">
+	            <a href="{{ url_for('ovpn.plain_certs', ovpn_service=service_name) }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
-	              <p>Generate generic cert</p>
+	              <p>OVPN plain cert files</p>
 	            </a>
 	          </li>
-	
+
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.reqFileList', mode='tun') }}" class="nav-link">
+	            <a href="{{ url_for ('ovpn.encrypt_certs', ovpn_service=service_name) }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
-	              <p>BOSS REQ files</p>
+	              <p>OVPN encrypt cert files</p>
 	            </a>
 	          </li>
-	
+
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.certFileList', mode='tun')}}" class="nav-link">
+	            <a href="/" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
-	              <p>BOSS cert files</p>
+	              <p>OVPN plain REQ files</p>
 	            </a>
 	          </li>
-	
+
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.genericCertFileList', mode='tun') }}" class="nav-link">
+	            <a href="/" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
-	              <p>Generic client certs</p>
+	              <p>OVPN encrypt REQ files</p>
 	            </a>
 	          </li>
-	
+
+	          <li class="nav-item">
+	            <a href="/" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>Cert common files</p>
+	            </a>
+	          </li>
+
+	          <li class="nav-item">
+	            <a href="{{ url_for('ovpn.server_logs', ovpn_service=service_name) }}" class="nav-link">
+	              <i class="nav-icon far fa-file"></i>
+	              <p>OpenVPN logs</p>
+	            </a>
+	          </li>
+
 	        </ul>
 	      </li>
-        {% endif %}
+        {% endfor %}
+		{% endif %}
 
+		{# users #}
 		{% if session['group']  in ["ADMIN", "SUPER"] %}
 	      <li class="nav-item">
 	        <a href="{{ url_for('ovpn.adminUser') }}" class="nav-link active">
@@ -95,7 +113,7 @@
 	    {% endif %}
 
 
-		{# management menu for super only #}
+		{# management menu for privis users #}
 		{% if session['group'] == 'SUPER' %}
 	       <li class="nav-item menu-open">
 	        <a href="javascript:void(0);" class="nav-link">
