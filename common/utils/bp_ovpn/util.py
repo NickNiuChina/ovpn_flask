@@ -214,14 +214,14 @@ class OvpnUtils(object):
         
 
     @classmethod
-    def get_all_openvpn_services(cls, filter_ovpn_server=None) -> str:
+    def get_all_openvpn_services(cls, **filters) -> str:
         """
         Get all OpenVPN services
         """
         logger.info("Retrieve all openvpn services from database now.")
         try:
             logger.info("Try to write new ovpn service to db.")
-            servers = dbs.query(OvpnServers).all()
+            servers = dbs.query(OvpnServers).filter_by(**filters).all()
             return servers
         except Exception as e:
             dbs.rollback()

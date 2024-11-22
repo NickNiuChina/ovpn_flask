@@ -41,6 +41,24 @@ from orm.ovpn import SystemCommonConfig
 ovpn_bp = Blueprint("ovpn", __name__)
 
 ####################################################################################
+# Blueprint context processor
+####################################################################################
+@ovpn_bp.context_processor
+def cp_ovpn_services():
+    """ context processor of ovpn services list
+
+    Returns:
+        dict: k, v for variable and value
+    """
+    servers = OvpnUtils.get_all_openvpn_services(managed=1)
+    openvpn_server_list = {}
+    if servers:
+        for server in servers:
+            openvpn_server_list.update({server.server_name: str(server.id)})
+    print(servers)
+    return dict(OPENVPN_SERVER_LIST=openvpn_server_list)
+
+####################################################################################
 # Main dashboard
 ####################################################################################
 @ovpn_bp.route("/", methods=("POST", "GET"))
@@ -239,6 +257,34 @@ def server_config(server_id):
         user_id = session.get("user_id", None)
         user = OvpnUtils.get_user_by_id(user_id)
         return render_template("ovpn/server_config.html", servers=servers, log_size=user.log_size)
+
+####################################################################################
+# ovpn service views
+####################################################################################
+@ovpn_bp.route("/clients", methods=("POST", "GET"))
+@login_required
+def clients():
+    pass
+
+@ovpn_bp.route("/generate_cert", methods=("POST", "GET"))
+@login_required
+def generate_cert():
+    pass
+
+@ovpn_bp.route("/plain_certs", methods=("POST", "GET"))
+@login_required
+def plain_certs():
+    pass
+
+@ovpn_bp.route("/encrypt_certs", methods=("POST", "GET"))
+@login_required
+def encrypt_certs():
+    pass
+
+@ovpn_bp.route("/server_logs", methods=("POST", "GET"))
+@login_required
+def server_logs():
+    pass
 
 ####################################################################################
 # refresh proxy config button view
