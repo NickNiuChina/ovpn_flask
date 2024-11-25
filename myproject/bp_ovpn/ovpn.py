@@ -138,7 +138,7 @@ def introduction():
     return render_template("ovpn/introduction.html")
 
 ####################################################################################
-# ovpn services view
+# ovpn services overview views
 ####################################################################################
 
 @ovpn_bp.route("/servers", methods=("POST", "GET"))
@@ -259,7 +259,7 @@ def server_config(server_id):
         return render_template("ovpn/server_config.html", servers=servers, log_size=user.log_size)
 
 ####################################################################################
-# ovpn service views
+# ovpn service detail views
 ####################################################################################
 @ovpn_bp.route("/clients", methods=("POST", "GET"))
 @login_required

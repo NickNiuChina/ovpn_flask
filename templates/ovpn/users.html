@@ -56,7 +56,7 @@
 						<table id="tb_users_list" class="table table-striped table-bordered table-hover">
 							<thead>
 								<tr>
-									<th>#</th>
+									<th>UUID</th>
 									<th>Username</th>
 									<th>Priv</th>
 									<th>DisplayName</th>
@@ -65,16 +65,36 @@
 								</tr>
 							</thead>
 							<tbody>
-							<tfoot>
+							{% if servers %}
+							{% for server in servers %}
 								<tr>
-									<th>#</th>
-									<th>Username</th>
-									<th>Priv</th>
-									<th>DisplayName</th>
-									<th>Status</th>
-									<th>Operation</th>
+									<th>{{ server.id }}</th>
+									<th> {{server.server_name}}</th>
+									<th>
+										{% if server.managed | int == 1 %}
+											managed
+										{% else %}
+											unmanaged
+										{% endif %}
+									</th>
+									<th>
+									{% if server.running_status == 1 %}
+										<i class="fa server_running_status fa-circle text-green"></i>
+									{% else %}
+										<i class="fa server_running_status fa-circle text-red"></i>
+									{% endif %}
+									<th>
+										<a href="{{ url_for('ovpn.server_update', server_id=server.id) }}" class="btn btn-primary">Edit</a>
+										<a href="{{ url_for('ovpn.server_config', server_id=server.id) }}" class="btn btn-primary">Config</a>
+										{% if server.running_status == 1 %}
+											<a href="javascript:void(0);" class="btn btn-danger stop_ovpn_service">Stop</a>
+										{% else %}
+											<a href="javascript:void(0);" class="btn btn-success start_ovpn_service">Start</a>
+										{% endif %}
+									</th>
 								</tr>
-							</tfoot>
+							{%  endfor %}
+							{% endif %}
 							</tbody>
 						</table>
 					</div>

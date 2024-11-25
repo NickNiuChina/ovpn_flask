@@ -1116,7 +1116,7 @@ $(document).ready(function() {
     /* **********************************************
         admin user page functions
     ********************************************** */
-
+    /*
     // table user list tb_users_list
     $("#tb_users_list").DataTable({
         "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
@@ -1242,7 +1242,9 @@ $(document).ready(function() {
             },
         ],
     });
+    */
 
+    /*
     $('#updateUser').on('shown.bs.modal', function(event) {
         var button = $(event.relatedTarget);
         var user_id = button.data('user_id');
@@ -1284,6 +1286,7 @@ $(document).ready(function() {
         //     }
         // });
     });
+    */
 
     /**
     $('#addUser').on('shown.bs.modal', function(event) {
