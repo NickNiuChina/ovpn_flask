@@ -38,6 +38,8 @@ from sqlalchemy import select
 from sqlalchemy import update
 from orm.ovpn import SystemCommonConfig
 
+from flask_paginate import Pagination, get_page_args
+
 ovpn_bp = Blueprint("ovpn", __name__)
 
 ####################################################################################

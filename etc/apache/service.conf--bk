@@ -1,6 +1,6 @@
-DirectoryIndex ./ser/
-#Alias / /ser/
-<location /ser/>
+DirectoryIndex ./ovpn/
+#Alias / /ovpn/
+<location /ovpn/>
         SetOutputFilter proxy-html
         RequestHeader unset Accept-Encoding
 	ProxyPass http://127.0.0.1:3000/ disablereuse=On
