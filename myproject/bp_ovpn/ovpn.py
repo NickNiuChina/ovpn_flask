@@ -38,7 +38,7 @@ from sqlalchemy import select
 from sqlalchemy import update
 from orm.ovpn import SystemCommonConfig
 
-from flask_paginate import Pagination, get_page_args
+from flask_paginate import Pagination, get_page_args, get_page_parameter
 
 ovpn_bp = Blueprint("ovpn", __name__)
 
@@ -143,9 +143,10 @@ def introduction():
 # ovpn services overview views
 ####################################################################################
 
-@ovpn_bp.route("/servers", methods=("POST", "GET"))
+@ovpn_bp.route("/servers/", methods=("POST", "GET"), defaults={'page': 1})
+@ovpn_bp.route("/servers/<int:page>/", methods=("POST", "GET"))
 @login_required
-def servers():
+def servers(page):
     """
     @summary: ovpn service page, get -> list ovpn servce, post -> add or delete ovpn service
     @return: template: template ovpn/servers.html
@@ -197,7 +198,21 @@ def servers():
         
         return "Not found", 400
     else:
-        servers = OvpnUtils.get_all_openvpn_services()
+        # GET request
+        page_size = int(session.get("page_size", 50))
+        page = int(page)
+        
+        # if q and q.strip():
+        #     ss = OvpnUtils.search_openvpn_services(q.strip())
+        # else:
+        #     ss = OvpnUtils.get_all_openvpn_services()
+        ss = OvpnUtils.get_all_openvpn_services()
+        total = len(ss.all())
+        print(total)
+        servers = ss.limit(page_size).offset((page-1)*page_size)
+        return_servers = []
+        
+        
         return_servers = []
         if not platform.system().startswith("Linux"):
             for server in servers:
@@ -210,8 +225,8 @@ def servers():
                     server.running_status = status["status"]
                 else:
                     server.running_status = 0
-            
-        return render_template("ovpn/servers.html", servers=return_servers)
+        pagination = Pagination(page=page, total=total, per_page=page_size)
+        return render_template("ovpn/servers.html", servers=return_servers, pagination=pagination)
 
 @ovpn_bp.route("/server/<server_id>/update", methods=("POST", "GET"))
 @login_required

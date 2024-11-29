@@ -8,8 +8,8 @@ import time
 from myproject.context import logger
 from orm.ovpn import OvpnServers, User
 from myproject.context import DBSession as dbs
-from sqlalchemy import select, update, delete
-
+from sqlalchemy import select, update, delete, or_
+from uuid import UUID
 
 class OvpnUtils(object):
     """Ovpn utils
@@ -221,7 +221,23 @@ class OvpnUtils(object):
         logger.info("Retrieve all openvpn services from database now.")
         try:
             logger.info("Try to write new ovpn service to db.")
-            servers = dbs.query(OvpnServers).filter_by(**filters).all()
+            servers = dbs.query(OvpnServers).filter_by(**filters)
+            return servers
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return e
+
+    @classmethod
+    def search_openvpn_services(cls, q=None) -> str:
+        """
+        Get all OpenVPN services
+        """
+        logger.info ("Search openvpn services by query string: {}".format(str(q)))
+        try:
+            logger.info("Try query services from db.")
+            print("SE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            servers = dbs.query(OvpnServers).filter((OvpnServers.server_name.like(q)))
             return servers
         except Exception as e:
             dbs.rollback()

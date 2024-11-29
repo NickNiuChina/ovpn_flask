@@ -40,6 +40,13 @@
 							<button type="button" class="btn btn-danger" data-toggle="modal"
 								data-target="#deleteOpenVPNService">Delete a server</button>
 						</div>
+						{#
+						<div class="col-sm-auto">
+							<form class="form-inline mx-2" action="{{ url_for("ovpn.servers")}}" method="GET">
+								<input class="form-control mr-sm-1" placeholder="Search" aria-label="Search" type="text" name="q">
+								<button class="btn btn-outline-success" type="submit">Search</button>
+							</form> 
+						</div> #}
 					  {% endif %}
 					</div>
 
@@ -106,6 +113,28 @@
 							{% endif %}
 							</tbody>
 						</table>
+						{{ pagination.links }}
+        {# https://blog.csdn.net/weixin_44232093/article/details/100017742
+		 <div id="page">
+                 <span>页码: <span style="color: #00baaa;">{{ pageInfo.nowPage }}/{{ pageInfo.totalPage }}
+                 </span> 每页: <span style="color: #00baaa;">{{ pageInfo.pageSize }}</span> 条记录 共: <span
+                         style="color: #00baaa;">{{ pageInfo.total }}</span> 条记录</span>
+
+             {% if  pagination.page!=pageInfo.totalPage %}
+                 <a href="{{ url_for("eventRecord.eventRecordShow",page=pagination.page+1)}}">下一页</a>
+             {% else %}
+                 <a href="javascript:void(0)",page=pagination.page+1)}}">下一页</a>
+             {% endif %}
+
+             {% if  pagination.page!=1 %}
+                 <a href="{{ url_for("eventRecord.eventRecordShow",page=pagination.page-1) }}">上一页 |</a>
+             {% else %}
+                 <a href="javascript:void(0)">上一页 |</a>
+             {% endif %}
+
+
+             <span>转到<input type="text">页</span>
+         </div> #}
 					</div>
 			    </div>
 			</div>
