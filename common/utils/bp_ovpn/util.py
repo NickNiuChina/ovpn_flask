@@ -280,7 +280,7 @@ class OvpnUtils(object):
             return results       
         if str(server.startup_type) == "1":
             try:
-                res = subprocess.run(["systemctl", "is-active", "--quiet", startup_service], capture_output = True)
+                res = subprocess.run(["systemctl", "is-active", "--quiet", startup_service], shell=True, capture_output = True)
                 if res.returncode == 0:
                     results.update({"status": 1})
                     return results
@@ -293,7 +293,7 @@ class OvpnUtils(object):
             
         else:
             try:
-                res = subprocess.run([startup_service, "status"], capture_output = True)
+                res = subprocess.run([startup_service, "status"], shell=True, capture_output = True)
                 if res.returncode == 0:
                     results.update({"status": 1})
                     return results
