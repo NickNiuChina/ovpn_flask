@@ -225,6 +225,7 @@ def servers(page):
                     server.running_status = status["status"]
                 else:
                     server.running_status = 0
+                return_servers.append(server)
         pagination = Pagination(page=page, total=total, per_page=page_size)
         return render_template("ovpn/servers.html", servers=return_servers, pagination=pagination)
 
