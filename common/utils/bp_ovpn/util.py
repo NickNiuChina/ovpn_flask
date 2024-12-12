@@ -274,9 +274,10 @@ class OvpnUtils(object):
         Returns:
             dict: Running status info, dict format.
         """
+        logger.debug("Trying to get openvpn running status")
         results = {}
         if not platform.system().startswith("Linux"):
-            logger.info("This app is not running on linux platform now. Skip get openvpn running status.")
+            logger.info("This app is NOT running on linux platform now. Skip get openvpn running status.")
             return results
         if not server:
             return results
@@ -285,11 +286,13 @@ class OvpnUtils(object):
             return results       
         if str(server.startup_type) == "1":
             try:
-                res = subprocess.run(["systemctl", "is-active", "--quiet", startup_service], shell=True, capture_output = True)
+                res = subprocess.run(["/usr/bin/systemctl", "is-active", "--quiet", startup_service], shell=True, capture_output = True)
                 if res.returncode == 0:
                     results.update({"status": 1})
                     return results
                 else:
+                    logger.debug("returned code: {}".format(res.returncode))
+                    logger.error("Openvpn service is NOT running.")
                     results.update ({"status": 0})
             except Exception as e:
                 logger.error("Failed to get openvpn running status: {}".format(str(e)))

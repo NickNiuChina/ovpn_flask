@@ -195,6 +195,7 @@ def create_app(test_config=None):
         init_db()
         logger.info("Database init done.")
     # context processors
+
     @app.context_processor
     def context_processor_func():
         end_datetime = datetime.datetime.now()
@@ -203,8 +204,8 @@ def create_app(test_config=None):
         if days < 1:
             days = "<1"
         return dict(
-            runningDays = days,
-            now = datetime.datetime.now()
+            runningDays=days,
+            now=datetime.datetime.now()
             )
 
     # onlineUsers, not in prod now
@@ -218,7 +219,6 @@ def create_app(test_config=None):
     from myproject import flask_command
     flask_command.init_app(app)
 
-    
     """
     # test db connect and wait for successful connection
     with app.app_context():
@@ -261,14 +261,12 @@ def create_app(test_config=None):
     # # print(app.config.keys())
     # print("------APP config---------------------------------")
 
-
     """
         VIEW BLUEPRINTS
     """
     from myproject.bp_auth.auth import auth_bp
     from myproject.bp_ovpn.ovpn import ovpn_bp
     from myproject.bp_test.test import test_bp
-    
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(ovpn_bp, url_prefix='/ovpn')
@@ -280,7 +278,6 @@ def create_app(test_config=None):
     # the app the ovpn will be the main index
     # app.add_url_rule("/", endpoint="index")
 
-
     """
         GENERAL ENDPOINTS AND REQUEST/RESPONSE HANDLING
     """
@@ -290,7 +287,6 @@ def create_app(test_config=None):
         Redict "/" to "/ovpn"
         """
         return redirect(url_for("ovpn.index"))
-    
 
     @app.errorhandler(InternalServerError)
     def error_handler(error: InternalServerError) -> None:
@@ -301,7 +297,7 @@ def create_app(test_config=None):
 
         """
         if hasattr(sys, 'exception'):
-            exc = sys.exception() # Python >= 3.11
+            exc = sys.exception()  # Python >= 3.11
         else:
             exc = sys.exc_info()[1]
             
@@ -310,7 +306,6 @@ def create_app(test_config=None):
         for line in traceback.format_list(exc_summary[-1:-6:-1]):
             logger.error(line)
         return Response('Internal Server Error', 500)
-
 
     @app.route('/static/<path:path>')
     def send_static(path: str) -> flask.Response:
@@ -324,7 +319,6 @@ def create_app(test_config=None):
         """
         return send_from_directory('static', path)
 
-
     @app.teardown_appcontext
     def shutdown_session(exception = None) -> None:
         """
@@ -335,7 +329,6 @@ def create_app(test_config=None):
         """
         dbsession.rollback() #Rollback any uncommitted database transations
         dbsession.remove() #Remove the current session
-
 
     @app.after_request
     def add_header(response: flask.Response) -> flask.Response:
@@ -352,7 +345,6 @@ def create_app(test_config=None):
         
         return response
 
-
     @app.after_request
     def response_details(response: flask.Response) -> flask.Response:
         """
@@ -367,9 +359,7 @@ def create_app(test_config=None):
             logger.debug(f'{request.method} {response.status} {request.url}')
         return response
 
-
     return app
-
 
 
 def getPlatformName() -> str:

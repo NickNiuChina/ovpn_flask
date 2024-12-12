@@ -15,7 +15,7 @@ if system_type.startswith("Window"):
     log_path = str(Path(os.path.realpath(__file__)).parents[1]) + "\\logs"
 else:
     log_path = ProductionConfig.LOG_DIR
-logger = logutil.get_logger(log_name= ProductionConfig.LOG_FILE or 'ovpn_flask_mgmt', log_path=log_path, loglevel=ProductionConfig.LOG_LEVEL)
+logger = logutil.get_logger(log_name=ProductionConfig.LOG_FILE or 'ovpn_flask_mgmt', log_path=log_path, loglevel=ProductionConfig.LOG_LEVEL)
 
 
 """
