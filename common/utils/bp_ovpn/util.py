@@ -84,10 +84,12 @@ class OvpnUtils(object):
         if not platform.system().startswith("Linux"):
             # logger.info("This app is not running on linux platform now. Skip get openvpn version.")
             return ""
-        try:            
+        try:
+            logger.debug("Trying to get the openvpn software version.")
             if not executor:
-                res = subprocess.run(["openvpn", '--version'], capture_output = True, shell=False)
+                res = subprocess.run(["openvpn", '--version'], capture_output = True, shell=True)
                 output = res.stdout.decode("utf-8")
+                logger.debug("Read command output: {}".format(output))
                 lout = output.split("\n")[0]
                 version = "-".join(str(x) for x in lout.split()[0:3])
                 if version:
