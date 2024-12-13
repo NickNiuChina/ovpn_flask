@@ -167,6 +167,7 @@ def servers(page):
             return redirect(url_for("ovpn.servers"))
         
         if request.form.get('action', None) in ('stop_ovpn_service', "start_ovpn_service"):
+            logger.debug("Post request to start/stop ovpnvpn service.")
             server_id = request.form.get('s_uuid', None)
             op = request.form.get("action", None)
             if server_id:
