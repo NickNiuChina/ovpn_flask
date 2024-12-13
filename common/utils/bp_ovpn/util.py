@@ -216,7 +216,6 @@ class OvpnUtils(object):
             dbs.rollback()
             logger.error(e)
             return ("Failed to add new openvpn server: {}".format(e), 'danger')
-        
 
     @classmethod
     def get_all_openvpn_services(cls, **filters) -> str:
@@ -225,7 +224,7 @@ class OvpnUtils(object):
         """
         logger.info("Retrieve all openvpn services from database now.")
         try:
-            logger.info("Try to write new ovpn service to db.")
+            logger.info("Try to run query ovpn services")
             servers = dbs.query(OvpnServers).filter_by(**filters)
             return servers
         except Exception as e:
@@ -241,7 +240,6 @@ class OvpnUtils(object):
         logger.info ("Search openvpn services by query string: {}".format(str(q)))
         try:
             logger.info("Try query services from db.")
-            print("SE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
             servers = dbs.query(OvpnServers).filter((OvpnServers.server_name.like(q)))
             return servers
         except Exception as e:
@@ -263,7 +261,6 @@ class OvpnUtils(object):
             logger.error(e)
             return None
 
-    
     @classmethod
     def get_openvpn_running_status(cls, server=None) -> dict:
         """ Get OpenVPN running status
@@ -335,7 +332,7 @@ class OvpnUtils(object):
             return False   
         if str(server.startup_type) == "1":
             try:
-                res = subprocess.run(["/usr/bin/systemctl", op, startup_service], capture_output = True)
+                res = subprocess.run(["/usr/bin/systemctl", op, startup_service], capture_output=True)
                 logger.info("Run system command now: {} {} {}".format("/usr/bin/systemctl", op, startup_service))
                 if res.returncode == 0:
                     logger.info("Successfully {} the openvpn service.".format(op))

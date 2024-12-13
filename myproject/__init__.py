@@ -3,7 +3,8 @@ Flask 的工厂模式
 Created on 2023年8月10日
 '''
 import os
-import socket, re
+import socket
+import re
 import sys
 import traceback
 
@@ -28,6 +29,7 @@ from orm.ovpn import SystemCommonConfig
 from sqlalchemy import select
 from myproject.context import DBSession as dbs
 
+
 def create_app(test_config=None):
     """ create Flask APP
     Args:
@@ -46,7 +48,7 @@ def create_app(test_config=None):
     # STATIC_DIR
     STATIC_DIR = os.path.join(BASE_DIR, 'static')
     
-    app = Flask(__name__, instance_relative_config=True, template_folder=TEMPLATES_DIR, static_folder = STATIC_DIR)
+    app = Flask(__name__, instance_relative_config=True, template_folder=TEMPLATES_DIR, static_folder=STATIC_DIR)
     app.config['JSON_AS_ASCII'] = False 
     app.config.from_object(config.ProductionConfig)
 
