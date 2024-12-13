@@ -130,6 +130,7 @@ def index1():
 # introduction view
 ####################################################################################
 
+
 @ovpn_bp.route("/introduction")
 @login_required
 def introduction():
@@ -142,13 +143,12 @@ def introduction():
 ####################################################################################
 # ovpn services overview views
 ####################################################################################
-
 @ovpn_bp.route("/servers/", methods=("POST", "GET"), defaults={'page': 1})
 @ovpn_bp.route("/servers/<int:page>/", methods=("POST", "GET"))
 @login_required
 def servers(page):
     """
-    @summary: ovpn service page, get -> list ovpn servce, post -> add or delete ovpn service
+    @summary: ovpn service page, get -> list ovpn service, post -> add or delete ovpn service
     @return: template: template ovpn/servers.html
     """
     if request.method == "POST":
@@ -1482,19 +1482,77 @@ def listUsers():
     return data
 
 
-@ovpn_bp.route("/users")
+@ovpn_bp.route("/users", methods=("POST", "GET"), defaults={'page': 1})
+@ovpn_bp.route("/users/<int:page>/", methods=("POST", "GET"))
 @login_required
-def adminUser():
-    """user admin page
-
-    Returns:
-        template: introduction template
+def users(page):
     """
-    return render_template("ovpn/users.html")
+        @summary: users page, get -> list users, post -> add or delete user
+        @return: template: template ovpn/users.html
+        """
+    if request.method == "POST":
 
-@ovpn_bp.route("/admin/updateUser", methods=("POST",))
+        form_args = request.form.to_dict()
+
+        if request.form.get('action', None) == 'action_add_ovpn_server':
+            logger.info("Get the new openvpn server from POST, call to add new service.")
+            result = OvpnUtils.add_openvpn_service(form_args)
+            flash(result[0], result[1])
+            return redirect(url_for("ovpn.servers"))
+
+        if request.form.get('action', None) == 'action_delete_ovpn_server':
+            result = OvpnUtils.delete_openvpn_service(form_args)
+            flash(result[0], result[1])
+            return redirect(url_for("ovpn.servers"))
+
+        if request.form.get('action', None) in ('stop_ovpn_service', "start_ovpn_service"):
+            logger.debug("Post request to start/stop ovpnvpn service.")
+            server_id = request.form.get('s_uuid', None)
+            op = request.form.get("action", None)
+            if server_id:
+                server = OvpnUtils.get_openvpn_service_by_id(server_id)
+                if not server:
+                    message = "UUID has not been found in record!"
+                    return {"result": "danger", 'message': message}
+
+                if op.startswith("start"):
+                    action = 'start'
+                elif op.startswith("stop"):
+                    action = 'stop'
+
+                if action in ["start", "stop", "restart"]:
+                    res = OvpnUtils.change_openvpn_running_status(server=server, op=action)
+                    if res:
+                        message = 'OpenVPN service {} successfully.'.format(action)
+                        result = "success"
+                    else:
+                        message = 'OpenVPN service failed to {}!'.format(action)
+                        result = "danger"
+                else:
+                    message = "Operation not allowed."
+                    result = "danger"
+                return {"result": result, 'message': message}
+            else:
+                message = "Please provide a valid uuid!"
+                return {"result": "danger", 'message': message}
+
+        return "Not found", 400
+    else:
+        # GET request
+        page_size = int(session.get("page_size", 50))
+        page = int(page)
+
+        us = OvpnUtils.get_all_users()
+        total = len(us.all())
+        users = us.limit(page_size).offset((page - 1) * page_size)
+
+        pagination = Pagination(page=page, total=total, per_page=page_size)
+        return render_template("ovpn/users.html", users=users, pagination=pagination)
+
+
+@ovpn_bp.route("/user/<user_id>/update", methods=("POST", "GET"))
 @login_required
-def updateUser():
+def user_update():
     """update-user url
 
     Returns:
@@ -1604,59 +1662,6 @@ def deleteUser():
         return redirect(url_for("ovpn.adminUser"))
     success = "Delete user successfully. User: " + username
     flash(success, 'success')    
-    return redirect(url_for("ovpn.adminUser"))
-
-@ovpn_bp.route("/admin/user/addStudent", methods=("POST",))
-@login_required
-def addUser():
-    """ Add a new user account
-        
-    Returns:
-        result: redirect to user admin page with failure/success
-    """
-    # arguments
-    if request.method == "POST":
-        username = request.values.get('username')
-        priv = request.values.get('priv')
-        password = request.values.get('password')
-        displayName = request.values.get('display-name')
-        
-    # get
-    if request.method == "GET":
-        username = request.args.get('username') 
-        priv = request.args.get('priv') 
-        password = request.args.get('password') 
-        displayName = request.args.get('display-name')
-
-    if len(username) < 4 or len(password) < 4:
-        danger = "Username or password too short!"
-        flash(danger, 'danger')    
-        return redirect(url_for("ovpn.adminUser"))
-    
-    db = get_db()
-    cur = db.cursor()
-    cur.execute(
-        "select * from tb_user where username=%s or display_name=%s",(username, displayName)
-    )
-    
-    if cur.rowcount > 0:
-        danger = "Duplicated username or display name: " + str([username, displayName])
-        flash(danger, 'danger')    
-        return redirect(url_for("ovpn.adminUser"))
-    
-    cur.execute(
-        "insert into tb_user"
-        " (user_type, username, password, display_name, status)"
-        " VALUES (%s, %s, %s, %s, %s)", (int(priv), username, generate_password_hash(password), displayName, 1)
-    )
-    db.commit()
-    if cur.rowcount < 1:
-        danger = "Something wrong when add user. User: " + str([username, displayName])
-        flash(danger, 'danger')    
-        return redirect(url_for("ovpn.adminUser"))   
-    
-    success = "Add student user successfully. User: " + str([username, displayName, password])
-    flash(success, 'success')
     return redirect(url_for("ovpn.adminUser"))
 
 
@@ -1778,6 +1783,7 @@ def system_config():
     scs = dbs.scalars(select(SystemCommonConfig))
     return render_template("ovpn/system_config.html", scs=scs)
 
+
 @ovpn_bp.route("/showAppConfig", methods=("POST","GET"))
 @login_required
 def showAppConfig():
@@ -1807,6 +1813,7 @@ def showAppConfig():
 
     # return "<h1>Flask App current config as following</h1> <br><br>" + appConfig.replace("\n", "<br>")
     return app_config
+
 
 @ovpn_bp.route("/showAppSession", methods=("POST","GET"))
 @login_required

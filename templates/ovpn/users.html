@@ -58,45 +58,37 @@
 								<tr>
 									<th>UUID</th>
 									<th>Username</th>
-									<th>Priv</th>
 									<th>DisplayName</th>
+									<th>Privis</th>
 									<th>Status</th>
 									<th>Operation</th>
 								</tr>
 							</thead>
 							<tbody>
-							{% if servers %}
-							{% for server in servers %}
+							{% if users %}
+							{% for user in users %}
 								<tr>
-									<th>{{ server.id }}</th>
-									<th> {{server.server_name}}</th>
+									<th>{{ user.id }}</th>
+									<th>{{ user.username }}</th>
+									<th>{{ user.name }}</th>
+									<th>{{ user.group.group }}</th>
 									<th>
-										{% if server.managed | int == 1 %}
-											managed
-										{% else %}
-											unmanaged
-										{% endif %}
-									</th>
-									<th>
-									{% if server.running_status == 1 %}
-										<i class="fa server_running_status fa-circle text-green"></i>
+									{% if user.status | int == 1 %}
+										<i class="fa user_status fa-circle text-green"></i>
 									{% else %}
-										<i class="fa server_running_status fa-circle text-red"></i>
+										<i class="fa user_status fa-circle text-red"></i>
 									{% endif %}
 									<th>
-										<a href="{{ url_for('ovpn.server_update', server_id=server.id) }}" class="btn btn-primary">Edit</a>
-										<a href="{{ url_for('ovpn.server_config', server_id=server.id) }}" class="btn btn-primary">Config</a>
-										{% if server.running_status == 1 %}
-											<a href="javascript:void(0);" class="btn btn-danger stop_ovpn_service">Stop</a>
-										{% else %}
-											<a href="javascript:void(0);" class="btn btn-success start_ovpn_service">Start</a>
-										{% endif %}
+										<a href="{{ url_for('ovpn.user_update', user_id=user.id) }}" class="btn btn-primary">Edit</a>
 									</th>
 								</tr>
 							{%  endfor %}
 							{% endif %}
 							</tbody>
 						</table>
+
+						{{ pagination.links }}
+
 					</div>
 			    </div>
 			</div>
@@ -106,7 +98,7 @@
 		<div class="modal fade" id="addUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form action="{{ url_for('ovpn.addUser') }}" method="post">
+					<form action="{{ url_for('ovpn.users') }}" method="post">
 						<div class="modal-header">
 							<h4 class="modal-title" id="myModalLabel">Add User</h4>
 							<button type="button" class="close" data-dismiss="modal"
@@ -126,18 +118,20 @@
 							</div>
 
 							<div class="form-group">
-								<label for="user-priv" class="control-label">User Type:</label>
-								<select class="form-control" name="priv" id="user-priv">
-									<option value="2">User</option>
-									<option value="1">Admin</option>
-								</select>
+								<label for="user-password" class="control-label">Password:</label>
+								<input type="password" class="form-control" name="password" id="user-password" required
+								oninvalid="this.setCustomValidity('Please Enter valid password')"
+                       			oninput="setCustomValidity('')">
 							</div>
 
 							<div class="form-group">
-								<label for="user-student-password" class="control-label">Password:</label> 
-								<input type="password" class="form-control" name="password" id="user-student-password" required
-								oninvalid="this.setCustomValidity('Please Enter valid password')"
-                       			oninput="setCustomValidity('')">
+								<label for="user-priv" class="control-label">User Type:</label>
+								<select class="form-control" name="priv" id="user-priv">
+									<option value="ADMIN">ADMIN</option>
+									<option value="USER">USER</option>
+									<option value="GUEST">GUEST</option>
+									<option value="SUPER">SUPER</option>
+								</select>
 							</div>
 
 							<div class="form-group">
@@ -147,10 +141,17 @@
                        			oninput="setCustomValidity('')">
 							</div>
 
+							<div class="form-group">
+								<label for="user-email" class="control-label">Email:</label>
+								<input type="email" class="form-control" name="email" id="user-email" required
+								oninvalid="this.setCustomValidity('Please Enter valid email')"
+                       			oninput="setCustomValidity('')">
+							</div>
+
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-							<button type="submit" class="btn btn-primary">提交</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+							<button type="submit" class="btn btn-primary">Confirm</button>
 						</div>
 					</form>
 				</div>
@@ -162,7 +163,7 @@
 			aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form action="{{ url_for('ovpn.updateUser') }}" method="post">
+					<form action="{{ url_for('ovpn.users') }}" method="post">
 						<div class="modal-header">
 							<h4 class="modal-title" id="udpate-myModalLabel">更新用户信息</h4>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">

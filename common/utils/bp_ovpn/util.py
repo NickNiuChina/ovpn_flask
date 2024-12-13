@@ -353,18 +353,36 @@ class OvpnUtils(object):
                     return False
             except:
                 return False
-            
+
+    """
+        Users method
+    """
 
     @classmethod
-    def get_user_by_id(cls, id=None) -> str:
+    def get_user_by_id(cls, uid=None) -> str:
         """
         Get OpenVPN service by id
         """
-        logger.info("Get the user by uuid: " + str(id))
+        logger.info("Get the user by uuid: " + str(uid))
         try:
-            user = dbs.scalars(select(User).where(User.id == id)).first()
+            user = dbs.scalars(select(User).where(User.id == uid)).first()
             return user
         except Exception as e:
             dbs.rollback()
             logger.error(e)
             return None
+
+    @classmethod
+    def get_all_users(cls, **filters) -> str:
+        """
+        Get all users
+        """
+        logger.info("Retrieve all users services from database now.")
+        try:
+            logger.info("Try to run query users")
+            users = dbs.query(User).filter_by(**filters)
+            return users
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return e

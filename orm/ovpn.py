@@ -22,6 +22,8 @@ Base = declarative_base()
 
 # https://stackoverflow.com/questions/6262943/sqlalchemy-how-to-make-django-choices-using-sqlalchemy
 # https://docs.sqlalchemy.org/en/20/core/custom_types.html
+
+
 class ChoiceType(types.TypeDecorator):
     """
     Self-defined the status type
@@ -47,6 +49,7 @@ class ChoiceType(types.TypeDecorator):
         #     return 'disabled'
         return value
 
+
 class UserGroup(Base):
     """ 
     Group table ORM
@@ -62,9 +65,11 @@ class UserGroup(Base):
         "User",
         back_populates="group",
         cascade="all, delete",
-    )    
+    )
+
     def __repr__(self) -> str:
         return f"Group(id={self.id!r}, group={self.group!r})"
+
 
 class User(Base):
     """ 
