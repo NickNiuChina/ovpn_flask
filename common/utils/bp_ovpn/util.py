@@ -254,7 +254,7 @@ class OvpnUtils(object):
         """
         Get OpenVPN service by id
         """
-        logger.info("Get the ovpnserice by id: " + id)
+        logger.info("Get the ovpn service by id: " + id)
         try:
             server = dbs.scalars(select(OvpnServers).where(OvpnServers.id == id)).first()
             return server
