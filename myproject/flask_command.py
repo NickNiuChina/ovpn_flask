@@ -5,6 +5,7 @@ from orm.ovpn import User, UserGroup, SystemCommonConfig
 from sqlalchemy import select
 from werkzeug.security import generate_password_hash
 
+
 def init_db():
     """Clear existing data and create new tables."""
     from myproject.context import engine, DBSession as dbsession

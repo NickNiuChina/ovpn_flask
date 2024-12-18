@@ -4,12 +4,13 @@ import psutil
 import subprocess
 import time
 
-
+from werkzeug.security import generate_password_hash
 from myproject.context import logger
-from orm.ovpn import OvpnServers, User
+from orm.ovpn import OvpnServers, User, UserGroup
 from myproject.context import DBSession as dbs
 from sqlalchemy import select, update, delete, or_
 from uuid import UUID
+
 
 class OvpnUtils(object):
     """Ovpn utils
@@ -17,7 +18,8 @@ class OvpnUtils(object):
     """
     
     OVPN_SERVER_INT_COL = ['startup_type', 'learn_address_script', 'managed', 'learn_address_script', 'management_port']
-    
+    USER_INT_COL = ['line_size', 'page_size']
+
     @classmethod
     def get_system_info(cls) -> dict:
         """Get system info
@@ -386,3 +388,45 @@ class OvpnUtils(object):
             dbs.rollback()
             logger.error(e)
             return e
+
+    @classmethod
+    def add_user(cls, new_user=None) -> tuple:
+        """ Add user
+
+        Args:
+            new_user (dict): New user info in a dict
+
+        Returns:
+            tuple: result and flask flash message
+        """
+        logger.info("Add new user now...")
+        category = None
+        if not new_user:
+            logger.error("Did not receive the new user config, POST argrs error.")
+            category = 'danger'
+            return "Error: {}".format("No new config posted!"), category
+        # remove the action from dict
+        new_user.pop('action', None)
+
+        for key in OvpnUtils.USER_INT_COL:
+            new_user[key] = int(new_user[key])
+
+        # password encrypt
+        new_user["password"] = generate_password_hash(new_user["password"])
+
+        # group to group_id
+        group = new_user.pop('group', "ADMIN")
+        new_user["group_id"] = dbs.scalar(select(UserGroup).where(UserGroup.group == group)).id
+
+        try:
+            logger.info("Try to write new ovpn service to db.")
+
+            dbs.add(User(**new_user))
+            dbs.commit()
+            logger.error("Failed to save the user to database.")
+            category = 'success'
+            return "New user has been added successfully.", category
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return "Failed to add new user: {}".format(e), 'danger'

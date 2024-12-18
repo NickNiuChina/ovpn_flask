@@ -1494,16 +1494,17 @@ def users(page):
 
         form_args = request.form.to_dict()
 
-        if request.form.get('action', None) == 'action_add_ovpn_server':
-            logger.info("Get the new openvpn server from POST, call to add new service.")
-            result = OvpnUtils.add_openvpn_service(form_args)
+        if request.form.get('action', None) == 'action_add_user':
+            logger.info("Post action: add new user from POST, call to add new user.")
+            result = OvpnUtils.add_user(form_args)
             flash(result[0], result[1])
-            return redirect(url_for("ovpn.servers"))
+            return redirect(url_for("ovpn.users"))
 
-        if request.form.get('action', None) == 'action_delete_ovpn_server':
-            result = OvpnUtils.delete_openvpn_service(form_args)
-            flash(result[0], result[1])
-            return redirect(url_for("ovpn.servers"))
+        if request.form.get('action', None) == 'action_delete_user':
+            # result = OvpnUtils.delete_openvpn_service(form_args)
+            # flash(result[0], result[1])
+            flash(form_args, 'danger')
+            return redirect(url_for("ovpn.users"))
 
         if request.form.get('action', None) in ('stop_ovpn_service', "start_ovpn_service"):
             logger.debug("Post request to start/stop ovpnvpn service.")
