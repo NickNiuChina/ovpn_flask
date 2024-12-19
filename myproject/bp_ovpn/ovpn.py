@@ -197,7 +197,7 @@ def servers(page):
                 message = "Please provide a valid uuid!"
                 return {"result": "danger", 'message': message}
         
-        return "Not found", 400
+        return "BAD request!", 400
     else:
         # GET request
         page_size = int(session.get("page_size", 50))
@@ -1501,43 +1501,11 @@ def users(page):
             return redirect(url_for("ovpn.users"))
 
         if request.form.get('action', None) == 'action_delete_user':
-            # result = OvpnUtils.delete_openvpn_service(form_args)
-            # flash(result[0], result[1])
-            flash(form_args, 'danger')
+            result = OvpnUtils.delete_user(form_args)
+            flash(result[0], result[1])
             return redirect(url_for("ovpn.users"))
 
-        if request.form.get('action', None) in ('stop_ovpn_service', "start_ovpn_service"):
-            logger.debug("Post request to start/stop ovpnvpn service.")
-            server_id = request.form.get('s_uuid', None)
-            op = request.form.get("action", None)
-            if server_id:
-                server = OvpnUtils.get_openvpn_service_by_id(server_id)
-                if not server:
-                    message = "UUID has not been found in record!"
-                    return {"result": "danger", 'message': message}
-
-                if op.startswith("start"):
-                    action = 'start'
-                elif op.startswith("stop"):
-                    action = 'stop'
-
-                if action in ["start", "stop", "restart"]:
-                    res = OvpnUtils.change_openvpn_running_status(server=server, op=action)
-                    if res:
-                        message = 'OpenVPN service {} successfully.'.format(action)
-                        result = "success"
-                    else:
-                        message = 'OpenVPN service failed to {}!'.format(action)
-                        result = "danger"
-                else:
-                    message = "Operation not allowed."
-                    result = "danger"
-                return {"result": result, 'message': message}
-            else:
-                message = "Please provide a valid uuid!"
-                return {"result": "danger", 'message': message}
-
-        return "Not found", 400
+        return "BAD request!", 400
     else:
         # GET request
         page_size = int(session.get("page_size", 50))
@@ -1553,174 +1521,29 @@ def users(page):
 
 @ovpn_bp.route("/user/<user_id>/update", methods=("POST", "GET"))
 @login_required
-def user_update():
+def user_update(user_id):
     """update-user url
 
+        get: use update form page
+        post: send new user config to update user
+        
     Returns:
         redirect: Return to user list with failure/success
     """
-    user_id = None
-    username = None
-    password = None
-    display_name = None
+    user = OvpnUtils.get_user_by_id(user_id)
+    if not user:
+        return render_template('404.html'), 404
 
     if request.method == "POST":
-        user_id = request.values.get('user_id')
-        user_type = request.values.get('user_type')
-        username = request.values.get('username')
-        password = request.values.get('password')
-        display_name = request.values.get('display_name')
-    if any(x is None for x in [username, password]):
-        error = "Null value submited, Info: " + str([username, password])
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminUser"))
-    
-    args = [user_id, user_type, username, password, display_name]    
-    cur = get_cur()
-    
-    # students list
-    update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    cur.execute("update tb_user set" 
-                " username=%s,"
-                " user_type=%s,"
-                " password=%s,"
-                " display_name=%s,"
-                " update_time=%s"
-                " where user_id=%s", [username, user_type, generate_password_hash(password), display_name, update_time, user_id])
-    result = cur.rowcount
-    get_db().commit()
-    if result < 1:
-        error = "Failed during update user. User: " + username
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminUser"))
-    
-    success = "User info has just been changed! User: " + str(args)
-    flash(success, 'success')
-    return redirect(url_for("ovpn.adminUser"))
-
-@ovpn_bp.route("/admin/getUser", methods=("GET", "POST"))
-@login_required
-def getUser():
-    """admin-user get a user by user_id
-
-    Returns:
-        students: students object
-    """
-    user_id = None
-    # post
-    if request.method == "POST":
-        user_id = request.values.get('user_id')
-    # get
-    if request.method == "GET":
-        user_id = request.args.get('user_id')    
-    
-    cur = get_db().cursor(cursor_factory = psycopg2.extras.RealDictCursor)
-    
-    # User object
-    cur.execute("select * from tb_user where user_id = %s", (user_id,))
-    user = cur.fetchone()
-    print(user)
-    return jsonify(user)
-
-@ovpn_bp.route("/admin/delete/user", methods=("GET", "POST"))
-@login_required
-def deleteUser():
-    """ delete a user by user info
-        
-    Returns:
-        result: redirect to user admin page with failure/sucess
-    """
-    # arguments
-    # post
-    if request.method == "POST":
-        username = request.values.get('username')
-        # op = request.values.get('op')
-
-    # get
-    if request.method == "GET":
-        username = request.args.get('username') 
-        # op = request.args.get('op') 
-    if username == "admin":
-        error = "You can not delete admin!"
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminUser"))
-    
-    db = get_db()
-    cur = db.cursor()
-    cur.execute(
-        "SELECT username FROM tb_user where username=%s", (username,)
-    )
-    if cur.rowcount < 1:
-        error = "您尝试删除的用户不存在: " + username
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminUser"))
-
-    cur.execute("delete from tb_user where username = %s", (username,))
-    db.commit()
-    if cur.rowcount < 1:
-        error = "Failed during delete user. User: " + username
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminUser"))
-    success = "Delete user successfully. User: " + username
-    flash(success, 'success')    
-    return redirect(url_for("ovpn.adminUser"))
-
-
-@ovpn_bp.route("/admin/user/toggle", methods=("GET", "POST"))
-@login_required
-def toggleUser():
-    """ toggle a user status
-        
-    Returns:
-        result: redirect to User admin page with failure/sucess
-    """
-    # arguments
-    # post
-    if request.method == "POST":
-        target_user = request.values.get('target_user')
-        user_status = request.values.get('user_status')
-
-    # get
-    if request.method == "GET":
-        target_user = request.args.get('target_user') 
-        user_status = request.args.get('user_status')
-    print("userstatus: " + user_status)
-    print("target_user: " + target_user)
-    if not(user_status == "1" or user_status == "0"):
-        error = "Error occurs, user_status: " + user_status
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminUser"))
-     
-    db = get_db()
-    cur = db.cursor()
-    cur.execute(
-        "SELECT username FROM tb_user where username=%s", (target_user,)
-    )
-    result = cur.rowcount
-    if not result:
-        error = "The user does not exist: " + target_user
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminUser"))
-
-    if user_status == "1":
-        user_status = 0
+        form_args = request.form.to_dict()
+        form_args.update({"uuid": user_id})
+        logger.info("Update the ovpn service by the post args: " + str(form_args))
+        result = OvpnUtils.update_user(form_args)
+        flash(result[0], result[1])
+        return redirect(request.referrer)
     else:
-        user_status = 1
-    update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    cur.execute("update tb_user set status=%s, update_time=%s where username = %s", 
-                         (user_status, update_time,target_user)
-                         )
-    result = cur.rowcount
-    db.commit()
-    if not result:
-        error = "Failed during toggle user status. User: " + target_user
-        flash(error, 'danger')
-        return redirect(url_for("ovpn.adminUser"))
-    
-    success = "Toggle user successfully. User: " + target_user
-    flash("fffffffffffffffffffffffffffffffffffffffffffffff", 'danger')
-    print("########################################################################################################################")    
-    return redirect (url_for("ovpn.adminUser"))
+        return render_template("ovpn/user_update.html", user=user)
+
 
 ####################################################################################
 # System management views
@@ -1787,7 +1610,7 @@ def system_config():
 
 @ovpn_bp.route("/showAppConfig", methods=("POST","GET"))
 @login_required
-def showAppConfig():
+def show_app_config():
     """
     @return: Flask app config 
     """
@@ -1818,7 +1641,7 @@ def showAppConfig():
 
 @ovpn_bp.route("/showAppSession", methods=("POST","GET"))
 @login_required
-def showAppSession():
+def show_app_session():
     """
     @return: Flask app session 
     """

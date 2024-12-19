@@ -160,18 +160,23 @@ class OvpnUtils(object):
         # remove the action from dict
         form_args.pop('action', None)
         uuid = form_args.pop('service_uuid', None).strip()
-        
+
+        try:
+            service_uuid = UUID(uuid, version=1)
+        except ValueError:
+            return "Please input valid UUID", "danger"
+
         ovpn_service = OvpnUtils.get_openvpn_service_by_id(uuid)
         if not ovpn_service:
             return "UUID not found", 'danger'
-        
+
         try:
             logger.info("Try to delete ovpn service uuid: {}".format(uuid))
             dbs.delete(ovpn_service)
             dbs.commit()
             logger.error("Successfully delete ovpn service: {}".format(uuid))
             category = 'success'
-            return "New openvpn service has beed added successfully.", category
+            return "New openvpn service has been deleted successfully.", category
         except Exception as e:
             dbs.rollback()
             logger.error(e)
@@ -250,13 +255,15 @@ class OvpnUtils(object):
             return e
         
     @classmethod
-    def get_openvpn_service_by_id(cls, id=None) -> str:
+    def get_openvpn_service_by_id(cls, uuid=None) -> str:
         """
         Get OpenVPN service by id
         """
-        logger.info("Get the ovpn service by id: " + id)
+        logger.info("Get the ovpn service by id: " + str(uuid))
         try:
-            server = dbs.scalars(select(OvpnServers).where(OvpnServers.id == id)).first()
+            server = dbs.scalars(select(OvpnServers).where(OvpnServers.id == str(uuid))).first()
+            logger.debug("server uuid: " + str(uuid))
+            logger.debug("server: " + str(server))
             return server
         except Exception as e:
             dbs.rollback()
@@ -330,7 +337,7 @@ class OvpnUtils(object):
         startup_service = server.startup_service
         if not startup_service:
             return False
-        if not op in ['start', 'stop', 'restart']:
+        if op not in ['start', 'stop', 'restart']:
             return False   
         if str(server.startup_type) == "1":
             try:
@@ -368,10 +375,11 @@ class OvpnUtils(object):
         logger.info("Get the user by uuid: " + str(uid))
         try:
             user = dbs.scalars(select(User).where(User.id == uid)).first()
+            logger.debug('user: ' + str(user))
             return user
         except Exception as e:
             dbs.rollback()
-            logger.error(e)
+            logger.error(str(e))
             return None
 
     @classmethod
@@ -430,3 +438,98 @@ class OvpnUtils(object):
             dbs.rollback()
             logger.error(e)
             return "Failed to add new user: {}".format(e), 'danger'
+
+    @classmethod
+    def delete_user(cls, form_args=None) -> tuple:
+        """ Delete user
+
+        Args:
+            form_args (dict): Posted user uuid
+
+        Returns:
+            tuple: result and flask flash message
+        """
+        logger.info("Delete user now...")
+        category = None
+        if not form_args:
+            logger.error("Did not receive the user uuid, POST argrs error.")
+            category = 'danger'
+            return "Error: {}".format("No new config posted!"), category
+        # remove the action from dict
+        form_args.pop('action', None)
+        uuid = form_args.pop('user_uuid', None).strip()
+
+        try:
+            user_uuid = UUID(uuid, version=1)
+        except ValueError:
+            return "Please input valid UUID", "danger"
+
+        user = OvpnUtils.get_user_by_id(uuid)
+        if not user:
+            return "UUID not found in record", 'danger'
+
+        try:
+            logger.info("Try to delete user uuid: {}".format(uuid))
+            dbs.delete(user)
+            dbs.commit()
+            logger.error("Successfully delete user: {}".format(uuid))
+            category = 'success'
+            return "User has been deleted successfully.", category
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return "Failed to delete User: {}".format(e), 'danger'
+
+
+    @classmethod
+    def update_user(cls, updated_user=None) -> tuple:
+        """ Update OpenVPN service
+
+        Args:
+            updated_ovpn_server (dict): New openvpn server config from a dict
+
+        Returns:
+            tuple: result and flask flash message
+            {
+                'email': 'user0@example.com', 
+                'group': 'ADMIN', 
+                'line_size': '300', 
+                'name': 'user0', 
+                'page_size': '50', 
+                'password': '', 
+                'status': '1', 
+                'username': 'user0', 
+                'uuid': '6fe6a84c-6118-4b14-b0db-6b2e72ea12a1'
+            }   
+        """
+        logger.info("Update user now.")
+        category = None
+        if not updated_user:
+            logger.error("Did not receive the new openvpn service config, POST args error.")
+            category = 'danger'
+            return "Error: {}".format("No new config posted!"), category
+
+        # remove the action from dict
+        updated_user.pop('action', None)
+        
+        for key in OvpnUtils.OVPN_SERVER_INT_COL:
+            updated_user[key] = int(updated_user[key])
+            
+        try:
+            logger.info("Try to update the ovpn service config.")
+            target_id = updated_user.pop('uuid', None)
+            # stmt = (
+            #     update(OvpnServers).where(OvpnServers.id == target_id).values(**updated_ovpn_server)
+            # )
+            service_query = dbs.query(OvpnServers).filter_by(id=target_id)
+            # dbs.execute(stmt)
+            service_query.update(updated_user)
+            logger.info("###############################################$$$$$$$$$$$$$$$$$$$$")
+            dbs.commit()
+            logger.info("Successfully update the ovpn service config, id: " + str(target_id))
+            category = 'success'
+            return ("Openvpn service has beed updated successfully.", category)
+        except Exception as e:
+            dbs.rollback()
+            logger.error(e)
+            return ("Failed to add new openvpn server: {}".format(e), 'danger')
