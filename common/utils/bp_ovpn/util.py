@@ -18,7 +18,9 @@ class OvpnUtils(object):
     """
     
     OVPN_SERVER_INT_COL = ['startup_type', 'learn_address_script', 'managed', 'learn_address_script', 'management_port']
-    USER_INT_COL = ['line_size', 'page_size']
+    USER_ADD_INT_COL = ['line_size', 'page_size']
+    USER_UPDATE_INT_COL = ['line_size', 'page_size', 'status']
+    FAKE_PASSWORD = '_PASSWORD_'
 
     @classmethod
     def get_system_info(cls) -> dict:
@@ -375,7 +377,9 @@ class OvpnUtils(object):
         logger.info("Get the user by uuid: " + str(uid))
         try:
             user = dbs.scalars(select(User).where(User.id == uid)).first()
+            user.password = OvpnUtils.FAKE_PASSWORD
             logger.debug('user: ' + str(user))
+            logger.debug("password: " + user.password)
             return user
         except Exception as e:
             dbs.rollback()
@@ -390,7 +394,7 @@ class OvpnUtils(object):
         logger.info("Retrieve all users services from database now.")
         try:
             logger.info("Try to run query users")
-            users = dbs.query(User).filter_by(**filters)
+            users = dbs.query(User).filter_by(**filters).order_by(User.username)
             return users
         except Exception as e:
             dbs.rollback()
@@ -416,7 +420,7 @@ class OvpnUtils(object):
         # remove the action from dict
         new_user.pop('action', None)
 
-        for key in OvpnUtils.USER_INT_COL:
+        for key in OvpnUtils.USER_ADD_INT_COL:
             new_user[key] = int(new_user[key])
 
         # password encrypt
@@ -499,37 +503,46 @@ class OvpnUtils(object):
                 'password': '', 
                 'status': '1', 
                 'username': 'user0', 
-                'uuid': '6fe6a84c-6118-4b14-b0db-6b2e72ea12a1'
+                'uuid': '6fe6a84c-6118-4b14-b0db-6b2e72ea12a1' -
             }   
         """
         logger.info("Update user now.")
         category = None
         if not updated_user:
-            logger.error("Did not receive the new openvpn service config, POST args error.")
+            logger.error("Did not receive the new user config, POST args error.")
             category = 'danger'
             return "Error: {}".format("No new config posted!"), category
 
-        # remove the action from dict
+        # remove the action from dict if there is
         updated_user.pop('action', None)
         
-        for key in OvpnUtils.OVPN_SERVER_INT_COL:
+        for key in OvpnUtils.USER_UPDATE_INT_COL:
             updated_user[key] = int(updated_user[key])
             
         try:
-            logger.info("Try to update the ovpn service config.")
+            logger.info("Try to update the user config.")
             target_id = updated_user.pop('uuid', None)
+            
+            new_password = updated_user.pop('password', OvpnUtils.FAKE_PASSWORD)
+            if new_password != OvpnUtils.FAKE_PASSWORD:
+                updated_user['password'] = generate_password_hash(new_password)
+            # group to group_id
+            
+            group = updated_user.pop('group', "ADMIN")
+            updated_user["group_id"] = dbs.scalar(select(UserGroup).where(UserGroup.group == group)).id
+                        
             # stmt = (
             #     update(OvpnServers).where(OvpnServers.id == target_id).values(**updated_ovpn_server)
             # )
-            service_query = dbs.query(OvpnServers).filter_by(id=target_id)
+            user_query = dbs.query(User).filter_by(id=target_id)
             # dbs.execute(stmt)
-            service_query.update(updated_user)
+            user_query.update(updated_user)
             logger.info("###############################################$$$$$$$$$$$$$$$$$$$$")
             dbs.commit()
             logger.info("Successfully update the ovpn service config, id: " + str(target_id))
             category = 'success'
-            return ("Openvpn service has beed updated successfully.", category)
+            return ("User has beed updated successfully. new user: {}".format(updated_user), category)
         except Exception as e:
             dbs.rollback()
             logger.error(e)
-            return ("Failed to add new openvpn server: {}".format(e), 'danger')
+            return ("Failed to update  user: {}".format(e), 'danger')
