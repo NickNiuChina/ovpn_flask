@@ -22,6 +22,10 @@ class OvpnUtils(object):
     USER_UPDATE_INT_COL = ['line_size', 'page_size', 'status']
     FAKE_PASSWORD = '_PASSWORD_'
 
+    """
+        Common methods
+    """
+
     @classmethod
     def get_system_info(cls) -> dict:
         """Get system info
@@ -74,6 +78,11 @@ class OvpnUtils(object):
         )
         # print(system_info)
         return system_info
+    
+        """
+            OpenVPN services methods
+        """
+    
     
     @classmethod
     def get_openvpn_version(cls, executor=None) -> str:
@@ -234,7 +243,7 @@ class OvpnUtils(object):
         logger.info("Retrieve all openvpn services from database now.")
         try:
             logger.info("Try to run query ovpn services")
-            servers = dbs.query(OvpnServers).filter_by(**filters)
+            servers = dbs.query(OvpnServers).filter_by(**filters).order_by(OvpnServers.server_name)
             return servers
         except Exception as e:
             dbs.rollback()
