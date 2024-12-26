@@ -76,6 +76,9 @@ class User(Base):
     User table ORM
     """
     __tablename__ = "user"
+    __table_args__ = (
+        UniqueConstraint('username'),
+    )
 
     # https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html#module-sqlalchemy_utils.types.choice
     status_choice = [
