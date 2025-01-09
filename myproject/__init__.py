@@ -30,6 +30,16 @@ from sqlalchemy import select
 from myproject.context import DBSession as dbs
 
 
+class ReverseProxied(object):
+    def __init__(self, app, script_name):
+        self.app = app
+        self.script_name = script_name
+
+    def __call__(self, environ, start_response):
+        environ['SCRIPT_NAME'] = self.script_name
+        return self.app(environ, start_response)
+
+
 def create_app(test_config=None):
     """ create Flask APP
     Args:
@@ -96,12 +106,16 @@ def create_app(test_config=None):
     # except OSError:
     #     pass
 
+    # https://dlukes.github.io/flask-wsgi-url-prefix.html
     # for reverse proxy, prefix every url with /ovpn include /static/*
-    # app.wsgi_app = DispatcherMiddleware(
-    #     Response('Not Found', status=404),
-    #     {'/ovpn': app.wsgi_app}
-    # )
-   
+    app.wsgi_app = DispatcherMiddleware(
+        Response('Not Found', status=404),
+        {'/ovpn': app.wsgi_app}
+    )
+
+    # Flask application behind a reverse proxy
+    # app.wsgi_app = ReverseProxied(app.wsgi_app, script_name='/ovpn')
+
     """
     # logging settings to file
     log_level = logging.INFO
