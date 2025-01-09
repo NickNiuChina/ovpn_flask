@@ -1472,33 +1472,19 @@ def system_config():
 
     Returns:
           GET: template, system config template
-          POST: redirect to get page with the result
+          POST: update the system config and then redirect to get page with the result
     """
-    # POST
+    # POST request
     if request.method == "POST":
         args = request.form
-        print(args)
-        
         result = "success"
-        # UPDATE table_name SET column_name1= value1, column_name2= value2
-        sql = "UPDATE sysconfig SET"
-        
-        flag=0
-        
         message = ''
         
         if len(list(args.keys())) < 1:
-                message = "Error: no value submited!"
-                result = "danger"
-                flash(message, result)
-                return redirect(url_for("ovpn.system_config"))
-        
-        # for key in list(args.keys()):
-        #     if not args.get(key):
-        #         message = "Error: null value submited!"
-        #         result = "danger"
-        #         flash(message, result)
-        #         return redirect(url_for("ovpn.system_config"))
+            message = "Error: no value submitted!"
+            result = "danger"
+            flash(message, result)
+            return redirect(url_for("ovpn.system_config"))
 
         if result == "success":
             for key in list(args.keys()):
@@ -1559,10 +1545,33 @@ def show_app_config():
 @login_required
 def show_app_session():
     """
-    @return: Flask app session 
-    @sumary After proxy, the session type is werkzeug.local.LocalProxy, convert it to dict for jsonify
+    App session key/value list
+    After proxy, the session type is werkzeug.local.LocalProxy, convert it to dict for jsonify.
+
+    @return: Flask app session infos in json
     """
-    logger.info('####################################')
-    logger.info(type(session))
-    logger.info('####################################')
+    # logger.info('####################################')
+    # logger.info(type(session))
+    # logger.info('####################################')
     return jsonify(dict(session))
+
+
+@ovpn_bp.route("/show_url_map", methods=("POST", "GET"))
+@login_required
+def show_url_map():
+    """
+    App URL map
+
+    @return: Flask URL map infos in json
+    """
+    links = []
+    print(app.url_map)
+    for rule in app.url_map.iter_rules():
+        # print("------: " + str(type(rule)))
+        # url = url_for(rule.endpoint, **(rule.defaults or {}))
+        # links.append((url, rule.endpoint))
+        # if len(rule.defaults) >= len(rule.arguments):
+        #     url = url_for(rule.endpoint, **(rule.defaults or {}))
+        #     links.append((url, rule.endpoint))
+        links.append({rule.endpoint: rule.rule})
+    return jsonify(links)
