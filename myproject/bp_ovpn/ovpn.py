@@ -13,6 +13,7 @@ from flask import session
 from flask import current_app as app
 from flask import jsonify
 from flask import send_file
+from flask import jsonify
 
 import datetime
 import re
@@ -1559,6 +1560,9 @@ def show_app_config():
 def show_app_session():
     """
     @return: Flask app session 
+    @sumary After proxy, the session type is werkzeug.local.LocalProxy, convert it to dict for jsonify
     """
-    from flask import jsonify
-    return jsonify(session)
+    logger.info('####################################')
+    logger.info(type(session))
+    logger.info('####################################')
+    return jsonify(dict(session))
