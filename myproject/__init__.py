@@ -97,10 +97,10 @@ def create_app(test_config=None):
     #     pass
 
     # for reverse proxy, prefix every url with /ovpn include /static/*
-    app.wsgi_app = DispatcherMiddleware(
-        Response('Not Found', status=404),
-        {'/ovpn': app.wsgi_app}
-    )
+    # app.wsgi_app = DispatcherMiddleware(
+    #     Response('Not Found', status=404),
+    #     {'/ovpn': app.wsgi_app}
+    # )
    
     """
     # logging settings to file
