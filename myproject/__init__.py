@@ -73,8 +73,9 @@ def create_app(test_config=None):
     def get_locale():
         # if a user is logged in, use the locale from the user settings
         user = getattr(g, 'user', None)
+        print (user)
         if user is not None:
-            if user.get('locale'):
+            if getattr(user, 'locale', None):
                 return user.locale
         # get language from session
         # if the user has set up the language manually it will be stored in the session,

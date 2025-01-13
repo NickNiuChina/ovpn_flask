@@ -40,7 +40,7 @@ class ProductionConfig(Config):
     SQL_FILE = 'schema.sql'
     
     # version
-    VERSION = 'v0.0.1'
+    VERSION = 'v00.00.00001'
 
     # Log file locations
     # LOGFILE = 'D:\stmt_flask.log'

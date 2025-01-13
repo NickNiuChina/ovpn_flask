@@ -44,9 +44,7 @@ def load_logged_in_user():
         g.user = None
     else:
         user = dbs.scalar(select(User).where(User.id == user_id))
-        g.user = (
-            user,
-        )
+        g.user = user
 
 
 @auth_bp.route("/register", methods=("GET", "POST"))
