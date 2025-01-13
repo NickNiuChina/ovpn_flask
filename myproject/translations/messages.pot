@@ -1,0 +1,59 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-13 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.15.0\n"
+
+#: templates/footer.html:2
+msgid "Copyright"
+msgstr "版权"
+
+#: templates/footer.html:3
+msgid "All rights reserved."
+msgstr ""
+
+#: templates/auth/login.html:3
+msgid "Login"
+msgstr ""
+
+#: templates/auth/login.html:14
+msgid "Sign in to start your session"
+msgstr ""
+
+#: templates/auth/login.html:18
+msgid "Username"
+msgstr ""
+
+#: templates/auth/login.html:28
+msgid "Password"
+msgstr ""
+
+#: templates/auth/login.html:42
+msgid "Remember Me"
+msgstr ""
+
+#: templates/auth/login.html:56
+msgid "Sign In"
+msgstr ""
+
+#: templates/auth/login.html:63
+msgid "I forgot my password"
+msgstr ""
+
+#: templates/auth/login.html:66
+msgid "Register a new membership"
+msgstr ""
+
