@@ -122,7 +122,7 @@ def login():
                 # current_app.onlineUsers += 1 # session scope not correct
                 return redirect(url_for("ovpn.index"))
 
-        flash(error)
+        flash(error, "danger")
     # current_app.logger.debug("------sdfsfsfsf-sdfsdfsd")
     # current_app.logger.info("------sdfsfsfsf-sdfsdfsd")
     # current_app.logger.critical("------sdfsfsfsf-sdfsdfsd")

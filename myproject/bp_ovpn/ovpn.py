@@ -281,11 +281,70 @@ def server_config(server_id):
 ####################################################################################
 # ovpn service detail views
 ####################################################################################
-@ovpn_bp.route("/clients", methods=("POST", "GET"))
+@ovpn_bp.route("/<server_id>/clients", methods=("POST", "GET"))
 @login_required
-def clients():
-    pass
-
+def clients(server_id):
+    """
+    @summary: ovpn clients page, get -> list ovpn service, post -> add or delete ovpn service
+    @return: template: template ovpn/clients.html
+    """
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
+    
+    if request.method == "POST":
+        
+        form_args = request.form.to_dict()
+        
+        if request.form.get('action', None) == 'action_add_ovpn_server':
+            logger.info("Get the new openvpn server from POST, call to add new service.")
+            result = OvpnUtils.add_openvpn_service(form_args)
+            flash(result[0], result[1])
+            return redirect(url_for("ovpn.servers"))
+        
+        if request.form.get('action', None) == 'action_delete_ovpn_server':
+            result = OvpnUtils.delete_openvpn_service(form_args)
+            flash(result[0], result[1])
+            return redirect(url_for("ovpn.servers"))
+        
+        if request.form.get('action', None) in ('stop_ovpn_service', "start_ovpn_service"):
+            logger.debug("Post request to start/stop ovpnvpn service.")
+            server_id = request.form.get('s_uuid', None)
+            op = request.form.get("action", None)
+            if server_id:
+                server = OvpnUtils.get_openvpn_service_by_id(server_id)
+                if not server:
+                    message = "UUID has not been found in record!"
+                    return {"result": "danger", 'message': message}
+                
+                if op.startswith("start"):
+                    action = 'start'
+                elif op.startswith("stop"):
+                    action = 'stop'
+                
+                if action in ["start", "stop", "restart"]:
+                    res = OvpnUtils.change_openvpn_running_status(server=server, op=action)
+                    if res:
+                        message = 'OpenVPN service {} successfully.'.format(action)
+                        result = "success"
+                    else:
+                        message = 'OpenVPN service failed to {}!'.format(action)
+                        result = "danger"
+                else:
+                    message = "Operation not allowed."
+                    result = "danger"
+                return {"result": result, 'message': message}
+            else:
+                message = "Please provide a valid uuid!"
+                return {"result": "danger", 'message': message}
+        
+        return "BAD request!", 400
+    if request.method == "GET":
+        return render_template("ovpn/clients.html", ovpn_service=ovpn_service)
+    else:
+        return "Unsupported method", 400
+    
+    
 @ovpn_bp.route("/generate_cert", methods=("POST", "GET"))
 @login_required
 def generate_cert():

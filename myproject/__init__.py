@@ -211,8 +211,10 @@ def create_app(test_config=None):
         from .flask_command import init_db
         init_db()
         logger.info("Database init done.")
+        cs = dbs.scalar(select(SystemCommonConfig).where(SystemCommonConfig.item == 'CUSTOMER_SITE'))
+        app.config.update(CUSTOMER_SITE = cs.ivalue.strip(),)
+    
     # context processors
-
     @app.context_processor
     def context_processor_func():
         end_datetime = datetime.datetime.now()
