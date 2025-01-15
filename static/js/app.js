@@ -129,159 +129,147 @@ $(document).ready(function() {
     /* **********************************************
         OpenVPN serivces detaul page functions
     ********************************************** */
-    var tb_openvpn_clients = '';
+    // a workaround for extra data to post retrieve clinets data
     //https://datatables.net/forums/discussion/74315/passing-data-attributes-via-ajax-using-this
-    $("#tb_openvpn_clients").each(function() {
-        var tableTag = $(this);
-        // console.log(tb_openvpn_clients);
-        // console.log(tb_openvpn_clients.dataset.openvpn_service_uuid);
-        var service_uuid = tableTag[0].dataset.openvpn_service_uuid
-        tableTag.DataTable({
-
-            //"dom": 'Blfrtip',
-            "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
-            "responsive": true,
-            "lengthChange": true,
-            "autoWidth": false,
-            // "responsive": true, "lengthChange": true, "autoWidth": true,
-            //"buttons": ["excel", "colvis"],
-            "buttons": [{
-                    extend: 'excel',
-                    text: 'Excel',
-                    exportOptions: {
-                        modifier: {
-                            page: 'all',
-                            selected: null,
-                            search: 'none',
-                        },
-                        columns: [0, 1, 2, 3]
+    var tunTBclientStatus = $("#tb_openvpn_clients").DataTable({
+        //"dom": 'Blfrtip',
+        "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
+        "responsive": true,
+        "lengthChange": true,
+        "autoWidth": false,
+        // "responsive": true, "lengthChange": true, "autoWidth": true,
+        //"buttons": ["excel", "colvis"],
+        "buttons": [{
+                extend: 'excel',
+                text: 'Excel',
+                exportOptions: {
+                    modifier: {
+                        page: 'all',
+                        selected: null,
+                        search: 'none',
                     },
+                    columns: [0, 1, 2, 3]
                 },
-                // { extend: 'excel', text: '<i class="fas fa-file-excel" aria-hidden="true"> Excel </i>' },
-                "colvis",
-                "pageLength"
-            ],
-
-            "lengthMenu": [100, 50, 20, "1000"],
-            "processing": true,
-            "serverSide": true,
-            "destroy": true,
-            "paging": true,
-            //"search": {return: true },
-            "ordering": true,
-            "order": [5, "desc"],
-            "ajax": {
-                'url': service_uuid + "clients",
-                'type': 'POST',
-                'data': {},
-                'dataType': 'json',
             },
-            "columnDefs": [{
-                    "targets": 0,
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var temp = data["storename"] ? data["storename"] : "Unnamed";
-                        var html = "<a href='javascript:void(0);'  class='clientstatus' data-toggle='modal' data-target='#tunclientStatusModal'>" + temp + "</a>"
-                        return html;
-                    }
-                },
-                {
-                    "targets": 1,
-                    "data": null,
-                    "render": function(data, type, row) {
-                        return data["cn"];
-                    }
-                },
-                {
-                    "targets": 2,
-                    "data": null,
-                    "render": function(data, type, row) {
-                        return data["ip"];
-                    }
-                },
-                {
-                    "targets": 3,
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var rdate = new Date(data["changedate"])
-                            // console.log(formatDate(rdate));
-                        return formatTime(rdate);
-                    }
-                },
-                {
-                    "targets": 4,
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var rdate = new Date(data["expiredate"])
-                            // console.log(formatDate(rdate));
-                        return formatDate(rdate);
-                    }
-                },
-                {
-                    "targets": 5,
-                    "data": null,
-                    "render": function(data, type, row) {
-                        // console.log(data[5]);
-                        var html = data["status"] ? "<i class='fa fa-circle text-green'></i>" : "<i class='fa fa-circle text-red'></i>";
-                        return html;
-                    }
-                },
-                {
-                    "targets": 6,
-                    "orderable": false,
-                    "data": null,
-                    "render": function(data, type, row) {
-                        // console.log(data[5]);
-                        if (data["status"]) {
-                            var reg = RegExp(/boss/);
-                            if (data["cn"].length == 41 || reg.test(data["cn"])) {
-                                var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='far fa-arrow-alt-circle-right'></i> Mgmt</a>"
-                                html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-terminal'></i> SSH</a>"
-                                return html;
-                            } else {
-                                var html = 'NotApplied';
-                                return html;
-                            }
-                        } else {
-                            var html = 'Unreachable';
-                            return html;
-                        }
-                    }
-                },
-                {
-                    "targets": 7,
-                    "orderable": false,
-                    "data": null,
-                    "render": function(data, type, row) {
-                        if (data["status"]) {
-                            var reg = RegExp(/boss/);
-                            if (data["cn"].length == 41 || reg.test(data["cn"])) {
-                                var html = "<a href='javascript:void(0);' class='checkProxyConfig btn btn-default btn-xs'><i class='fa fa-file'></i> proxy</a>"
-                                return html;
-                            } else {
-                                var html = 'NotApplied';
-                                return html;
-                            }
-                        } else {
-                            var html = 'Unreachable';
-                            return html;
-                        }
-                    }
-                },
-            ],
+            // { extend: 'excel', text: '<i class="fas fa-file-excel" aria-hidden="true"> Excel </i>' },
+            "colvis",
+            "pageLength"
+        ],
 
-            // error: function(xhr, status, error) {
-            //     // handle error
-            //     console.error("An error occurred: " + status + "\nError: " + error);
-            // },
-            // hide the ProxyConfig check if it is not "super" or "admin"
-            "initComplete": function(settings, json) {
-                if (settings.jqXHR.responseJSON.privs != 'super' && settings.jqXHR.responseJSON.privs != 'admin') {
-                    // alert(settings.jqXHR.responseJSON.privs  );
-                    tunTBclientStatus.columns([7]).visible(false);
+        "lengthMenu": [100, 50, 20, "1000"],
+        "processing": true,
+        "serverSide": true,
+        "destroy": true,
+        "paging": true,
+        //"search": {return: true },
+        "ordering": true,
+        "order": [5, "desc"],
+        "ajax": {
+            'url': "clients",
+            'type': 'POST',
+            'data': {},
+            'dataType': 'json',
+        },
+        "columnDefs": [{
+                "targets": 0,
+                "data": null,
+                "render": function(data, type, row) {
+                    var temp = data["storename"] ? data["storename"] : "Unnamed";
+                    var html = "<a href='javascript:void(0);'  class='clientstatus' data-toggle='modal' data-target='#tunclientStatusModal'>" + temp + "</a>"
+                    return html;
                 }
+            },
+            {
+                "targets": 1,
+                "data": null,
+                "render": function(data, type, row) {
+                    return data["cn"];
+                }
+            },
+            {
+                "targets": 2,
+                "data": null,
+                "render": function(data, type, row) {
+                    return data["ip"];
+                }
+            },
+            {
+                "targets": 3,
+                "data": null,
+                "render": function(data, type, row) {
+                    var rdate = new Date(data["changedate"])
+                        // console.log(formatDate(rdate));
+                    return formatTime(rdate);
+                }
+            },
+            {
+                "targets": 4,
+                "data": null,
+                "render": function(data, type, row) {
+                    var rdate = new Date(data["expiredate"])
+                        // console.log(formatDate(rdate));
+                    return formatDate(rdate);
+                }
+            },
+            {
+                "targets": 5,
+                "data": null,
+                "render": function(data, type, row) {
+                    // console.log(data[5]);
+                    var html = data["status"] ? "<i class='fa fa-circle text-green'></i>" : "<i class='fa fa-circle text-red'></i>";
+                    return html;
+                }
+            },
+            {
+                "targets": 6,
+                "orderable": false,
+                "data": null,
+                "render": function(data, type, row) {
+                    // console.log(data[5]);
+                    if (data["status"]) {
+                        var reg = RegExp(/boss/);
+                        if (data["cn"].length == 41 || reg.test(data["cn"])) {
+                            var html = "<a href='javascript:void(0);' class='conn4ect443 btn btn-default btn-xs'><i class='far fa-arrow-alt-circle-right'></i> Mgmt</a>"
+                            html += "<a href='javascript:void(0);' class='sshConnect btn btn-default btn-xs'><i class='fa fa-terminal'></i> SSH</a>"
+                            return html;
+                        } else {
+                            var html = 'NotApplied';
+                            return html;
+                        }
+                    } else {
+                        var html = 'Unreachable';
+                        return html;
+                    }
+                }
+            },
+            {
+                "targets": 7,
+                "orderable": false,
+                "data": null,
+                "render": function(data, type, row) {
+                    if (data["status"]) {
+                        var reg = RegExp(/boss/);
+                        if (data["cn"].length == 41 || reg.test(data["cn"])) {
+                            var html = "<a href='javascript:void(0);' class='checkProxyConfig btn btn-default btn-xs'><i class='fa fa-file'></i> proxy</a>"
+                            return html;
+                        } else {
+                            var html = 'NotApplied';
+                            return html;
+                        }
+                    } else {
+                        var html = 'Unreachable';
+                        return html;
+                    }
+                }
+            },
+        ],
+        // hide the ProxyConfig check if it is not "super" or "admin"
+        "initComplete": function(settings, json) {
+            if (settings.jqXHR.responseJSON.privs != 'super' && settings.jqXHR.responseJSON.privs != 'admin') {
+                // alert(settings.jqXHR.responseJSON.privs  );
+                tunTBclientStatus.columns([7]).visible(false);
             }
-        });
+        }
     });
 
     $('#tunclientStatusModal').on('shown.bs.modal',
