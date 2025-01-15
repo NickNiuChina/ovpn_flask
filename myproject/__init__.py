@@ -201,9 +201,14 @@ def create_app(test_config=None):
         TAP_FILES_DIR = TAP_FILES_DIR,
         BASE_DIR = BASE_DIR
     )
-
+    logger.debug("*********************************************************************")
+    logger.debug("*********************************************************************")
+    logger.debug("*********        APP STARTED     *********")
+    logger.debug("*********************************************************************")
+    logger.debug("*********************************************************************")
     # update config CUSTOMER_SITE from db
     if engine.dialect.has_table(engine.connect(), SystemCommonConfig.__tablename__):
+        logger.debug("Looks likes database has been initialized before...")
         cs = dbs.scalar(select(SystemCommonConfig).where(SystemCommonConfig.item == 'CUSTOMER_SITE'))
         app.config.update(CUSTOMER_SITE = cs.ivalue.strip(),)
     else:

@@ -6,7 +6,7 @@ import time
 
 from werkzeug.security import generate_password_hash
 from myproject.context import logger
-from orm.ovpn import OvpnServers, User, UserGroup
+from orm.ovpn import OvpnServers, User, UserGroup, OvpnClients
 from myproject.context import DBSession as dbs
 from sqlalchemy import select, update, delete, or_
 from uuid import UUID
@@ -79,10 +79,10 @@ class OvpnUtils(object):
         # print(system_info)
         return system_info
     
-        """
-            OpenVPN services methods
-        """
     
+    """
+        OpenVPN services methods
+    """
     
     @classmethod
     def get_openvpn_version(cls, executor=None) -> str:
@@ -373,6 +373,74 @@ class OvpnUtils(object):
                     return False
             except:
                 return False
+
+
+    """
+        OpenVPN service detail methods
+    """
+
+    @classmethod
+    def get_openvpn_clients_list(cls, args=None) -> dict:
+        """
+        @args:
+
+            {
+                'draw': '1', 
+                'columns[0][data]': '', 
+                'columns[0][name]': '', 
+                'columns[0][searchable]': 'true', 
+                'columns[0][orderable]': 'true', 
+                'columns[0][search][value]': '', 
+                'columns[0][search][regex]': 'false', 
+                .........
+                'order[0][column]': '5', 
+                'order[0][dir]': 'desc', 
+                'start': '0', 
+                'length': '100', 
+                'search[value]': '', 
+                'search[regex]': 'false', 
+                'action': 'action_list_ovpn_clients', 
+                'ovpn_server_uuid': 'd8949edf-0a70-4a8a-9e63-5afc2e4f2a66'
+            }
+        
+        @summary: 
+            Get OpenVPN clients by post parameters and then sort|search|order
+
+        @return:
+            data = {
+                'recordsFiltered': recordsFiltered,
+                'recordsTotal': recordsTotal,
+                'draw': draw,
+                'data': [ d for d in results.values() ],
+                "privs_group": group,
+                'pageLength': user.page_size
+            }
+        """
+        logger.debug("Get post args: {}".format(str(args)))
+        if not args:
+            return {}
+        draw = args.get('draw')
+        start = args.get('start')
+        length = args.get('length')
+        searchValue = args.get('search[value]')
+        order_col = args.get("order[0][column]")
+        order_direction = args.get("order[0][dir]")
+        ovpn_service = args.get('ovpn_service')
+        group = args.get('group')
+        
+        all_clients = dbs.query(OvpnClients).filter_by(server=ovpn_service.id)
+        
+        data = {
+            'recordsFiltered': all_clients.count(),
+            'recordsTotal': all_clients.count(),
+            'draw': draw,
+            'data': [], #[ d for d in results.values() ],
+            "privs_group": group,
+            # 'pageLength': user.page_size
+        }
+        logger.debug('Ovpn clients list post request result: {}'.format(str(data)))
+        return data
+
 
     """
         Users method

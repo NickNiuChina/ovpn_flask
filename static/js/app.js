@@ -131,7 +131,7 @@ $(document).ready(function() {
     ********************************************** */
     // a workaround for extra data to post retrieve clinets data
     //https://datatables.net/forums/discussion/74315/passing-data-attributes-via-ajax-using-this
-    var tunTBclientStatus = $("#tb_openvpn_clients").DataTable({
+    var tb_openvpn_clients = $("#tb_openvpn_clients").DataTable({
         //"dom": 'Blfrtip',
         "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
         "responsive": true,
@@ -167,7 +167,12 @@ $(document).ready(function() {
         "ajax": {
             'url': "clients",
             'type': 'POST',
-            'data': {},
+            'data': function(d) {
+                d.action = "action_list_ovpn_clients";
+                var current_uuid = $("#tb_openvpn_clients:first").data("openvpn_service_uuid");
+                console.log('Current ovpn service UUID: ' + current_uuid);
+                d.ovpn_server_uuid = current_uuid;
+            },
             'dataType': 'json',
         },
         "columnDefs": [{
@@ -265,9 +270,9 @@ $(document).ready(function() {
         ],
         // hide the ProxyConfig check if it is not "super" or "admin"
         "initComplete": function(settings, json) {
-            if (settings.jqXHR.responseJSON.privs != 'super' && settings.jqXHR.responseJSON.privs != 'admin') {
+            if (settings.jqXHR.responseJSON.privs_group != 'SUPER' && settings.jqXHR.responseJSON.privs_group != 'ADMIN') {
                 // alert(settings.jqXHR.responseJSON.privs  );
-                tunTBclientStatus.columns([7]).visible(false);
+                tb_openvpn_clients.columns([7]).visible(false);
             }
         }
     });
@@ -285,7 +290,7 @@ $(document).ready(function() {
                 if (newstorename) {
                     $.post("tunClientsStatus/update/storename", { 'cn': cn, 'newstorename': newstorename }, function(result) {
                         console.log("服务器返回结果：" + result.result);
-                        $('#tuntbclientstatus').DataTable().ajax.reload(); // reload table data
+                        $('#tb_openvpn_clients').DataTable().ajax.reload(); // reload table data
                         $('#tunclientStatusModal').modal('hide'); // hide modal
                     });
                 } else {
@@ -301,7 +306,7 @@ $(document).ready(function() {
     });
 
     // Port 443 connection
-    $('#tuntbclientstatus tbody').on('click', '.conn4ect443', function(e) {
+    $('#tb_openvpn_clients tbody').on('click', '.conn4ect443', function(e) {
         var clientIp = $(this).parent().parent().children().eq(2).text();
         var cn = $(this).parent().parent().children().eq(1).text();
         // console.log(clientIp, cn);
@@ -322,7 +327,7 @@ $(document).ready(function() {
     // SSH connection
     // https://service.carel-remote.com/wssh/?hostname=xx&username=yy&password=str_base64_encoded&title=boss-a98bd3ba-cfc3-11ed-94a8-c400ad64f34a
     // https://service.carel-remote.com/wssh/?hostname=192.168.120.62&username=root&title=boss-a98bd3ba-cfc3-11ed-94a8-c400ad64f34a
-    $('#tuntbclientstatus tbody').on('click', '.sshConnect', function(e) {
+    $('#tb_openvpn_clients tbody').on('click', '.sshConnect', function(e) {
         var clientIp = $(this).parent().parent().children().eq(2).text();
         var cn = $(this).parent().parent().children().eq(1).text();
         var storename = $(this).parent().parent().children().eq(0).text();
@@ -335,7 +340,7 @@ $(document).ready(function() {
     });
 
     // checkProxyConfig button func
-    $('#tuntbclientstatus tbody').on('click', '.checkProxyConfig', function(e) {
+    $('#tb_openvpn_clients tbody').on('click', '.checkProxyConfig', function(e) {
         var reqFileName = $(this).parent().parent().children().eq(1).text();
         var clientIp = $(this).parent().parent().children().eq(2).text();
         //alert(reqFileName);

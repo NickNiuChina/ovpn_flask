@@ -22,6 +22,8 @@ Base = declarative_base()
 
 # https://stackoverflow.com/questions/6262943/sqlalchemy-how-to-make-django-choices-using-sqlalchemy
 # https://docs.sqlalchemy.org/en/20/core/custom_types.html
+# relationship
+# https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html
 
 
 class ChoiceType(types.TypeDecorator):
@@ -139,11 +141,11 @@ class OvpnServers(Base):
         DateTime(timezone=True), server_default=func.now()
     )
 
-class OvpnClientList(Base):
+class OvpnClients(Base):
     """
     OpenVPN client model
     """
-    __tablename__ = "ovpn_clients_list"
+    __tablename__ = "ovpn_clients"
     __table_args__ = (
         UniqueConstraint('cn'),
     )
@@ -178,7 +180,7 @@ class ClientListConfig(Base):
     """
     OpenVPN client proxy config model
     """
-    __tablename__ = "ovpn_clients_config"
+    __tablename__ = "ovpn_client_config"
 
     OS_TYPE_CHOICE = [(0, "Linux"), (1, "Windows"), (2, "MacOS"), (3, "Others")]
     PROXY_CHOICE = [(0, "disabled"), (1, "enabled")]
