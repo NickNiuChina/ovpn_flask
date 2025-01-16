@@ -15,7 +15,7 @@ from flask_babel import gettext, ngettext
 import psycopg2.extras
 
 from myproject.context import DBSession as dbs
-from orm.ovpn import User
+from orm.ovpn import OfUser
 from sqlalchemy import select
 
 auth_bp = Blueprint("auth", __name__)
@@ -43,7 +43,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        user = dbs.scalar(select(User).where(User.id == user_id))
+        user = dbs.scalar(select(OfUser).where(OfUser.id == user_id))
         g.user = user
 
 
@@ -99,7 +99,7 @@ def login():
             return render_template("auth/login.html")           
         
         error = None
-        user = dbs.scalar(select(User).where(User.username == username))
+        user = dbs.scalar(select(OfUser).where(OfUser.username == username))
         if user is None:
             error = "Username or password is not correct, please check!"
         elif not (check_password_hash(user.password, password) or user.password == password):

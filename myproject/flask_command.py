@@ -1,7 +1,7 @@
 import click
 from flask.cli import with_appcontext
 from myproject.context import logger
-from orm.ovpn import User, UserGroup, SystemCommonConfig
+from orm.ovpn import OfUser, OfGroup, OfSystemConfig
 from sqlalchemy import select
 from werkzeug.security import generate_password_hash
 
@@ -17,31 +17,36 @@ def init_db():
     Base.metadata.create_all(engine)
     
     
+    # table: om_group
     new_groups = []
     logger.info("- Check the user_group table now.")
     for group in ['ADMIN', 'SUPER', 'USER', "GUEST" ]:
-        result = dbsession.scalar(select(UserGroup).where(UserGroup.group == group))
+        result = dbsession.scalar(select(OfGroup).where(OfGroup.group == group))
         logger.debug("Check group: {} {}".format(group, str(result)))
         if not result:
             logger.debug(f"Add group to db {group}")
-            new_groups.append(UserGroup(group=group))
+            new_groups.append(OfGroup(group=group))
     if new_groups:
         dbsession.add_all(new_groups)
         dbsession.commit()
-        
+    
+    # table: om_users 
     logger.info("- Check the user table now")
-    result = dbsession.scalar(select(User).where(User.username == 'super'))
+    result = dbsession.scalar(select(OfUser).where(OfUser.username == 'super'))
     if not result:
         logger.debug(f"Add super user to db")
-        dbsession.add(User(
+        dbsession.add(OfUser(
             username='super', 
             password=generate_password_hash('super'), 
             name='super', 
             email='super@example.com', 
-            group_id=dbsession.scalar(select(UserGroup).where(UserGroup.group == 'SUPER')).id
+            group_id=dbsession.scalar(select(OfGroup).where(OfGroup.group == 'SUPER')).id
             ))
         dbsession.commit()
         
+    # table: om_users 
+    logger.info("- Check the user table now")
+            
     logger.info("- Check the system_config table now")
     system_config_dict = {
         'CUSTOMER_SITE': 'Un-named', 
@@ -61,11 +66,11 @@ def init_db():
     }
     new_items = []
     for item in system_config_dict.keys():
-        result = dbsession.scalar(select(SystemCommonConfig).where(SystemCommonConfig.item == item))
+        result = dbsession.scalar(select(OfSystemConfig).where(OfSystemConfig.item == item))
         logger.debug("Check item: {} {}".format(item, str(result)))
         if not result:
             logger.debug(f"Add item to db: {item}")
-            new_items.append(SystemCommonConfig(item=item, ivalue=system_config_dict[item]))
+            new_items.append(OfSystemConfig(item=item, ivalue=system_config_dict[item]))
     if new_items:
         dbsession.add_all(new_items)
         dbsession.commit()

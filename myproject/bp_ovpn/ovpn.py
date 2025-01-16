@@ -37,7 +37,7 @@ from common.utils.bp_ovpn import OvpnUtils
 from myproject.context import DBSession as dbs
 from sqlalchemy import select
 from sqlalchemy import update
-from orm.ovpn import SystemCommonConfig
+from orm.ovpn import OfSystemConfig
 
 from flask_paginate import Pagination, get_page_args, get_page_parameter
 
@@ -1516,7 +1516,7 @@ def system_config():
             for key in list(args.keys()):
                 try:
                     dbs.execute(
-                        update(SystemCommonConfig).where(SystemCommonConfig.item == key).values(ivalue=args.get(key))
+                        update(OfSystemConfig).where(OfSystemConfig.item == key).values(ivalue=args.get(key))
                         )
                     app.config.update({key: args.get(key)})
                     dbs.commit()
@@ -1532,7 +1532,7 @@ def system_config():
         return redirect(url_for("ovpn.system_config"))
     
     # GET request
-    scs = dbs.scalars(select(SystemCommonConfig))
+    scs = dbs.scalars(select(OfSystemConfig))
     return render_template("ovpn/system_config.html", scs=scs)
 
 

@@ -6,7 +6,7 @@ import time
 
 from werkzeug.security import generate_password_hash
 from myproject.context import logger
-from orm.ovpn import OvpnServers, User, UserGroup, OvpnClients
+from orm.ovpn import OvpnServers, OfUser, OfGroup, OvpnClients
 from myproject.context import DBSession as dbs
 from sqlalchemy import select, update, delete, or_
 from uuid import UUID
@@ -453,7 +453,7 @@ class OvpnUtils(object):
         """
         logger.info("Get the user by uuid: " + str(uid))
         try:
-            user = dbs.scalars(select(User).where(User.id == uid)).first()
+            user = dbs.scalars(select(OfUser).where(OfUser.id == uid)).first()
             user.password = OvpnUtils.FAKE_PASSWORD
             logger.debug('user: ' + str(user))
             logger.debug("password: " + user.password)
@@ -471,7 +471,7 @@ class OvpnUtils(object):
         logger.info("Retrieve all users services from database now.")
         try:
             logger.info("Try to run query users")
-            users = dbs.query(User).filter_by(**filters).order_by(User.username)
+            users = dbs.query(OfUser).filter_by(**filters).order_by(OfUser.username)
             return users
         except Exception as e:
             dbs.rollback()
@@ -505,12 +505,12 @@ class OvpnUtils(object):
 
         # group to group_id
         group = new_user.pop('group', "ADMIN")
-        new_user["group_id"] = dbs.scalar(select(UserGroup).where(UserGroup.group == group)).id
+        new_user["group_id"] = dbs.scalar(select(OfGroup).where(OfGroup.name == group)).id
 
         try:
             logger.info("Try to write new ovpn service to db.")
 
-            dbs.add(User(**new_user))
+            dbs.add(OfUser(**new_user))
             dbs.commit()
             logger.error("Failed to save the user to database.")
             category = 'success'
@@ -606,12 +606,12 @@ class OvpnUtils(object):
             # group to group_id
             
             group = updated_user.pop('group', "ADMIN")
-            updated_user["group_id"] = dbs.scalar(select(UserGroup).where(UserGroup.group == group)).id
+            updated_user["group_id"] = dbs.scalar(select(OfGroup).where(OfGroup.name == group)).id
                         
             # stmt = (
             #     update(OvpnServers).where(OvpnServers.id == target_id).values(**updated_ovpn_server)
             # )
-            user_query = dbs.query(User).filter_by(id=target_id)
+            user_query = dbs.query(OfUser).filter_by(id=target_id)
             # dbs.execute(stmt)
             user_query.update(updated_user)
             logger.info("###############################################$$$$$$$$$$$$$$$$$$$$")

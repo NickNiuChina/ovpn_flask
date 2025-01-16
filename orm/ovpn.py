@@ -52,32 +52,32 @@ class ChoiceType(types.TypeDecorator):
         return value
 
 
-class UserGroup(Base):
+class OfGroup(Base):
     """ 
     Group table ORM
     """
-    __tablename__ = "user_group"
+    __tablename__ = "om_group"
     __table_args__ = (
-        UniqueConstraint('group'),
+        UniqueConstraint('name'),
     )
     
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    group: Mapped[str] = mapped_column(String(50))
-    users: Mapped[list["User"]] = relationship(
-        "User",
+    name: Mapped[str] = mapped_column(String(50))
+    users: Mapped[list["OfUser"]] = relationship(
+        "OfUser",
         back_populates="group",
         cascade="all, delete",
     )
 
     def __repr__(self) -> str:
-        return f"Group(id={self.id!r}, group={self.group!r})"
+        return f"Group(id={self.id!r}, group={self.name!r})"
 
 
-class User(Base):
+class OfUser(Base):
     """ 
     User table ORM
     """
-    __tablename__ = "user"
+    __tablename__ = "om_users"
     __table_args__ = (
         UniqueConstraint('username'),
     )
@@ -94,10 +94,10 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(40))
     email: Mapped[str] = mapped_column(String(100))
     group_id: Mapped[UUID] = mapped_column(
-        ForeignKey("user_group.id")
+        ForeignKey("om_group.id")
     )
-    group: Mapped[UserGroup] = relationship(
-        "UserGroup",
+    group: Mapped[OfGroup] = relationship(
+        "OfGroup",
         back_populates="users",
     )
     line_size: Mapped[int] = mapped_column(ChoiceType({300: 300, 1000: 1000, 3000: 3000, -1: 'All'}), default=300)
@@ -232,11 +232,11 @@ class OvpnCommonConfig(Base):
         return '{0.name}({0.username})'.format(self)
     
 
-class SystemCommonConfig(Base):
+class OfSystemConfig(Base):
     """
     System wide common config model
     """
-    __tablename__ = "system_config"
+    __tablename__ = "om_system_config"
     
     # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)   
     item: Mapped[str] = mapped_column(String(50), primary_key=True)
