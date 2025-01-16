@@ -206,6 +206,8 @@ def create_app(test_config=None):
     logger.debug("*********        APP STARTED     *********")
     logger.debug("*********************************************************************")
     logger.debug("*********************************************************************")
+    
+    
     # update config CUSTOMER_SITE from db
     if engine.dialect.has_table(engine.connect(), OfSystemConfig.__tablename__):
         logger.debug("Looks likes database has been initialized before...")
@@ -235,9 +237,9 @@ def create_app(test_config=None):
     # onlineUsers, not in prod now
     app.onlineUsers = 0
     
-    # register the database command: init-db
-    from myproject import db
-    db.init_app(app)
+    # # register the database command: init-db
+    # from myproject import db
+    # db.init_app(app)
 
     # register the flask command: initialize-db
     from myproject import flask_command

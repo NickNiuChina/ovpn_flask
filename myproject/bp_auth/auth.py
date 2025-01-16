@@ -13,8 +13,10 @@ from werkzeug.security import generate_password_hash
 from flask_babel import _
 from flask_babel import gettext, ngettext
 import psycopg2.extras
+from datetime import timedelta
 
 from myproject.context import DBSession as dbs
+from myproject.context import logger
 from orm.ovpn import OfUser
 from sqlalchemy import select
 
@@ -93,7 +95,7 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        
+        remember = request.form.get("remember", None)
         # if username or password is null or all spaces
         if len(str.strip(username)) == 0 or len(str.strip(password)) == 0:
             return render_template("auth/login.html")           
@@ -105,6 +107,11 @@ def login():
         elif not (check_password_hash(user.password, password) or user.password == password):
             error = "Username or password is not correct, please check!"
 
+        # logger.debug("Login remeber setting: {}".format(remember))
+        # if remember == "on":
+        #     session.permanent = True
+        #     current_app.permanent_session_lifetime = timedelta(minutes=60*24*7)
+        
         if error is None:
             if int(user.status) == 0:
                 # user has been disabled
@@ -115,7 +122,7 @@ def login():
                 session["user_id"] = user.id
                 session["name"] = user.name
                 session["username"] = user.username
-                session["group"] = user.group.group
+                session["group"] = user.group.name
                 session["page_size"] = user.page_size
                 # print(dir(user))
                 # online user number +1

@@ -21,11 +21,11 @@ def init_db():
     new_groups = []
     logger.info("- Check the user_group table now.")
     for group in ['ADMIN', 'SUPER', 'USER', "GUEST" ]:
-        result = dbsession.scalar(select(OfGroup).where(OfGroup.group == group))
+        result = dbsession.scalar(select(OfGroup).where(OfGroup.name == group))
         logger.debug("Check group: {} {}".format(group, str(result)))
         if not result:
             logger.debug(f"Add group to db {group}")
-            new_groups.append(OfGroup(group=group))
+            new_groups.append(OfGroup(name=group))
     if new_groups:
         dbsession.add_all(new_groups)
         dbsession.commit()
@@ -40,7 +40,7 @@ def init_db():
             password=generate_password_hash('super'), 
             name='super', 
             email='super@example.com', 
-            group_id=dbsession.scalar(select(OfGroup).where(OfGroup.group == 'SUPER')).id
+            group_id=dbsession.scalar(select(OfGroup).where(OfGroup.name == 'SUPER')).id
             ))
         dbsession.commit()
         
@@ -77,18 +77,74 @@ def init_db():
         
     logger.info("Sqlalchemy tables initialize done")
     
-@click.command("initialize-db")
-@with_appcontext
-def init_db_command():
+@click.command("prepare-data")
+# @with_appcontext
+@click.argument('action')
+# @click.option('--toduhornot', is_flag=True, help='prints "duh..."')
+def prepare_data_command(action):
     """
-    Create tables for sqlalchemy if not existed,
-    And, create default user or group if not existed.
+    Add or delete data to database for test purpose.
+    
+        add:\n
+            add test data\n
+        delete:\n
+            delete test data
     """
-    init_db()
+    prepare_data(action)
 
 
 def init_app(app):
     """Register database functions with the Flask app. This is called by
     the application factory.
     """
-    app.cli.add_command(init_db_command)
+    app.cli.add_command(prepare_data_command)
+    
+from myproject.context import engine, DBSession as dbsession
+from orm.ovpn import Base   
+ 
+def prepare_data(action="add"):
+    if action not in ("add", "delete"):
+        logger.warning("Run command |prepare-data| without correct action: add or delete")
+        return
+    
+    if action == "add":
+        """Add test data."""
+        
+        # table: om_group
+        logger.debug("- Check the om_group table group: TEST")
+        group = "TEST"
+        result = dbsession.scalar(select(OfGroup).where(OfGroup.name == group))
+        logger.debug("Check group: {} {}".format(group, str(result)))
+        if not result:
+            logger.info(f"Add group to db {group}")
+            dbsession.add(OfGroup(name=group))
+            dbsession.commit()
+        else:
+            logger.debug("- Om_group table group: TEST has been added before!")        
+            
+        # table: om_users 
+        logger.info("- Check the user table now")
+        logger.info("- Check the test 1-1000 users list")
+        for i in range(1, 1001):
+            username = "test{}".format(str(i))
+            result = dbsession.scalar(select(OfUser).where(OfUser.username == username))
+            if not result:
+                logger.debug("Add test user: {} to db".format(username))
+                dbsession.add(OfUser(
+                    username=username, 
+                    password=generate_password_hash(username), 
+                    name=username, 
+                    email='{}@example.com'.format(username), 
+                    group_id=dbsession.scalar(select(OfGroup).where(OfGroup.name == 'TEST')).id
+                    ))
+                dbsession.commit()
+        
+        # table: ovpn_servers
+        logger.debug("- Check the ovpn_servers table, ovpn service: test1 ")
+        
+        # table: ovpn_clients 
+        logger.debug("- Check the ovpn_clients table, ovpn clients: test1-1000")
+            
+        logger.info("Test data added done!")
+    else:
+        pass
