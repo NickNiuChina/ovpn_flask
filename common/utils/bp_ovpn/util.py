@@ -428,7 +428,21 @@ class OvpnUtils(object):
         ovpn_service = args.get('ovpn_service')
         group = args.get('group')
         
-        all_clients = dbs.query(OvpnClients).filter_by(server=ovpn_service.id)
+        all_clients = dbs.query(OvpnClients).filter_by(server_id=ovpn_service.id)
+        
+        sort = asc(sort_column) 
+        if sort_dir == "desc" else desc(sort_column)
+        
+        if searchValue and searchValue.strip():
+            searchVar = searchValue.strip()
+            target_clients = dbs.query(OvpnClients).filter(
+                or_(OvpnClients.id.ilike(searchVar),
+                    OvpnClients.server_id.ilike(searchVar),
+                    OvpnClients.site_name.ilike(searchVar),
+                    OvpnClients.cn.ilike(searchVar),
+                    OvpnClients.ip.ilike(searchVar)
+                    )
+            ).order_by()
         
         data = {
             'recordsFiltered': all_clients.count(),

@@ -126,14 +126,14 @@ class OvpnServers(Base):
     status_file: Mapped[str] = mapped_column(String(200))
     log_file_dir: Mapped[str] = mapped_column(String(200))
     log_file: Mapped[str] = mapped_column(String(200))
-    startup_type: Mapped[int] = mapped_column(ChoiceType({0: "sysv", 1: "systemd"}))
+    startup_type: Mapped[int] = mapped_column(ChoiceType({0: "sysv", 1: "systemd"}), default=1)
     startup_service: Mapped[str] = mapped_column(String(200))
     certs_dir: Mapped[str] = mapped_column(String(200))
-    learn_address_script: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}))
-    managed: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}))
+    learn_address_script: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}), default=1)
+    managed: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}), default=1)
     management_port: Mapped[int] = mapped_column(Integer)
     management_password: Mapped[str] = mapped_column(String(100))
-    comment: Mapped[str] = mapped_column(String(1024))
+    comment: Mapped[str] = mapped_column(String(1024), nullable=True)
     creation_time: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -151,20 +151,18 @@ class OvpnClients(Base):
     )
     
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    server: Mapped[UUID] = mapped_column(
+    server_id: Mapped[UUID] = mapped_column(
         ForeignKey("ovpn_servers.id")
     )
-    site_name: Mapped[str] = mapped_column(String(100))
+    site_name: Mapped[str] = mapped_column(String(100), nullable=True)
     cn: Mapped[str] = mapped_column(String(100))
     ip: Mapped[str] = mapped_column(String(100))
     toggle_time: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), 
         server_default=func.now()
         )
-    STATUS_CHOICE = [(0, "offline"), (1, "online")]
-    ENABLED_CHOICE = [(0, "disabled"), (1, "enabled")]
-    enabled: Mapped[int] = ChoiceType({0: "disabled", 1: "enabled"})
-    status: Mapped[int] = ChoiceType({0: "disabled", 1: "enabled"})
+    enabled: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}), default=1)
+    status: Mapped[int] = mapped_column(ChoiceType({0: "disabled", 1: "enabled"}), default=1)
     expire_date: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )  # (1970, 1, 1))
