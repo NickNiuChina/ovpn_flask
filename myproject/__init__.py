@@ -207,19 +207,22 @@ def create_app(test_config=None):
     logger.debug("*********************************************************************")
     logger.debug("*********************************************************************")
     
+    # check database integrity
+    # if engine.dialect.has_table(engine.connect(), OfSystemConfig.__tablename__):
+    #     logger.debug("Looks likes database has been initialized before...")
+    #     cs = dbs.scalar(select(OfSystemConfig).where(OfSystemConfig.item == 'CUSTOMER_SITE'))
+    #     app.config.update(CUSTOMER_SITE = cs.ivalue.strip(),)
+    # else:
+    #     logger.info("Database has not been initialized, initial database now...")
+    #     from .flask_command import check_db_integrity
+    #     check_db_integrity()
+    #     logger.info("Database init done.")
+    from .flask_command import check_db_integrity
+    check_db_integrity()   
     
     # update config CUSTOMER_SITE from db
-    if engine.dialect.has_table(engine.connect(), OfSystemConfig.__tablename__):
-        logger.debug("Looks likes database has been initialized before...")
-        cs = dbs.scalar(select(OfSystemConfig).where(OfSystemConfig.item == 'CUSTOMER_SITE'))
-        app.config.update(CUSTOMER_SITE = cs.ivalue.strip(),)
-    else:
-        logger.info("Database has not been initialized, initial database now...")
-        from .flask_command import init_db
-        init_db()
-        logger.info("Database init done.")
-        cs = dbs.scalar(select(OfSystemConfig).where(OfSystemConfig.item == 'CUSTOMER_SITE'))
-        app.config.update(CUSTOMER_SITE = cs.ivalue.strip(),)
+    cs = dbs.scalar(select(OfSystemConfig).where(OfSystemConfig.item == 'CUSTOMER_SITE'))
+    app.config.update(CUSTOMER_SITE = cs.ivalue.strip(),)
     
     # context processors
     @app.context_processor
