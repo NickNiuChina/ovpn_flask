@@ -173,6 +173,8 @@ class OvpnClients(Base):
         DateTime(timezone=True), server_default=func.now()
     )
 
+    def toDict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 class ClientListConfig(Base):
     """

@@ -49,37 +49,30 @@
 	          </li>
 	
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.generate_cert', ovpn_service=service_name) }}" class="nav-link">
+	            <a href="{{ url_for('ovpn.generate_cert', server_id=service_uuid) }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
 	              <p>Generate cert</p>
 	            </a>
 	          </li>
 	
 	          <li class="nav-item">
-	            <a href="{{ url_for('ovpn.plain_certs', ovpn_service=service_name) }}" class="nav-link">
+	            <a href="{{ url_for('ovpn.plain_certs', server_id=service_uuid) }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
 	              <p>OVPN plain cert files</p>
 	            </a>
 	          </li>
 
 	          <li class="nav-item">
-	            <a href="{{ url_for ('ovpn.encrypt_certs', ovpn_service=service_name) }}" class="nav-link">
+	            <a href="{{ url_for ('ovpn.encrypt_certs', server_id=service_uuid) }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
 	              <p>OVPN encrypt cert files</p>
 	            </a>
 	          </li>
 
 	          <li class="nav-item">
-	            <a href="/" class="nav-link">
+	            <a href="{{ url_for ('ovpn.reqs', server_id=service_uuid) }}" class="nav-link">
 	              <i class="nav-icon far fa-file"></i>
-	              <p>OVPN plain REQ files</p>
-	            </a>
-	          </li>
-
-	          <li class="nav-item">
-	            <a href="/" class="nav-link">
-	              <i class="nav-icon far fa-file"></i>
-	              <p>OVPN encrypt REQ files</p>
+	              <p>OVPN REQ files</p>
 	            </a>
 	          </li>
 

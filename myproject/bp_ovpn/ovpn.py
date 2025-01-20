@@ -312,25 +312,45 @@ def clients(server_id):
         return "Unsupported method", 400
     
     
-@ovpn_bp.route("/generate_cert", methods=("POST", "GET"))
+@ovpn_bp.route("/<server_id>/generate_cert", methods=("POST", "GET"))
 @login_required
-def generate_cert():
-    pass
+def generate_cert(server_id):
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
+    return render_template("ovpn/generate_cert.html", ovpn_service=ovpn_service)
 
-@ovpn_bp.route("/plain_certs", methods=("POST", "GET"))
+@ovpn_bp.route("/<server_id>/plain_certs", methods=("POST", "GET"))
 @login_required
-def plain_certs():
-    pass
+def plain_certs(server_id):
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
+    return render_template("ovpn/plain_certs.html", ovpn_service=ovpn_service)
 
-@ovpn_bp.route("/encrypt_certs", methods=("POST", "GET"))
+@ovpn_bp.route("/<server_id>/encrypt_certs", methods=("POST", "GET"))
 @login_required
-def encrypt_certs():
-    pass
+def encrypt_certs(server_id):
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
+    return render_template("ovpn/encrypt_certs.html", ovpn_service=ovpn_service)
 
-@ovpn_bp.route("/server_logs", methods=("POST", "GET"))
+@ovpn_bp.route("/<server_id>/reqs", methods=("POST", "GET"))
 @login_required
-def server_logs():
-    pass
+def reqs(server_id):
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
+    return render_template("ovpn/reqs.html", ovpn_service=ovpn_service)
+
+@ovpn_bp.route("/<server_id>/server_logs", methods=("POST", "GET"))
+@login_required
+def server_logs(server_id):
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
+    return render_template("ovpn/plain_certs.html", ovpn_service=ovpn_service)
 
 ####################################################################################
 # refresh proxy config button view
@@ -474,100 +494,6 @@ def clientsStatus(mode):
         MODE = 'tap'        
     
     return render_template("ovpn/{}ClientsStatus.html".format(MODE))
-
-
-@ovpn_bp.route("/list/<any(tun,tap):mode>ClientsStatus", methods=("GET", "POST"))
-@login_required
-def listClientsStatus(mode):
-    """
-    @summary: List tunclientsStatus
-    @param mode: tun or tap mode
-    @return: all list from 'tunovpnclients' or 'ovpnclients' table based on mode
-    """
-    if mode.lower() == 'tun':
-        table = 'tunovpnclients'
-    else:
-        table = 'ovpnclients'
-    
-    # arguments
-    # post
-    if request.method == "POST":
-        draw = request.values.get('draw')
-        start = request.values.get('start')
-        length = request.values.get('length')
-        searchValue = request.values.get('search[value]')
-        order_col = request.values.get("order[0][column]")
-        order_direction = request.values.get("order[0][dir]")
-    # get
-    if request.method == "GET":
-        draw = request.args.get('draw') 
-        start = request.args.get('start') 
-        length = request.args.get('length') 
-        searchValue = request.args.get('search[value]') 
-        order_col = request.values.get("order[0][column]")
-        order_direction = request.values.get("order[0][dir]")
-    print("draw: " + draw)
-    print("start: " + start)
-    print("length: " + length)
-    print("searchValue: " + searchValue)
-    print("order_col: " + order_col)   # colum number
-    print("order_direction: " + order_direction)  # desc or asc
-    # SELECT storename, cn, ip, changedate, expiredate, status from tunovpnclients 
-    # WHERE (storename LIKE ? OR cn LIKE ? or ip LIKE ?) 
-    # ORDER BY status desc 
-    # LIMIT ? OFFSET ?
-    query = None
-
-    # prepare sql for tb_student
-    # cursor.execute("SELECT * FROM test WHERE text LIKE %s", f"%{param}%") # sql prepare
-
-    columns = ['storename', 'cn', 'ip', 'changedate', 'status']
-    query = "SELECT * FROM {}".format(table)
-    total_sql = "SELECT * FROM {}".format(table)
-    if searchValue:
-        query += " WHERE "
-        flag = 0 # notify wether OR if needed
-        # skip search for changedate and status
-        for col in columns[:3]:
-            if flag:
-                query += " OR UPPER({column}) LIKE UPPER(%s) ".format(column=col)
-            else:
-                query += " UPPER({column}) LIKE UPPER(%s) ".format(column=col)
-                flag += 1
-    query += " ORDER BY {0} {1}".format(columns[ int(order_col) - 1 ], order_direction)
-    if length:
-        query += " LIMIT {0} OFFSET {1}".format(length, start)
-    print(__name__ + ": --------sql----------------------")
-    print(query)
-    print(__name__ + ": --------sql----------------------")
-    cur = get_cur()
-    
-    # total students
-    cur.execute(total_sql)
-    total = cur.rowcount
-    
-    # table list
-    # query = "SELECT * FROM {}".format(table)
-    ftotal = 0
-    if searchValue:
-        cur.execute(query, [f"%{searchValue}%"] * len(columns[:3]))
-        ftotal =  cur.rowcount
-    else:
-        ftotal = cur.execute(query)
-        ftotal = total
-    results = cur.fetchall()  # is list
-
-    data = {
-        'recordsFiltered': ftotal,
-        'recordsTotal': total,
-        'draw': draw,
-        'privs': session['username'],
-        'data': results
-    }
-    
-    print (data)
-    return data
-
 
 @ovpn_bp.route("/<any(tun,tap):mode>ClientsStatus/update/storename", methods=("GET", "POST"))
 @login_required

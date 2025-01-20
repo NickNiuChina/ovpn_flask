@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash
 from myproject.context import logger
 from orm.ovpn import OvpnServers, OfUser, OfGroup, OvpnClients
 from myproject.context import DBSession as dbs
-from sqlalchemy import select, update, delete, or_
+from sqlalchemy import select, update, delete, or_, desc, asc
 from uuid import UUID
 
 
@@ -430,29 +430,36 @@ class OvpnUtils(object):
         
         all_clients = dbs.query(OvpnClients).filter_by(server_id=ovpn_service.id)
         
-        sort = asc(sort_column) 
-        if sort_dir == "desc" else desc(sort_column)
+        # order by 
+        # https://stackoverflow.com/questions/5874579/dynamic-order-by-clause-using-sqlalchemys-sql-expression-language
+        sort_columns = ("site_name", "cn", "ip", "toggle_time", "expire_date", "status")
+        sort_column = sort_columns[int(order_col)]
+        sort_dir = order_direction  # or "asc"
+        sort = asc(sort_column) if sort_dir == "desc" else desc(sort_column)
         
         if searchValue and searchValue.strip():
-            searchVar = searchValue.strip()
-            target_clients = dbs.query(OvpnClients).filter(
-                or_(OvpnClients.id.ilike(searchVar),
-                    OvpnClients.server_id.ilike(searchVar),
+            searchVar = f'%{searchValue.strip()}%'
+            f_clients = dbs.query(OvpnClients).filter(OvpnClients.server_id==args.get("ovpn_server_uuid")).filter(
+                or_(
                     OvpnClients.site_name.ilike(searchVar),
                     OvpnClients.cn.ilike(searchVar),
                     OvpnClients.ip.ilike(searchVar)
                     )
-            ).order_by()
+            ).order_by(sort)
+        else:
+            f_clients = dbs.query(OvpnClients).filter(OvpnClients.server_id==args.get("ovpn_server_uuid")).order_by(sort)
         
+        target_clients = f_clients.limit(length).offset(start)
+    
         data = {
-            'recordsFiltered': all_clients.count(),
+            'recordsFiltered': f_clients.count(),
             'recordsTotal': all_clients.count(),
             'draw': draw,
-            'data': [], #[ d for d in results.values() ],
+            'data': [z.toDict() for z in target_clients], #[ d for d in results.values() ],
             "privs_group": group,
             # 'pageLength': user.page_size
         }
-        logger.debug('Ovpn clients list post request result: {}'.format(str(data)))
+        # logger.debug('Ovpn clients list post request result: {}'.format(str(data)))
         return data
 
 
