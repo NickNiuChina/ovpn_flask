@@ -6,10 +6,11 @@ import time
 
 from werkzeug.security import generate_password_hash
 from myproject.context import logger
-from orm.ovpn import OvpnServers, OfUser, OfGroup, OvpnClients
+from orm.ovpn import OvpnServers, OfUser, OfGroup, OvpnClients, OfSystemConfig
 from myproject.context import DBSession as dbs
 from sqlalchemy import select, update, delete, or_, desc, asc
 from uuid import UUID
+import pathlib
 
 
 class OvpnUtils(object):
@@ -462,7 +463,143 @@ class OvpnUtils(object):
         # logger.debug('Ovpn clients list post request result: {}'.format(str(data)))
         return data
 
+    def get_plain_certs_list(args):
+        draw = args.get('draw')
+        group = args.get('group')
+        order_direction = args.get("order[0][dir]")
+        searchValue = args.get('search[value]').strip()
+        start = int(args.get('start'))
+        length = int(args.get('length'))   
+             
+        cert_root = dbs.scalar(select(OfSystemConfig).where(OfSystemConfig.item == "DIR_CERT_ROOT")).ivalue.strip()
+        logger.debug(f"Certs root: {cert_root}")
+        system_type = platform.system()
+        logger.debug(f"System: {system_type}")
+        if system_type.startswith("Window"):
+            cert_root = "D:/tmp/ovpn_flask"
+            logger.debug(f"Set certs root DIR: {cert_root}")
+        ovpn_service = args.get('ovpn_service')
+        
+        # server_name = ovpn_service.server_name
+        certs_dir = ovpn_service.certs_dir
+        # server_id = ovpn_service.id
+        
+        # extension: .conf
+        suffix = ".conf"
+        sub_dir = dbs.scalar(select(OfSystemConfig).where(OfSystemConfig.item == "DIR_PLAIN_CERTS")).ivalue.strip()
+        
+        t_path = pathlib.Path(cert_root, certs_dir, sub_dir)
+        logger.debug( "Check system path: " + t_path.absolute().as_posix())
+        plain_certs = []
+        if t_path.exists():
+            for f in list(t_path.iterdir()):
+                if f.is_file() and (f.name.endswith((".conf", ".ovpn"))):
+                    plain_certs.append(
+                            {
+                            "cert_name": f.name, 
+                            "cert_size": round(f.stat().st_size/1024, 1),
+                            "create_time": datetime.datetime.fromtimestamp(f.stat().st_ctime).strftime("%Y-%m-%d_%H:%M:%S")
+                            }
+                        )
+        if order_direction == "asc":
+            plain_certs = sorted(plain_certs, key=lambda x: x['cert_name'])
+        else:
+            plain_certs = (sorted(plain_certs, key=lambda x: x['cert_name'], reverse=True))  
+        if searchValue and searchValue.strip():
+            f_plain_certs = []
+            for plain_cert in plain_certs:
+                if plain_cert["cert_name"].upper().find(searchValue.upper()) >= 0:
+                    f_plain_certs.append(plain_cert)
+        else:
+            f_plain_certs = plain_certs
+            
+        t_plain_certs = f_plain_certs[start: start+length]  
+        if not plain_certs:
+            failed = 1
+        else:
+            failed = 0
+           
+        data = {
+            'recordsFiltered': len(f_plain_certs),
+            'recordsTotal': len(plain_certs),
+            'draw': draw,
+            'data': t_plain_certs,
+            "privs_group": group,
+            "failed": failed
+            # 'pageLength': user.page_size
+        }
+        
+        return data
 
+
+    def get_encrypt_certs_list(args):
+        draw = args.get('draw')
+        group = args.get('group')
+        order_direction = args.get("order[0][dir]")
+        searchValue = args.get('search[value]').strip()
+        start = int(args.get('start'))
+        length = int(args.get('length'))   
+             
+        cert_root = dbs.scalar(select(OfSystemConfig).where(OfSystemConfig.item == "DIR_CERT_ROOT")).ivalue.strip()
+        logger.debug(f"Certs root: {cert_root}")
+        system_type = platform.system()
+        logger.debug(f"System: {system_type}")
+        if system_type.startswith("Window"):
+            cert_root = "D:/tmp/ovpn_flask"
+            logger.debug(f"Set certs root DIR: {cert_root}")
+        ovpn_service = args.get('ovpn_service')
+        
+        # server_name = ovpn_service.server_name
+        certs_dir = ovpn_service.certs_dir
+        # server_id = ovpn_service.id
+        
+        # extension: .conf
+        suffix = ".p7mb64"
+        sub_dir = dbs.scalar(select(OfSystemConfig).where(OfSystemConfig.item == "DIR_ENCRYPT_CERTS")).ivalue.strip()
+        
+        t_path = pathlib.Path(cert_root, certs_dir, sub_dir)
+        logger.debug( "Check system path: " + t_path.absolute().as_posix())
+        plain_certs = []
+        if t_path.exists():
+            for f in list(t_path.iterdir()):
+                if f.is_file() and (f.name.endswith((".p7mb64", ))):
+                    plain_certs.append(
+                            {
+                            "cert_name": f.name, 
+                            "cert_size": round(f.stat().st_size/1024, 1),
+                            "create_time": datetime.datetime.fromtimestamp(f.stat().st_ctime).strftime("%Y-%m-%d_%H:%M:%S")
+                            }
+                        )
+        if order_direction == "asc":
+            plain_certs = sorted(plain_certs, key=lambda x: x['cert_name'])
+        else:
+            plain_certs = (sorted(plain_certs, key=lambda x: x['cert_name'], reverse=True))  
+        if searchValue and searchValue.strip():
+            f_plain_certs = []
+            for plain_cert in plain_certs:
+                if plain_cert["cert_name"].upper().find(searchValue.upper()) >= 0:
+                    f_plain_certs.append(plain_cert)
+        else:
+            f_plain_certs = plain_certs
+            
+        t_plain_certs = f_plain_certs[start: start+length]  
+        if not plain_certs:
+            failed = 1
+        else:
+            failed = 0
+           
+        data = {
+            'recordsFiltered': len(f_plain_certs),
+            'recordsTotal': len(plain_certs),
+            'draw': draw,
+            'data': t_plain_certs,
+            "privs_group": group,
+            "failed": failed
+            # 'pageLength': user.page_size
+        }
+        
+        return data    
+    
     """
         Users method
     """
