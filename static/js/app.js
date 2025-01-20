@@ -127,7 +127,7 @@ $(document).ready(function() {
 
 
     /* **********************************************
-        OpenVPN serivces detaul page functions
+        OpenVPN serivce detaul page functions
     ********************************************** */
     // a workaround for extra data to post retrieve clinets data
     //https://datatables.net/forums/discussion/74315/passing-data-attributes-via-ajax-using-this
