@@ -476,7 +476,6 @@ $(document).ready(function() {
     /* **********************************************
         OpenVPN plain cert files list page functions
     ********************************************** */
-
     $("#tb_openvpn_plain_certs").DataTable({
         // "dom": 'Blfrtip',
         "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
@@ -559,7 +558,9 @@ $(document).ready(function() {
             }
         ],
     });
-
+    /* **********************************************
+        OpenVPN encrypy cert files list page functions
+    ********************************************** */
     $("#tb_openvpn_encrypt_certs").DataTable({
         // "dom": 'Blfrtip',
         "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
@@ -601,6 +602,92 @@ $(document).ready(function() {
             'url': "encrypt_certs",
             'type': 'POST',
             'data': { "action": "action_list_ovpn_encrypt_certs" },
+            'dataType': 'json',
+        },
+        // datatable inline-button
+        // https://datatables.net/reference/option/columnDefs
+        "columnDefs": [{
+                "targets": 0,
+                "data": null,
+                "render": function(data, type, row) {
+                    return data["cert_name"];
+                }
+            },
+            {
+                "targets": 1,
+                "data": null,
+                "orderable": false,
+                "render": function(data, type, row) {
+                    return data["create_time"];
+                }
+            },
+            {
+                "targets": 2,
+                "data": null,
+                "orderable": false,
+                "render": function(data, type, row) {
+                    return data["cert_size"];
+                }
+            },
+            {
+                "targets": 3,
+                "data": null,
+                "orderable": false,
+                "render": function(data, type, row) {
+                    var id = '"' + row.id + '"';
+                    var html = "<a href='javascript:void(0);'  class='certDelete btn btn-danger btn-xs' data-toggle='modal' data-target='#tuncertDelModal'  ><i class='fa fa-times'></i> Delete</a>"
+                        // html += "<a href='javascript:void(0);'   onclick='deleteCertByFilename(" + 99 + ")'  class='down btn btn-default btn-xs'><i class='fa fa-arrow-down'></i>Download</a>"
+                    html += "<a href='javascript:void(0);' class='certDownload btn btn-default btn-xs'><i class='fa fa-arrow-down'></i>Download</a>"
+                    return html;
+                }
+            }
+        ],
+    });
+
+    /* **********************************************
+        OpenVPN reqs files list page functions
+    ********************************************** */
+    $("#tb_openvpn_reqs").DataTable({
+        // "dom": 'Blfrtip',
+        "dom": '<"row"<"col"B><"col"f>>rt<"row"<"col"i><"col"p>>',
+        "responsive": true,
+        "lengthChange": true,
+        "autoWidth": false,
+        // "responsive": true, "lengthChange": true, "autoWidth": true,
+        // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        //"buttons": ["excel", "colvis"],
+        "buttons": [{
+                extend: 'excel',
+                text: 'Excel',
+                exportOptions: {
+                    modifier: {
+                        page: 'all',
+                        selected: null,
+                        search: 'none',
+                    },
+                    columns: [0, 1, 2, 3]
+                },
+            },
+            // { extend: 'excel', text: '<i class="fas fa-file-excel" aria-hidden="true"> Excel </i>' },
+            "colvis",
+            "pageLength"
+        ],
+        "lengthMenu": [100, 50, 20, 1000],
+        //
+        "processing": true,
+        "serverSide": true,
+        // "searching": true,
+        "destroy": true,
+        "paging": true,
+        // "pagingType": 'input',
+        "ordering": true,
+        // "iDisplayLength": 10,
+        // "bLengthChange": true,
+        // "lengthMenu": [20, 50, 100, 1000],
+        "ajax": {
+            'url': "reqs",
+            'type': 'POST',
+            'data': { "action": "action_list_ovpn_reqs" },
             'dataType': 'json',
         },
         // datatable inline-button

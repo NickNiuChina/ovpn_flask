@@ -369,14 +369,34 @@ def encrypt_certs(server_id):
         return render_template("ovpn/encrypt_certs.html", ovpn_service=ovpn_service)
     else:
         return "Unsupported method", 400
+    
+    
 @ovpn_bp.route("/<server_id>/reqs", methods=("POST", "GET"))
 @login_required
 def reqs(server_id):
     ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
     if not ovpn_service:
         return render_template('404.html'), 404
-    return render_template("ovpn/reqs.html", ovpn_service=ovpn_service)
-
+    
+    if request.method == "POST":
+        form_args = request.form.to_dict()
+        logger.debug("route reqs get POST data: {}".format(str(form_args)))
+        
+        if request.form.get('action', None) == 'action_list_ovpn_reqs':
+            form_args['ovpn_service'] = ovpn_service
+            form_args['group'] = session['group']
+            logger.debug("|route: reqs, POST| get the clients list")            
+            data = OvpnUtils.get_reqs_list(form_args)
+                       
+            return jsonify(data)
+             
+        return "BAD request!", 400
+    elif request.method == "GET":
+        return render_template("ovpn/reqs.html", ovpn_service=ovpn_service)
+    else:
+        return "Unsupported method", 400
+    
+    
 @ovpn_bp.route("/<server_id>/server_logs", methods=("POST", "GET"))
 @login_required
 def server_logs(server_id):
