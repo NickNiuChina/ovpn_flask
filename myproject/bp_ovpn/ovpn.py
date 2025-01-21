@@ -276,7 +276,7 @@ def server_config(server_id):
         servers = OvpnUtils.get_all_openvpn_services()
         user_id = session.get("user_id", None)
         user = OvpnUtils.get_user_by_id(user_id)
-        return render_template("ovpn/server_config.html", servers=servers, log_size=user.log_size)
+        return render_template("ovpn/server_config.html", servers=servers, log_size=user.page_size)
 
 ####################################################################################
 # ovpn service detail views

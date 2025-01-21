@@ -113,6 +113,7 @@ def prepare_data(action="add"):
         logger.warning("Run command |prepare-data| without correct action: add or delete")
         return
     
+    logger.info("##############################################################")
     logger.info("Check database test data.")
     if action == "add":
         """Add test data."""
@@ -272,9 +273,9 @@ def prepare_data(action="add"):
                                         
         logger.info("Test data deleted done!")
 
+    logger.info("##############################################################")
     if action == "add":
         """Add cert test files."""    
-        logger.info("##############################################################")
         logger.info("Check ovpn certs test files.")
         cert_root = dbsession.scalar(select(OfSystemConfig).where(OfSystemConfig.item == "DIR_CERT_ROOT")).ivalue.strip()
         logger.debug(f"Certs root: {cert_root}")
@@ -311,7 +312,6 @@ def prepare_data(action="add"):
 
     if action == "delete":
         """Delete test cert files."""
-        logger.info("##############################################################")
         logger.info("Check ovpn certs test dirs to delete them.")
         t_path=pathlib.Path('D:/tmp/ovpn_flask')
         rm_tree(t_path)
