@@ -115,6 +115,7 @@ def prepare_data(action="add"):
         logger.warning("Run command |prepare-data| without correct action: add or delete")
         return
     
+    logger.info("##############################################################")
     logger.info("Check database test data.")
     if action == "add":
         """Add test data."""
@@ -260,6 +261,7 @@ def prepare_data(action="add"):
                                         
         logger.info("Test data deleted done!")
 
+<<<<<<< HEAD
     
     logger.info("##############################################################")
     logger.info("Check ovpn certs test files.")
@@ -274,6 +276,20 @@ def prepare_data(action="add"):
     if action == "add":
         """Add cert test files."""    
   
+=======
+    logger.info("##############################################################")
+    if action == "add":
+        """Add cert test files."""    
+        logger.info("Check ovpn certs test files.")
+        cert_root = dbsession.scalar(select(OfSystemConfig).where(OfSystemConfig.item == "DIR_CERT_ROOT")).ivalue.strip()
+        logger.debug(f"Certs root: {cert_root}")
+        system_type = platform.system()
+        logger.debug(f"System: {system_type}")
+        if system_type.startswith("Window"):
+            cert_root = "D:/tmp/ovpn_flask"
+            logger.debug(f"Set certs root DIR: {cert_root}")
+            
+>>>>>>> 1f3a5600fa1bda75353d8982b59e5cc217c52e03
         for i in range(1, 3):
             logger.debug(f"OpenVPN Service test{i}...")
             server_name = f'test{i}'
@@ -323,7 +339,6 @@ def prepare_data(action="add"):
             
     if action == "delete":
         """Delete test cert files."""
-        logger.info("##############################################################")
         logger.info("Check ovpn certs test dirs to delete them.")
         t_path=pathlib.Path(cert_root)
         if t_path.exists():
