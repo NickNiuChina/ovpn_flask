@@ -261,7 +261,6 @@ def prepare_data(action="add"):
                                         
         logger.info("Test data deleted done!")
 
-<<<<<<< HEAD
     
     logger.info("##############################################################")
     logger.info("Check ovpn certs test files.")
@@ -276,7 +275,6 @@ def prepare_data(action="add"):
     if action == "add":
         """Add cert test files."""    
   
-=======
     logger.info("##############################################################")
     if action == "add":
         """Add cert test files."""    
@@ -289,7 +287,6 @@ def prepare_data(action="add"):
             cert_root = "D:/tmp/ovpn_flask"
             logger.debug(f"Set certs root DIR: {cert_root}")
             
->>>>>>> 1f3a5600fa1bda75353d8982b59e5cc217c52e03
         for i in range(1, 3):
             logger.debug(f"OpenVPN Service test{i}...")
             server_name = f'test{i}'
