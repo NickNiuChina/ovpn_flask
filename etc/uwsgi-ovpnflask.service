@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve myproject - ovpn_flask
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/opt/ovpn_flask
+Environment="PATH=/opt/venv/bin"
+ExecStart=/opt/venv/bin/uwsgi --ini myproject.ini
+
+[Install]
+WantedBy=multi-user.target

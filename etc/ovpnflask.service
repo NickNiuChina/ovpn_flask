@@ -1,4 +1,4 @@
-##################### gunicorn
+###################################################################################### gunicorn
 [Unit]
 Description=OvpnFlask web application
 After=network.target
@@ -14,7 +14,7 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 
-######################## uwsgi
+##################################################################################### uwsgi
 [Unit]
 Description=uWSGI instance to serve myproject - ovpn_flask
 After=network.target
