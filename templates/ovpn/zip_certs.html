@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}OVPN reqs{% endblock %}
+{% block title %}OVPN zip certs{% endblock %}
 {% block content %}
 
 {# Content Wrapper. Contains page content #}
@@ -11,7 +11,7 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1 class="m-0"> {{ovpn_service.server_name}} | Ovpn Reqs files</h1>
+					<h1 class="m-0"> {{ovpn_service.server_name}} | Plain certs</h1>
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-right">
@@ -45,12 +45,12 @@
               <div class="card-header">
               </div>
               <div class="card-body">
-					<table id="tb_openvpn_reqs" data-openvpn_service_uuid="{{ ovpn_service.id }}" class="table table-bordered table-striped table-hover">
+					<table id="tb_openvpn_zip_certs" data-openvpn_service_uuid="{{ ovpn_service.id }}" class="table table-bordered table-striped table-hover">
 	                  <thead>
 	                  <tr>
 	                    <td>FileName</td>
 	                    <td>CreateDate</td>
-	                    <td>Date</td>
+	                    <td>Size</td>
 	                    <td>Action</td>
 	                  </tr>
 	                  </thead>
@@ -59,7 +59,7 @@
 					  <tr>
 	                    <td>FileName</td>
 	                    <td>CreateDate</td>
-	                    <td>Date</td>
+	                    <td>Size</td>
 	                    <td>Action</td>
 	                  </tfoot>
 					  </tr>

@@ -318,7 +318,20 @@ def generate_cert(server_id):
     ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
     if not ovpn_service:
         return render_template('404.html'), 404
-    return render_template("ovpn/generate_cert.html", ovpn_service=ovpn_service)
+    
+    if request.method == "POST":
+        form_args = request.form.to_dict()
+        # generate by cn name
+        if request.form.get('action', None) == 'generate_cert_by_cn':
+            form_args['ovpn_service'] = ovpn_service
+            form_args['group'] = session['group']
+            logger.debug("|route: generate_cert, POST| generate cert by cn")            
+            data = OvpnUtils.get_plain_certs_list(form_args)
+                       
+            return jsonify(data)
+    
+    elif request.method == "GET":
+        return render_template("ovpn/generate_cert.html", ovpn_service=ovpn_service)
 
 @ovpn_bp.route("/<server_id>/plain_certs", methods=("POST", "GET"))
 @login_required
@@ -385,7 +398,7 @@ def reqs(server_id):
         if request.form.get('action', None) == 'action_list_ovpn_reqs':
             form_args['ovpn_service'] = ovpn_service
             form_args['group'] = session['group']
-            logger.debug("|route: reqs, POST| get the clients list")            
+            logger.debug("|route: reqs, POST| get the req files list")            
             data = OvpnUtils.get_reqs_list(form_args)
                        
             return jsonify(data)
@@ -395,7 +408,32 @@ def reqs(server_id):
         return render_template("ovpn/reqs.html", ovpn_service=ovpn_service)
     else:
         return "Unsupported method", 400
+
+
+@ovpn_bp.route("/<server_id>/zip_certs", methods=("POST", "GET"))
+@login_required
+def zip_certs(server_id):
+    ovpn_service = OvpnUtils.get_openvpn_service_by_id(server_id)
+    if not ovpn_service:
+        return render_template('404.html'), 404
     
+    if request.method == "POST":
+        form_args = request.form.to_dict()
+        logger.debug("route reqs get POST data: {}".format(str(form_args)))
+        
+        if request.form.get('action', None) == 'action_list_ovpn_zip_certs':
+            form_args['ovpn_service'] = ovpn_service
+            form_args['group'] = session['group']
+            logger.debug("|route: zip_certs, POST| get the zip files list")            
+            data = OvpnUtils.get_zip_certs_list(form_args)
+                       
+            return jsonify(data)
+             
+        return "BAD request!", 400
+    elif request.method == "GET":
+        return render_template("ovpn/zip_certs.html", ovpn_service=ovpn_service)
+    else:
+        return "Unsupported method", 400    
     
 @ovpn_bp.route("/<server_id>/server_logs", methods=("POST", "GET"))
 @login_required
