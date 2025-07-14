@@ -109,10 +109,10 @@ def create_app(test_config=None):
 
     # https://dlukes.github.io/flask-wsgi-url-prefix.html
     # for reverse proxy, prefix every url with /ovpn include /static/*
-    app.wsgi_app = DispatcherMiddleware(
-        Response('Not Found', status=404),
-        {'/ovpn': app.wsgi_app}
-    )
+    # app.wsgi_app = DispatcherMiddleware(
+    #     Response('Not Found', status=404),
+    #     {'/ovpn': app.wsgi_app}
+    # )
 
     # Flask application behind a reverse proxy
     # app.wsgi_app = ReverseProxied(app.wsgi_app, script_name='/ovpn')

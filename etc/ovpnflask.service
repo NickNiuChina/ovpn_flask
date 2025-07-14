@@ -14,7 +14,7 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 
-######################## uwsgi
+######################## uwsgi, worked and test using this one
 [Unit]
 Description=uWSGI instance to serve myproject - ovpn_flask
 After=network.target
