@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}User update{% endblock %}
+{% block content %}
+
+{# Content Wrapper. Contains page content #}
+<div class="content-wrapper">
+
+	{# Content Header (Page header) #}
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<h1 class="m-0">User management</h1>
+				</div>
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-right">
+						<li class="breadcrumb-item"><a href="{{url_for('ovpn.index')}}">Home</a></li>
+						<li class="breadcrumb-item active">Main</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+	{#  content-header END #}
+
+	<section class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+					{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						<ul class=flashes>
+						{% for category, message in messages %}
+						<div class="text-{{ category }}">{{ message }}</div>
+						{% endfor %}
+						</ul>
+					{% endif %}
+					{% endwith %}
+
+				</div>
+			</div>
+
+		{# update User #}
+		<div class="col-md-6 mx-auto">
+			<div class="card card-primary">
+				<div class="card-header">
+					<h3 class="card-title">Update User</h3>
+				</div>
+
+			<form method="post">
+				<div class="card-body">
+
+					<div class="form-group">
+						<label for="user_id">OpenVPN service UUID</label>
+						<input type="text" value="{{user.id}}" class="form-control"  id="user_id" placeholder="uuid" readonly>
+					</div>
+
+					<div class="form-group">
+						<label for="username.id_for_label">Username</label>
+						<input type="text" value="{{user.name}}" class="form-control" name="username" id="username.id_for_label" placeholder="username">
+					</div>
+
+					<div class="form-group">
+						<label for="password.id_for_label">Password</label>
+						<input type="password" value="{{user.password}}" class="form-control" name="password" id="password.id_for_label" placeholder="password">
+					</div>
+
+					<div class="form-group">
+						<label for="name.id_for_label">Display name</label>
+						<input type="text" value="{{user.name or '' }}" class="form-control" name="name" id="name.id_for_label" placeholder="Display name">
+					</div>
+
+					<div class="form-group">
+						<label for="email.id_for_label">Email</label>
+						<input type="text" value="{{user.email or '' }}" class="form-control" name="email" id="email.id_for_label" placeholder="Email">
+					</div>
+
+					<div class="form-group">
+						  <label class="col-sm-7" for="group.id_for_label">Privilege</label>
+						  <select type="select" name="group" class="form-control custom-select" id="group.id_for_label" placeholder="Privilege">
+							  {% for p in ['SUPER','ADMIN','GUEST','SUPER'] %}
+								  {% if p == user.group.group %}
+										<option value={{p}} selected>{{p}}</option>
+							      {% else %}
+							  			<option value={{p}}>{{p}}</option>
+								  {% endif %}
+							  {% endfor %}
+						  </select>
+					</div>
+
+					<div class="form-group">
+						  <label class="col-sm-7" for="line_size.id_for_label">Line size</label>
+						  <select type="select" name="line_size" class="form-control custom-select " id="line_size.id_for_label" placeholder="line size">
+							  {% for p in [300, 1000, 3000, -1] %}
+								  {% if p | int == user.line_size | int %}
+										<option value={{p}} selected>
+											{% if p == -1 %}
+												All
+											{% else %}
+												{{p}}
+											{% endif %}
+										</option>
+							      {% else %}
+							  			<option value={{p}}>
+											{% if p == -1 %}
+												All
+											{% else %}
+												{{p}}
+											{% endif %}
+										</option>
+								  {% endif %}
+							  {% endfor %}
+						  </select>
+					</div>
+
+					<div class="form-group">
+						  <label class="col-sm-7" for="page_size.id_for_label">Page size</label>
+						  <select type="select" name="page_size" class="form-control custom-select " id="page_size.id_for_label" placeholder="page size">
+							  {% for p in [50, 100, 200, 500] %}
+								  {% if p | int == user.page_size | int %}
+										<option value={{p}} selected>
+											{% if p == -1 %}
+												All
+											{% else %}
+												{{p}}
+											{% endif %}
+										</option>
+							      {% else %}
+							  			<option value={{p}}>
+											{% if p == -1 %}
+												All
+											{% else %}
+												{{p}}
+											{% endif %}
+										</option>
+								  {% endif %}
+							  {% endfor %}
+						  </select>
+					</div>
+
+					<div class="form-group">
+						<label for="status.id_for_label">Status</label>
+						<select class='custom-select' name="status" id="status.id_for_label">
+						  {% if user.status | int == 1 %}
+							<option value="0">disabled</option>
+							<option value="1" selected>enabled</option>
+						  {% else %}
+							<option value="0" selected>disabled</option>
+							<option value="1">enabled</option>
+						  {% endif %}
+						</select>
+					</div>
+				</div>
+
+				<div class="card-footer">
+					<a href="{{ url_for('ovpn.users') }}" class="btn btn-secondary">Cancel and Return</a>
+					<button type="submit" class="btn btn-primary float-right">Confirm</button>
+				</div>
+
+			</form>
+		</div>
+
+		</div>
+	</section>
+</div>
+
+{% endblock %}
+

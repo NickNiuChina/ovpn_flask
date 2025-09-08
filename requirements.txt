@@ -1,0 +1,8 @@
+Flask==3.0.3
+psycopg2==2.9.9
+flask-babel == 4.0.0
+SQLAlchemy == 2.0.31
+psutil==5.9.8
+flask-paginate==2024.4.12
+# mysql driver
+# PyMySQL==1.0.3

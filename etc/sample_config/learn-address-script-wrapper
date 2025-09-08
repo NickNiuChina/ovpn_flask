@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# This is explicitly in /bin/sh (==DASH shell on Ubuntu) for faster startup time
+
+mon=`date -d today +"%Y_%m"`
+logfile=/var/log/openvpn/openvpn-udp-tun-1194-learn-address-script-${mon}.log
+
+log()
+{
+    # log to syslog
+    #echo "$1"
+    #logger -i -t "OVPN-UDP-TUN-1194-LD" -- $1
+    timehead=`date -d today +"%Y-%m-%d_%T"`
+    echo "$timehead> $1" >> $logfile
+}
+
+log_and_die()
+{
+  if [ -n "$1" ]; then log "$1"; fi
+  exit 10
+}
+
+timeout=60
+ncpu=$(nproc --all)
+iphash=$(echo -n $2 | cksum | cut -d' ' -f1)
+ipmodulo=$(expr $iphash % $ncpu)
+lockf=/run/shm/openvpn-learn-address-scrip-UT1194-group-$ipmodulo.lock
+log "Called with args: '$1 $2 $3' - iphash=$iphash, ncpu=$ncpu - will wait max $timeout seconds on lock group $ipmodulo"
+
+# https://wiki.ubuntu.com/DashAsBinSh#flock -- use single-digit FDs
+exec 8>$lockf
+/usr/bin/flock -x -w $timeout 8 || log_and_die "Timeout Expired!!"
+output=$(python3 /etc/openvpn/openvpn-udp-tun-1194/learn-address-script.py $1 $2 $3)
+res=$?
+log "$output"
+exit $res

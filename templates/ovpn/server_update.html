@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}OpenVPN servers update{% endblock %}
+{% block content %}
+
+{# Content Wrapper. Contains page content #}
+<div class="content-wrapper">
+
+	{# Content Header (Page header) #}
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<h1 class="m-0">OpenVPN services management</h1>
+				</div>
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-right">
+						<li class="breadcrumb-item"><a href="{{url_for('ovpn.index')}}">Home</a></li>
+						<li class="breadcrumb-item active">Main</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+	{#  content-header END #}
+
+	<section class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+					{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						<ul class=flashes>
+						{% for category, message in messages %}
+						<div class="text-{{ category }}">{{ message }}</div>
+						{% endfor %}
+						</ul>
+					{% endif %}
+					{% endwith %}
+
+				</div>
+			</div>
+
+		{# update OpenVPN service #}
+		<div class="col-md-6 mx-auto">
+			<div class="card card-primary">
+				<div class="card-header">
+					<h3 class="card-title">Update this OpenVPN service</h3>
+				</div>
+
+			<form method="post">
+				<div class="card-body">
+
+					<div class="form-group">
+						<label for="openvpn_service_id">OpenVPN service UUID</label>
+						<input type="text" value="{{server.id}}" class="form-control"  id="openvpn_service_id" placeholder="uuid" readonly>
+					</div>
+
+					<div class="form-group">
+						<label for="server_name.id_for_label">OpenVPN service name</label>
+						<input type="text" value="{{server.server_name}}" class="form-control" name="server_name" id="server_name.id_for_label" placeholder="openvpn service name">
+					</div>
+
+					<div class="form-group">
+						<label for="configuration_dir.id_for_label">OpenVPN configuration dir</label>
+						<input type="text" value="{{server.configuration_dir.value or ''}}" class="form-control" name="configuration_dir" id="configuration_dir.id_for_label" placeholder="OpenVPN configuration dir">
+					</div>
+
+					<div class="form-group">
+						<label for="configuration_file.id_for_label">OpenVPN configuration file</label>
+						<input type="text" value="{{server.configuration_file or '' }}" class="form-control" name="configuration_file" id="configuration_file.id_for_label" placeholder="OpenVPN configuration file">
+					</div>
+
+					<div class="form-group">
+						<label for="status_file.id_for_label">OpenVPN status file</label>
+						<input type="text" value="{{server.status_file or '' }}" class="form-control" name="status_file" id="status_file.id_for_label" placeholder="OpenVPN status file">
+					</div>
+
+					<div class="form-group">
+						<label for="log_file_dir.id_for_label">OpenVPN log file dir </label>
+						<input type="text" value="{{server.log_file_dir or '' }}" class="form-control" name="log_file_dir" id="log_file_dir.id_for_label" placeholder="OpenVPN log file dir">
+					</div>
+
+					<div class="form-group">
+						<label for="log_file.id_for_label">OpenVPN log file</label>
+						<input type="text" value="{{server.log_file or '' }}" class="form-control" name="log_file" id="log_file.id_for_label" placeholder="OpenVPN log file">
+					</div>
+
+					<div class="form-group">
+						<label for="startup_type.id_for_label">Service startup type:</label>
+						<select class='custom-select' name="startup_type" id="startup_type.id_for_label">
+						  {% if server.startup_type | int == 1 %}
+							<option value="0">sysv</option>
+							<option value="1" selected>Systemd</option>
+						  {% else %}
+							<option value="0" selected>sysv</option>
+							<option value="1">Systemd</option>
+						  {% endif %}
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="startup_service.id_for_label">OpenVPN startup service</label>
+						<input type="text" value="{{server.startup_service or '' }}" class="form-control" name="startup_service" id="startup_service.id_for_label" placeholder="OpenVPN startup service">
+					</div>
+
+					<div class="form-group">
+						<label for="certs_dir.id_for_label">OpenVPN certs dir</label>
+						<input type="text" value="{{server.certs_dir or '' }}" class="form-control" name="certs_dir" id="certs_dir.id_for_label" placeholder="OpenVPN certs dir">
+					</div>
+
+					<div class="form-group">
+						<label for="learn_address_script.id_for_label">Learn address script:</label>
+						<select class='custom-select' name="learn_address_script" id="learn_address_script.id_for_label">
+						  {% if server.learn_address_script | int == 1 %}
+							<option value="0">disabled</option>
+							<option value="1" selected>enabled</option>
+						  {% else %}
+							<option value="0" selected>disabled</option>
+							<option value="1">enabled</option>
+						  {% endif %}
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="managed.id_for_label">If managed by this APP:</label>
+						<select class='custom-select' name="managed" id="managed.id_for_label">
+						  {% if server.managed | int == 1 %}
+							<option value="0">disabled</option>
+							<option value="1" selected>enabled</option>
+						  {% else %}
+							<option value="0" selected>disabled</option>
+							<option value="1">enabled</option>
+						  {% endif %}
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="management_port.id_for_label">Management port</label>
+						<input type="text" value="{{ server.management_port or ''}}" class="form-control" name="management_port" id="management_port.id_for_label" placeholder="management port">
+					</div>
+
+					<div class="form-group">
+						<label for="management_password.id_for_label">Management password</label>
+						<input type="password" value="{{server.management_password or ''}}" class="form-control" name="management_password" id="management_password.id_for_label" placeholder="management password">
+					</div>
+
+					<div class="form-group">
+						<label for="comment.id_for_label }}">Comments</label>
+						<input type="text" value="{{server.comment or ''}}" class="form-control" name="comment" id="comment.id_for_label" placeholder="comment">
+					</div>
+
+				</div>
+
+				<div class="card-footer">
+					<a href="{{ url_for('ovpn.servers') }}" class="btn btn-secondary">Cancel and Return</a>
+					<button type="submit" class="btn btn-primary float-right">Confirm</button>
+				</div>
+
+			</form>
+		</div>
+
+		</div>
+	</section>
+</div>
+
+{% endblock %}
+

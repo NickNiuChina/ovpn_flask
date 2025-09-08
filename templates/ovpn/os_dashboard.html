@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Main{% endblock %}
+{% block content %}
+
+{# Content Wrapper. Contains page content #}
+<div class="content-wrapper">
+
+	{# Content Header (Page header) #}
+	<div class="content-header">
+		<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+			<h1 class="m-0">Welcome, {{ session["username"] }}！</h1>
+			</div><!-- /.col -->
+			<div class="col-sm-6">
+			<ol class="breadcrumb float-sm-right">
+				<li class="breadcrumb-item"><a href="{{ url_for('ovpn.index') }}">Home</a></li>
+				<li class="breadcrumb-item active">Main</li>
+			</ol>
+			</div>
+		</div>
+		</div>
+	</div>
+	{#  content-header END #}
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+		<ul class=flashes>
+		{% for category, message in messages %}
+		<div class="text-{{ category }}">{{ message }}</div>
+		{% endfor %}
+		</ul>
+	{% endif %}
+	{% endwith %}
+
+
+	<section class="content">
+		<div class="container-fluid">
+		<div class="placeholders">
+		  	<div class="row">
+				<div class="col-xs-6 col-sm-3 placeholder small-box">
+					<div class="imgBox">
+						<img src="{{ url_for('static', filename='img/nav1.jpg') }}">
+						<h1 class="imgText">
+							{% if session["online_num"] %}
+								{{ session['online_num'] }}
+							{% else %}
+								0
+							{% endif %}
+						</h1>
+					</div>
+					<h4>Online</h4>
+					<span class="text-muted">Online Boss</span>
+				</div>
+
+				<div class="col-xs-6 col-sm-3 placeholder small-box">
+					<div class="imgBox">
+						<img src="{{ url_for('static', filename='img/nav2.jpg') }}">
+						<h1 class="imgText">
+						{% if session['clients_num'] %}
+							{{session['clients_num']}}
+						{% else %}
+							0
+						{% endif %}
+						</h1>
+					</div>
+					<h4>clients</h4>
+					<span class="text-muted">Total clients</span>
+				</div>
+
+				<div class="col-xs-6 col-sm-3 placeholder small-box">
+					<div class="imgBox">
+						<img src="{{ url_for('static', filename='img/nav3.jpg') }}">
+						<h1 class="imgText">
+						{% if session["boss_num"] %}
+							{{ session['boss_num'] }}
+						{% else %}
+							0
+						{% endif %}
+						</h1>
+					</div>
+					<h4>Boss Clients</h4>
+					<span class="text-muted">Boss</span>
+				</div>
+
+				<div class="col-xs-6 col-sm-3 placeholder small-box">
+					<div class="imgBox">
+						<img src="{{ url_for('static', filename='img/nav4.jpg') }}">
+						<h1 class="imgText">
+						{% if runningDays %}
+							{{ runningDays }}
+						{% else %}
+							Error!
+						{% endif %}
+						</h1>
+					</div>
+					<h4>Running Days</h4>
+					<span class="text-muted">Days</span>
+				</div>
+			</div>
+		</div>
+
+			<h2 class="sub-header">TOP</h2>
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>TOP</th>
+							<th>CN</th>
+							<th>IP</th>
+							<th>StoreName</th>
+							<th>OnlineTime</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for boss in topOnline %}
+						<tr>
+							<td> {{ loop.index }} </td>
+							<td>{{ boss.cn }}</td>
+							<td>{{ boss.ip }}</td>
+							<td>{{ boss.storename }}</td>
+							<td>{{ boss.changedate }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div><!-- /.container-fluid -->
+  	</section>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+        {#  {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                  {% for message in messages %}
+                  <div class="text-danger">{{ message }}</div>
+                  {% endfor %}
+              {% endif %}
+          {% endwith %} #}
+          
+     	{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for category, message in messages %}
+          <div class="text-{{ category }}">{{ message }}</div>
+          {% endfor %}
+          </ul>
+        {% endif %}
+        {% endwith %}

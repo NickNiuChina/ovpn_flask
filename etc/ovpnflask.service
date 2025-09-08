@@ -1,0 +1,30 @@
+###################################################################################### gunicorn
+[Unit]
+Description=OvpnFlask web application
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/ubuntu/microblog
+Environment=FLASK_CONFIG=production
+Environment=DATABASE_URL=sqlite:////path/to/the/database.sqlite
+ExecStart=/home/ubuntu/microblog/venv/bin/gunicorn -b localhost:8000 -w 4 microblog:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+##################################################################################### uwsgi
+[Unit]
+Description=uWSGI instance to serve myproject - ovpn_flask
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/opt/ovpn_flask
+Environment="PATH=/opt/venv/bin"
+ExecStart=/opt/venv/bin/uwsgi --ini myproject.ini
+
+[Install]
+WantedBy=multi-user.target
