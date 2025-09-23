@@ -256,7 +256,7 @@ def prepare_data(action="add"):
         for i in range(1, 3):
             service = "test{}".format(str(i))
             results = dbsession.scalars(select(OvpnServers).where(OvpnServers.server_name == service))
-            if result:
+            if results:
                 for result in results:
                     logger.debug("Delete test ovpn service: {}".format(service))
                     dbsession.delete(result)
