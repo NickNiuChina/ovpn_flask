@@ -243,21 +243,23 @@ def prepare_data(action="add"):
         logger.debug("- Check the ovpn_clients table now")
         for i in range(1, Stress_Num*2+1):
             site_name = 'test{}'.format(str(i))
-            result = dbsession.scalar(select(OvpnClients).where(OvpnClients.site_name == site_name))
-            if result:
-                logger.debug("Delete test client site_name: {}".format(site_name))
-                dbsession.delete(result)
-                dbsession.commit()
+            results = dbsession.scalars(select(OvpnClients).where(OvpnClients.site_name == site_name))
+            if results:
+                for result in results:
+                    logger.debug("Delete test client site_name: {}".format(site_name))
+                    dbsession.delete(result)
+                    dbsession.commit()
 
         # table: ovpn_servers
         logger.debug("- Check the ovpn_servers table, ovpn service: test1 ")
         logger.info("- Check the ovpn_servers table now")
         service = "test1"
-        result = dbsession.scalar(select(OvpnServers).where(OvpnServers.server_name == service))
+        result = dbsession.scalars(select(OvpnServers).where(OvpnServers.server_name == service))
         if result:
-            logger.debug("Delete test ovpn service: {}".format(service))
-            dbsession.delete(result)
-            dbsession.commit()
+            for result in results:
+                logger.debug("Delete test ovpn service: {}".format(service))
+                dbsession.delete(result)
+                dbsession.commit()
                                         
         logger.info("Test data deleted done!")
 
