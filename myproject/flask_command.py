@@ -251,11 +251,11 @@ def prepare_data(action="add"):
                     dbsession.commit()
 
         # table: ovpn_servers
-        logger.debug("- Check the ovpn_servers table, ovpn service: test1 ")
+        logger.debug("- Check the ovpn_servers table, ovpn service: test1-2 ")
         logger.info("- Check the ovpn_servers table now")
         for i in range(1, 3):
             service = "test{}".format(str(i))
-            result = dbsession.scalars(select(OvpnServers).where(OvpnServers.server_name == service))
+            results = dbsession.scalars(select(OvpnServers).where(OvpnServers.server_name == service))
             if result:
                 for result in results:
                     logger.debug("Delete test ovpn service: {}".format(service))
